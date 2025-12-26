@@ -6,8 +6,11 @@ window.marqueeControls = {};
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing marquees...');
     
-    const SPEED = 30; // pixels per second
-    const SCROLL_MULTIPLIER = 1.5; // How much wheel/touch movement affects position
+    const BASE_SPEED = 30; // pixels per second for auto-scroll
+    const FRICTION = 0.92; // velocity decay per frame (lower = more friction)
+    const SCROLL_SENSITIVITY = 0.3; // how much wheel affects velocity
+    const TOUCH_SENSITIVITY = 0.5; // how much touch affects velocity
+    const MIN_VELOCITY = 0.1; // threshold to stop applying velocity
     
     function createMarquee(wrapperId, direction) {
         console.log('Initializing marquee:', wrapperId, direction);
@@ -34,9 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
         let contentWidth = 0;
         let hasMetrics = false;
         
+        // Velocity-based scrolling
+        let userVelocity = 0; // additional velocity from user input
+        
         // Touch tracking
         let touchStartX = 0;
-        let touchCurrentX = 0;
+        let touchLastX = 0;
+        let touchLastTime = 0;
         let isDragging = false;
         
         function normalizePosition() {
@@ -65,13 +72,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const deltaTime = currentTime - lastTime;
-            const deltaPixels = (SPEED * deltaTime) / 1000;
+            const deltaSeconds = deltaTime / 1000;
             
+            // Calculate base auto-scroll movement
+            let baseMovement = BASE_SPEED * deltaSeconds;
             if (direction === 'rtl') {
-                currentPosition -= deltaPixels;
-            } else {
-                currentPosition += deltaPixels;
+                baseMovement = -baseMovement;
             }
+            
+            // Apply user velocity with friction
+            userVelocity *= FRICTION;
+            if (Math.abs(userVelocity) < MIN_VELOCITY) {
+                userVelocity = 0;
+            }
+            
+            // Combine base movement with user velocity
+            const totalMovement = baseMovement + userVelocity;
+            currentPosition += totalMovement;
             
             normalizePosition();
             applyPosition();
@@ -99,17 +116,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Handle wheel events for infinite scrolling
+        // Handle wheel events - add to velocity for smooth momentum
         function handleWheel(e) {
             if (!contentWidth) return;
             
             // Use deltaX for horizontal scroll, fall back to deltaY if no horizontal
             const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
             
-            // Apply scroll to position (negative because scrolling right should move content left)
-            currentPosition -= delta * SCROLL_MULTIPLIER;
-            normalizePosition();
-            applyPosition();
+            // Add to velocity instead of directly changing position
+            userVelocity -= delta * SCROLL_SENSITIVITY;
             
             // Prevent default to stop native scrolling
             e.preventDefault();
@@ -121,30 +136,44 @@ document.addEventListener('DOMContentLoaded', function() {
             
             isDragging = true;
             touchStartX = e.touches[0].clientX;
-            touchCurrentX = touchStartX;
+            touchLastX = touchStartX;
+            touchLastTime = performance.now();
+            
+            // Reset velocity on new touch
+            userVelocity = 0;
         }
         
         // Handle touch move
         function handleTouchMove(e) {
             if (!isDragging || !contentWidth) return;
             
+            const now = performance.now();
             const newTouchX = e.touches[0].clientX;
-            const deltaX = touchCurrentX - newTouchX;
+            const deltaX = touchLastX - newTouchX;
+            const deltaTime = now - touchLastTime;
             
-            // Apply movement to position
-            currentPosition -= deltaX * SCROLL_MULTIPLIER;
+            // Calculate velocity from movement
+            if (deltaTime > 0) {
+                // Smooth velocity calculation
+                const instantVelocity = -deltaX * TOUCH_SENSITIVITY;
+                userVelocity = userVelocity * 0.5 + instantVelocity * 0.5;
+            }
+            
+            // Also apply direct position change for responsive feel
+            currentPosition -= deltaX;
             normalizePosition();
-            applyPosition();
             
-            touchCurrentX = newTouchX;
+            touchLastX = newTouchX;
+            touchLastTime = now;
             
             // Prevent default to stop native scrolling
             e.preventDefault();
         }
         
-        // Handle touch end
+        // Handle touch end - keep momentum going
         function handleTouchEnd() {
             isDragging = false;
+            // Velocity will naturally decay via friction in animate()
         }
         
         // Attach event listeners
