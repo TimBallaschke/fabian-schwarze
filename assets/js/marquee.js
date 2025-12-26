@@ -7,10 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing marquees...');
     
     const BASE_SPEED = 30; // pixels per second for auto-scroll
-    const FRICTION = 0.92; // velocity decay per frame (lower = more friction)
-    const SCROLL_SENSITIVITY = 0.3; // how much wheel affects velocity
-    const TOUCH_SENSITIVITY = 0.5; // how much touch affects velocity
-    const MIN_VELOCITY = 0.1; // threshold to stop applying velocity
+    const SCROLL_RESUME_DELAY = 800; // ms to wait after last scroll before resuming animation
+    const LERP_FACTOR = 0.1; // smoothing factor (0-1, lower = smoother but slower)
     
     function createMarquee(wrapperId, direction) {
         console.log('Initializing marquee:', wrapperId, direction);
@@ -34,36 +32,43 @@ document.addEventListener('DOMContentLoaded', function() {
         let animationId = null;
         let lastTime = null;
         let currentPosition = 0;
+        let targetPosition = 0; // where we want to be (for smooth scrolling)
         let contentWidth = 0;
         let hasMetrics = false;
         
-        // Velocity-based scrolling
-        let userVelocity = 0; // additional velocity from user input
+        // User interaction state
+        let isUserScrolling = false;
+        let scrollResumeTimeout = null;
         
         // Touch tracking
-        let touchStartX = 0;
         let touchLastX = 0;
-        let touchLastTime = 0;
-        let isDragging = false;
         
-        function normalizePosition() {
-            // Keep position in valid range [-contentWidth, 0)
-            while (currentPosition >= 0) {
-                currentPosition -= contentWidth;
+        function normalizeValue(value) {
+            if (!contentWidth) return value;
+            // Normalize to range [-contentWidth, 0)
+            while (value >= 0) {
+                value -= contentWidth;
             }
-            while (currentPosition < -contentWidth) {
-                currentPosition += contentWidth;
+            while (value < -contentWidth) {
+                value += contentWidth;
             }
+            return value;
         }
         
         function setInitialPosition() {
             if (!contentWidth) return;
             currentPosition = direction === 'ltr' ? -contentWidth : 0;
+            targetPosition = currentPosition;
             content.style.transform = `translateX(${currentPosition}px)`;
         }
         
         function applyPosition() {
             content.style.transform = `translateX(${currentPosition}px)`;
+        }
+        
+        // Linear interpolation
+        function lerp(current, target, factor) {
+            return current + (target - current) * factor;
         }
         
         function animate(currentTime) {
@@ -74,23 +79,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const deltaTime = currentTime - lastTime;
             const deltaSeconds = deltaTime / 1000;
             
-            // Calculate base auto-scroll movement
-            let baseMovement = BASE_SPEED * deltaSeconds;
-            if (direction === 'rtl') {
-                baseMovement = -baseMovement;
+            if (isUserScrolling) {
+                // During user scroll: smoothly interpolate toward target
+                // Handle wrapping - find shortest path to target
+                let diff = targetPosition - currentPosition;
+                
+                // If difference is more than half the content width, wrap around
+                if (contentWidth && Math.abs(diff) > contentWidth / 2) {
+                    if (diff > 0) {
+                        diff -= contentWidth;
+                    } else {
+                        diff += contentWidth;
+                    }
+                }
+                
+                // Apply lerp
+                currentPosition += diff * LERP_FACTOR;
+                currentPosition = normalizeValue(currentPosition);
+            } else {
+                // Auto-scroll mode
+                let movement = BASE_SPEED * deltaSeconds;
+                if (direction === 'rtl') {
+                    movement = -movement;
+                }
+                
+                currentPosition += movement;
+                currentPosition = normalizeValue(currentPosition);
+                targetPosition = currentPosition; // Keep target synced
             }
             
-            // Apply user velocity with friction
-            userVelocity *= FRICTION;
-            if (Math.abs(userVelocity) < MIN_VELOCITY) {
-                userVelocity = 0;
-            }
-            
-            // Combine base movement with user velocity
-            const totalMovement = baseMovement + userVelocity;
-            currentPosition += totalMovement;
-            
-            normalizePosition();
             applyPosition();
             
             lastTime = currentTime;
@@ -116,15 +133,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Handle wheel events - add to velocity for smooth momentum
+        // Called when user starts scrolling
+        function onScrollStart() {
+            if (!isUserScrolling) {
+                // Sync target with current position when starting to scroll
+                targetPosition = currentPosition;
+            }
+            isUserScrolling = true;
+            // Clear any pending resume timeout
+            if (scrollResumeTimeout) {
+                clearTimeout(scrollResumeTimeout);
+                scrollResumeTimeout = null;
+            }
+        }
+        
+        // Called after scrolling stops (debounced)
+        function onScrollEnd() {
+            // Clear any pending timeout
+            if (scrollResumeTimeout) {
+                clearTimeout(scrollResumeTimeout);
+            }
+            // Wait a bit before resuming animation
+            scrollResumeTimeout = setTimeout(function() {
+                isUserScrolling = false;
+                // Sync current to target before resuming auto-scroll
+                currentPosition = normalizeValue(targetPosition);
+                targetPosition = currentPosition;
+                scrollResumeTimeout = null;
+            }, SCROLL_RESUME_DELAY);
+        }
+        
+        // Handle wheel events
         function handleWheel(e) {
             if (!contentWidth) return;
+            
+            onScrollStart();
             
             // Use deltaX for horizontal scroll, fall back to deltaY if no horizontal
             const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
             
-            // Add to velocity instead of directly changing position
-            userVelocity -= delta * SCROLL_SENSITIVITY;
+            // Adjust target position (will be smoothly interpolated in animate())
+            targetPosition -= delta;
+            targetPosition = normalizeValue(targetPosition);
+            
+            // Schedule resume
+            onScrollEnd();
             
             // Prevent default to stop native scrolling
             e.preventDefault();
@@ -134,46 +187,30 @@ document.addEventListener('DOMContentLoaded', function() {
         function handleTouchStart(e) {
             if (!contentWidth) return;
             
-            isDragging = true;
-            touchStartX = e.touches[0].clientX;
-            touchLastX = touchStartX;
-            touchLastTime = performance.now();
-            
-            // Reset velocity on new touch
-            userVelocity = 0;
+            onScrollStart();
+            touchLastX = e.touches[0].clientX;
         }
         
         // Handle touch move
         function handleTouchMove(e) {
-            if (!isDragging || !contentWidth) return;
+            if (!contentWidth) return;
             
-            const now = performance.now();
             const newTouchX = e.touches[0].clientX;
             const deltaX = touchLastX - newTouchX;
-            const deltaTime = now - touchLastTime;
             
-            // Calculate velocity from movement
-            if (deltaTime > 0) {
-                // Smooth velocity calculation
-                const instantVelocity = -deltaX * TOUCH_SENSITIVITY;
-                userVelocity = userVelocity * 0.5 + instantVelocity * 0.5;
-            }
-            
-            // Also apply direct position change for responsive feel
-            currentPosition -= deltaX;
-            normalizePosition();
+            // Adjust target position
+            targetPosition -= deltaX;
+            targetPosition = normalizeValue(targetPosition);
             
             touchLastX = newTouchX;
-            touchLastTime = now;
             
             // Prevent default to stop native scrolling
             e.preventDefault();
         }
         
-        // Handle touch end - keep momentum going
+        // Handle touch end
         function handleTouchEnd() {
-            isDragging = false;
-            // Velocity will naturally decay via friction in animate()
+            onScrollEnd();
         }
         
         // Attach event listeners
@@ -187,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.marqueeControls[wrapperId] = {
             start: startAnimation,
             stop: stopAnimation,
-            isRunning: function() { return animationId !== null; }
+            isRunning: function() { return animationId !== null && !isUserScrolling; }
         };
         
         function updateMetrics() {
@@ -208,10 +245,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (newWidth !== contentWidth) {
                 const scale = newWidth / contentWidth;
                 currentPosition *= scale;
+                targetPosition *= scale;
                 contentWidth = newWidth;
             }
             
-            normalizePosition();
+            currentPosition = normalizeValue(currentPosition);
+            targetPosition = normalizeValue(targetPosition);
             applyPosition();
         }
         
