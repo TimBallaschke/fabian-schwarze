@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let targetOffset = 0; // accumulated offset from user input (not normalized)
         let contentWidth = 0;
         let hasMetrics = false;
+        let isPaused = false; // Flag to completely pause all updates
         
         // User interaction state
         let isUserScrolling = false;
@@ -70,6 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function applyPosition() {
+            // Don't apply if paused
+            if (isPaused) return;
+            
             // Always normalize for display to keep within valid visual range
             const displayPosition = normalizeForDisplay(currentPosition);
             content.style.transform = `translateX(${displayPosition}px)`;
@@ -275,6 +279,20 @@ document.addEventListener('DOMContentLoaded', function() {
         window.marqueeControls[wrapperId] = {
             start: startAnimation,
             stop: stopAnimation,
+            // Pause: stops animation AND prevents ResizeObserver updates
+            pause: function() {
+                isPaused = true;
+                stopAnimation();
+                if (scrollResumeTimeout) {
+                    clearTimeout(scrollResumeTimeout);
+                    scrollResumeTimeout = null;
+                }
+            },
+            // Resume: re-enables updates and restarts animation
+            resume: function() {
+                isPaused = false;
+                startAnimation();
+            },
             isRunning: function() { return animationId !== null && !isUserScrolling; },
             updateMetrics: updateMetrics
         };
@@ -299,6 +317,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function updateMetrics() {
+            // Don't update if paused (prevents interference during detail view)
+            if (isPaused) return;
+            
             const newWidth = calculateContentWidth();
             if (!newWidth) {
                 return;
@@ -365,23 +386,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('All marquees initialized');
     
-    // Global function to stop all marquees
+    // Global function to stop all marquees (just stops animation)
     window.stopAllMarquees = function() {
         Object.values(window.marqueeControls).forEach(control => {
-            if (control.stop) {
+            if (control.pause) {
+                control.pause(); // Use pause to also block ResizeObserver updates
+            } else if (control.stop) {
                 control.stop();
             }
         });
-        console.log('All marquees stopped');
+        console.log('All marquees paused');
     };
     
     // Global function to start all marquees
     window.startAllMarquees = function() {
         Object.values(window.marqueeControls).forEach(control => {
-            if (control.start) {
+            if (control.resume) {
+                control.resume();
+            } else if (control.start) {
                 control.start();
             }
         });
-        console.log('All marquees started');
+        console.log('All marquees resumed');
     };
 });

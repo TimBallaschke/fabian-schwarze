@@ -1,29 +1,8 @@
-:root {
-    --single-project-width: 29rem;
-    --info-bar-height: 2rem;
-    --page-padding: 0.5rem;
-    --font-size: 0.9rem;
-    --line-height: 1.2;
-    --border-thickness: 1px;
-}
-
-html {
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-smooth: never; /* Note: font-smooth is not widely supported */
-    font-size: 18px;
-}
-
-*, *:before, *:after {
-    box-sizing: inherit;
-    scrollbar-width: none; /* Firefox */
-}
-
-@font-face {
-    font-family: "Arketa";
-    src: url("../fonts/Arketa.otf") format("opentype");
-}
+@import "./variables";
+@import "./typography";
+@import "./base";
+@import "./about";
+@import "./projects";
 
 
 body {
@@ -81,9 +60,10 @@ body {
     display: grid;
     grid-template-rows: auto 1fr  auto;
     z-index: 100;
+    will-change: transform, height;
 
     &.detail-view {
-        height: 100vh;
+        height: 100dvh;
     }
 }
 
@@ -552,61 +532,27 @@ body {
     transition: transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-/* About Container */
-.about-container {
-    width: 100vw;
-    height: 100vh;
+// Project clone animation (CSS-driven for smoother performance)
+.project-clone {
     position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    // grid-template-rows: 1fr 1fr;
-    filter: blur(0.5rem);
-    opacity: 0;
-    transform: scale(0.9);
-    transition: all 600ms ease-in-out;
-
-    &.display-none {
-        display: none;
+    left: var(--clone-initial-left);
+    top: var(--clone-initial-top);
+    width: var(--clone-initial-width);
+    height: var(--clone-initial-height);
+    z-index: 9999;
+    padding: 0.45rem 0.225rem;
+    background-color: var(--background-color);
+    transition: left 800ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                top 800ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                width 800ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                height 800ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                padding 800ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    
+    &.animate-to-detail {
+        left: var(--clone-final-left);
+        top: var(--clone-final-top);
+        width: var(--clone-final-width);
+        height: var(--clone-final-height);
+        padding: 2rem 4rem 3rem 4rem;
     }
-
-    .about-open-2 & {
-        transform: scale(1);
-        opacity: 1;
-        filter: blur(0);
-    }
-}
-
-#about-container-white {
-    position: fixed;
-    right: 0;
-    width: 50vw;
-    height: 100dvh;
-    background-color: white;
-    z-index: -2;
-}
-
-#about-container-black {
-    position: fixed;
-    left: 0;
-    width: 50vw;
-    height: 100dvh;
-    background-color: black;
-    z-index: -2;
-}
-
-#about-text {
-    grid-column: 2/3;
-    padding: 19rem calc(var(--page-padding) * 16) 0 calc(var(--page-padding) * 3);
-    color: black;
-    height: auto;
-}
-
-#about-contact {
-    grid-column: 1/2;
-    padding: 19rem calc(var(--page-padding) * 3) 0 var(--page-padding);
-    color: white;
-    text-align: right;
 }

@@ -42,33 +42,33 @@ function openProject(projectElement) {
     const destinationLeft = (window.innerWidth - destinationWidth) / 2; // centered horizontally
     const destinationTop = topHeight + (destinationHeight - destinationHeight) / 2; // centered in available space
     
-    // Clone and animate all project wrappers using CSS classes
+    // Clone and animate all project wrappers
     const clones = [];
     
     allProjectWrappers.forEach((wrapper, index) => {
         // Get current position and size
         const currentRect = wrapper.getBoundingClientRect();
         
-        // Calculate final position for this clone
-        const relativePosition = index - clickedIndex;
-        const finalLeft = destinationLeft + (relativePosition * destinationWidth);
-        
         // Clone the wrapper including all innerHTML
         const clone = wrapper.cloneNode(true);
+
+        // Add transition for smooth animation
+        clone.style.transition = 'all 800ms cubic-bezier(0.4, 0.0, 0.2, 1)';
         
-        // Add the clone class and set CSS custom properties for positions
-        clone.classList.add('project-clone');
-        clone.style.setProperty('--clone-initial-left', currentRect.left + 'px');
-        clone.style.setProperty('--clone-initial-top', currentRect.top + 'px');
-        clone.style.setProperty('--clone-initial-width', currentRect.width + 'px');
-        clone.style.setProperty('--clone-initial-height', currentRect.height + 'px');
-        clone.style.setProperty('--clone-final-left', finalLeft + 'px');
-        clone.style.setProperty('--clone-final-top', destinationTop + 'px');
-        clone.style.setProperty('--clone-final-width', destinationWidth + 'px');
-        clone.style.setProperty('--clone-final-height', destinationHeight + 'px');
+        // Set initial position (current position) with fixed positioning
+        clone.style.position = 'fixed';
+        clone.style.left = currentRect.left + 'px';
+        clone.style.top = currentRect.top + 'px';
+        clone.style.width = currentRect.width + 'px';
+        clone.style.height = currentRect.height + 'px';
+        clone.style.zIndex = '9999';
+        clone.style.padding = '0.45rem 0.225rem';
+        clone.style.backgroundColor = 'var(--background-color)';
         
-        // Append to body to isolate from marquee
-        document.body.appendChild(clone);
+        // Add clone to the same projects-container
+        projectsContainer.appendChild(clone);
+        
+
         
         clones.push({
             clone: clone,
@@ -80,11 +80,27 @@ function openProject(projectElement) {
     console.log('Clicked index:', clickedIndex);
     console.log('Total wrappers:', allProjectWrappers.length);
     
-    // Trigger animation by adding the animate class after a frame
+    // Animate all clones to their destination positions
     requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            clones.forEach(({ clone }) => {
-                clone.classList.add('animate-to-detail');
+        clones.forEach((cloneData) => {
+            const { clone, index, isClicked } = cloneData;
+            
+            // Calculate horizontal position relative to clicked element
+            // Clicked element at center (0), others at -100vw, +100vw, -200vw, +200vw, etc.
+            const relativePosition = index - clickedIndex;
+            const finalLeft = destinationLeft + (relativePosition * destinationWidth);
+            
+            // Animate to final position and size
+            clone.style.left = finalLeft + 'px';
+            clone.style.top = destinationTop + 'px';
+            clone.style.width = destinationWidth + 'px';
+            clone.style.height = destinationHeight + 'px';
+            clone.style.padding = '2rem 4rem 3rem 4rem';
+            
+            console.log(`Element ${index} (${isClicked ? 'CLICKED' : 'other'}):`, {
+                relativePosition: relativePosition,
+                finalLeft: finalLeft,
+                finalTop: destinationTop
             });
         });
     });
@@ -93,7 +109,7 @@ function openProject(projectElement) {
         allProjectWrappers.forEach((wrapper) => {
             wrapper.style.display = 'none';
         });
-    }, 800);
+    }, 1000);
 
     const allProjectsContainers = document.querySelectorAll('.projects-container');
     allProjectsContainers.forEach(container => {
@@ -104,34 +120,10 @@ function openProject(projectElement) {
             container.classList.add('detail-view');
         }
     });
-}
 
-// Function to close detail view and clean up
-function closeDetailView() {
-    document.body.classList.remove('detail-view-active');
-    
-    // Remove detail-view class from all containers
-    const allProjectsContainers = document.querySelectorAll('.projects-container');
-    allProjectsContainers.forEach(container => {
-        container.classList.remove('detail-view', 'not-visible');
-    });
-    
-    // Show all project wrappers again
-    const allProjectWrappers = document.querySelectorAll('.single-project-wrapper');
-    allProjectWrappers.forEach((wrapper) => {
-        wrapper.style.display = '';
-    });
-    
-    // Remove all clones
-    const clones = document.querySelectorAll('.project-clone');
-    clones.forEach(clone => {
-        clone.remove();
-    });
-    
-    // Restart marquee animations
-    if (window.startAllMarquees) {
-        window.startAllMarquees();
-    }
+    setTimeout(() => {
+        document.body.classList.remove('detail-view-active');
+    }, 3000);
 }
 
 // Function to update the CSS custom property based on actual element width
@@ -177,25 +169,5 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Optional: Add cursor pointer style to indicate clickability
         image.style.cursor = 'pointer';
-    });
-    
-    // Add keyboard event listener for closing detail view
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && document.body.classList.contains('detail-view-active')) {
-            closeDetailView();
-        }
-    });
-    
-    // Add click event listener to close detail view when clicking outside
-    document.addEventListener('click', function(event) {
-        if (document.body.classList.contains('detail-view-active')) {
-            // Check if click is outside of any project content
-            const isClickOnProject = event.target.closest('.single-project-wrapper') || 
-                                   event.target.closest('.projects-container');
-            
-            if (!isClickOnProject) {
-                closeDetailView();
-            }
-        }
     });
 });

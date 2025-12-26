@@ -1,0 +1,21 @@
+:root {
+    --single-project-width: 29rem;
+    --info-bar-height: 2rem;
+    --page-padding: 0.5rem;
+    --font-size: 0.9rem;
+    --line-height: 1.2;
+    --border-thickness: 1px;
+}
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-smooth: never; /* Note: font-smooth is not widely supported */
+    font-size: 18px;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+    scrollbar-width: none; /* Firefox */
+}
