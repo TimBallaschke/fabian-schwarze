@@ -1,0 +1,25 @@
+Title: sagittis magna
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://ELlGrkUZ8yZk1xKn
+
+----
+
+Projecttitle: sagittis magna
+
+----
+
+Projectdate: Jul 2023
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: tfydpNDmWsITcpGs

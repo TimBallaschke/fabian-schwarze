@@ -1,0 +1,25 @@
+Title: adipiscing elit
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://6fVSDAyWjSFYlNav
+
+----
+
+Projecttitle: adipiscing elit
+
+----
+
+Projectdate: Apr 2024
+
+----
+
+Subcategory: portrait
+
+----
+
+Uuid: fdvSSLJXQf1XtoEM

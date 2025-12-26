@@ -1,0 +1,25 @@
+Title: faucibus
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://Ilrk8ANCRsG69o1y
+
+----
+
+Projecttitle: faucibus
+
+----
+
+Projectdate: Mar 2025
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: PeUzZ57s6Ws8kAgT

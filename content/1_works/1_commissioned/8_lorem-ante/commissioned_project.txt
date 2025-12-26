@@ -1,0 +1,25 @@
+Title: lorem ante
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://DR7Sm7Bw35OR8ZYc
+
+----
+
+Projecttitle: lorem ante
+
+----
+
+Projectdate: Sep 2024
+
+----
+
+Subcategory: portrait
+
+----
+
+Uuid: eWG9MWfGtrpDSk4i

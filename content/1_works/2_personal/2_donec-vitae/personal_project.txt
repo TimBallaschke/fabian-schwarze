@@ -1,0 +1,25 @@
+Title: Donec vitae
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://jWE5qOwc8rVZ7j5j
+
+----
+
+Projecttitle: Donec vitae
+
+----
+
+Projectdate: Feb 2022
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: DIxGzq5pSegaVWJW

@@ -1,0 +1,25 @@
+Title: leo eget
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://gkhkLwNyHEGYjNFN
+
+----
+
+Projecttitle: eo eget
+
+----
+
+Projectdate: Aug 2024
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: SO4cZPx2Pc7izBXV

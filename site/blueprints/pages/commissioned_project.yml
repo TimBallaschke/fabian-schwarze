@@ -1,0 +1,45 @@
+title: Artwork
+
+
+columns:
+  - width: 1/2
+    sections:
+      projectImages:
+        type: fields
+        fields:
+          projectImages:
+            type: structure
+            label: Images
+            fields:
+              projectImage:
+                type: files
+                label: Image
+                layout: cards
+                ratio: 1/1
+                multiple: false
+                required: true
+
+  - width: 1/2
+    sections:
+      projectInfo:
+        type: fields
+        fields:
+          projectTitle:
+            type: text
+            label: Title
+            required: true
+          projectDate:
+            type: text
+            label: Date
+            required: true
+          subCategory:
+            type: select
+            label: Sub-category
+            options:
+              event: Event
+              portrait: Portrait
+
+
+
+
+

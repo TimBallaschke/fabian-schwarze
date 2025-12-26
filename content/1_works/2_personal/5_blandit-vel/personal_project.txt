@@ -1,0 +1,25 @@
+Title: blandit vel
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://cJoeSNCwBgflfWfa
+
+----
+
+Projecttitle: blandit vel
+
+----
+
+Projectdate: Dec 2024
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: o8kaLaDWEmcc7aOY

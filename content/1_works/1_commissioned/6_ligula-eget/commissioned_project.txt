@@ -1,0 +1,25 @@
+Title: ligula eget
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://FEhD4OkTitSR6oVz
+
+----
+
+Projecttitle: ligula eget
+
+----
+
+Projectdate: Feb 2025
+
+----
+
+Subcategory: portrait
+
+----
+
+Uuid: vXAbmGpU22nWYQ7d

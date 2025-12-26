@@ -1,0 +1,25 @@
+Title: dolor sit amet
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://fHMI9RnDbKrheuYo
+
+----
+
+Projecttitle: Dolor sit amet
+
+----
+
+Projectdate: Jan 2024
+
+----
+
+Subcategory: portrait
+
+----
+
+Uuid: 8uRrWuqhXHwWuUgT

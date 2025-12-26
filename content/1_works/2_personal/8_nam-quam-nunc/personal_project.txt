@@ -1,0 +1,25 @@
+Title: Nam quam nunc
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://umper9UnMmt70EUC
+
+----
+
+Projecttitle: Nam quam nunc
+
+----
+
+Projectdate: May 2023
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: WAYVRsIf3JB4vixN

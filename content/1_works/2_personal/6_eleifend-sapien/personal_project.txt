@@ -1,0 +1,25 @@
+Title: eleifend sapien
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://TS33BhcKx5KziCFx
+
+----
+
+Projecttitle: eleifend sapien
+
+----
+
+Projectdate: Aug 2024
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: pm5Sep0K8ETuQkZJ

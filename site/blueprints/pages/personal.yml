@@ -1,0 +1,6 @@
+title: Personal
+
+sections:
+  project:
+    type: pages
+    template: personal_project

@@ -1,0 +1,25 @@
+Title: Maecenas
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://amhcV3u8Ka6sNsgx
+
+----
+
+Projecttitle: Maecenas
+
+----
+
+Projectdate: Dec 2024
+
+----
+
+Subcategory: diary
+
+----
+
+Uuid: nTOMHIF5RjViOafy

@@ -1,0 +1,9 @@
+title: Works
+
+sections:
+  commissioned:
+    type: pages
+    template: commissioned
+  personal:
+    type: pages
+    template: personal

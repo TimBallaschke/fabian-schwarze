@@ -1,0 +1,25 @@
+Title: Lorem ipsum
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://SjzDpLJcmAJQOKpN
+
+----
+
+Projecttitle: Lorem ipsum
+
+----
+
+Projectdate: Nov 2023
+
+----
+
+Subcategory: portrait
+
+----
+
+Uuid: ucfnIqMxA6Fmv05a

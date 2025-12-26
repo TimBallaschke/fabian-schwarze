@@ -1,0 +1,39 @@
+title: About
+
+
+columns:
+  - width: 1/3
+    sections:
+      about_text:
+        type: fields
+        fields:
+          about_textarea:
+            type: textarea
+            label: About Text
+            buttons: false
+            size: medium
+
+  - width: 1/3
+    sections:
+      clients:
+        type: fields
+        fields:
+          clients_textarea:
+            type: textarea
+            label: Clients
+            buttons: false
+            size: medium
+
+  - width: 1/3
+    sections:
+      contact:
+        type: fields
+        fields:
+          e_mail:
+            type: text
+            label: E-Mail
+          instagram:
+            type: text
+            label: Instagram
+            
+
