@@ -42,6 +42,11 @@ function openProject(projectElement) {
     const destinationLeft = (window.innerWidth - destinationWidth) / 2; // centered horizontally
     const destinationTop = topHeight + (destinationHeight - destinationHeight) / 2; // centered in available space
     
+    // Get the CSS variables from the container (needed since clones go to body)
+    const containerStyles = getComputedStyle(projectsContainer);
+    const backgroundColor = containerStyles.getPropertyValue('--background-color').trim();
+    const textColor = containerStyles.getPropertyValue('--text-color').trim();
+    
     // Clone and animate all project wrappers using CSS classes
     const clones = [];
     
@@ -66,6 +71,10 @@ function openProject(projectElement) {
         clone.style.setProperty('--clone-final-top', destinationTop + 'px');
         clone.style.setProperty('--clone-final-width', destinationWidth + 'px');
         clone.style.setProperty('--clone-final-height', destinationHeight + 'px');
+        
+        // Copy the container's color variables to the clone
+        clone.style.setProperty('--background-color', backgroundColor);
+        clone.style.setProperty('--text-color', textColor);
         
         // Append to body to isolate from marquee
         document.body.appendChild(clone);
@@ -93,7 +102,7 @@ function openProject(projectElement) {
         allProjectWrappers.forEach((wrapper) => {
             wrapper.style.display = 'none';
         });
-    }, 800);
+    }, 700);
 
     const allProjectsContainers = document.querySelectorAll('.projects-container');
     allProjectsContainers.forEach(container => {
