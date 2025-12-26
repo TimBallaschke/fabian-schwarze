@@ -275,7 +275,8 @@ document.addEventListener('DOMContentLoaded', function() {
         window.marqueeControls[wrapperId] = {
             start: startAnimation,
             stop: stopAnimation,
-            isRunning: function() { return animationId !== null && !isUserScrolling; }
+            isRunning: function() { return animationId !== null && !isUserScrolling; },
+            updateMetrics: updateMetrics
         };
         
         // Calculate the exact width of the first half of content (one complete set)

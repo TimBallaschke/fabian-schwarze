@@ -6,8 +6,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const buttons = Array.from(container.querySelectorAll('.section-categories .category'));
         const items = Array.from(container.querySelectorAll('.single-project-wrapper'));
         const itemTimers = new Map();
+        const sectionId = container.dataset.section;
+        const marqueeId = sectionId + '-marquee';
+        let marqueeUpdateAnimationId = null;
 
         if (buttons.length === 0 || items.length === 0) return;
+
+        // Continuously update marquee metrics during transitions
+        function startMarqueeUpdates(duration) {
+            if (marqueeUpdateAnimationId) {
+                cancelAnimationFrame(marqueeUpdateAnimationId);
+            }
+            
+            const startTime = performance.now();
+            
+            function update() {
+                if (window.marqueeControls && window.marqueeControls[marqueeId]) {
+                    window.marqueeControls[marqueeId].updateMetrics();
+                }
+                
+                if (performance.now() - startTime < duration) {
+                    marqueeUpdateAnimationId = requestAnimationFrame(update);
+                } else {
+                    marqueeUpdateAnimationId = null;
+                }
+            }
+            
+            marqueeUpdateAnimationId = requestAnimationFrame(update);
+        }
 
         function setActiveCategory(category) {
             buttons.forEach(function(btn) {
@@ -90,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const category = (button.dataset.category || 'all').toLowerCase();
                 setActiveCategory(category);
                 applyFilter(category);
+                // Update marquee continuously during the transition (300ms delay + 800ms transition + buffer)
+                startMarqueeUpdates(1200);
             });
         });
 
