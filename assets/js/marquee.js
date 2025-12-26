@@ -6,35 +6,7 @@ window.marqueeControls = {};
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing marquees...');
     
-    const SPEED = 30; // pixels per second - increased for visibility
-    
-    // Function to center the initial category element
-    function centerInitialCategory() {
-        const initialElements = document.querySelectorAll('.category-element.initial');
-        
-        initialElements.forEach(function(initialElement) {
-            const categoryWrapper = initialElement.closest('.category-wrapper');
-            if (!categoryWrapper) return;
-            
-            const categoryContainer = categoryWrapper.querySelector('.category-container');
-            if (!categoryContainer) return;
-            
-            // Get positions
-            const elementRect = initialElement.getBoundingClientRect();
-            const wrapperRect = categoryWrapper.getBoundingClientRect();
-            const containerRect = categoryContainer.getBoundingClientRect();
-            
-            // Calculate the scroll position to center the element
-            const elementCenter = initialElement.offsetLeft + (initialElement.offsetWidth / 2);
-            const wrapperCenter = categoryWrapper.offsetWidth / 2;
-            const scrollPosition = elementCenter - wrapperCenter;
-            
-            // Scroll to center the initial element
-            categoryContainer.scrollLeft = Math.max(0, scrollPosition);
-            
-            console.log('Centered initial category element, scroll position:', scrollPosition);
-        });
-    }
+    const SPEED = 30; // pixels per second
     
     function createMarquee(wrapperId, direction) {
         console.log('Initializing marquee:', wrapperId, direction);
@@ -51,34 +23,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        content.style.transition = 'none';
+        
         console.log('Elements found, content width:', content.scrollWidth);
         
-        let isUserScrolling = false;
-        let scrollTimer = null;
         let animationId = null;
-        let lastTime = 0;
+        let lastTime = null;
         let currentPosition = 0;
+        let contentWidth = 0;
+        let hasMetrics = false;
         
-        // Get content width (half since duplicated)
-        const contentWidth = content.scrollWidth / 2;
-        
-        console.log('Single content width:', contentWidth);
-        
-        // Set initial position for LTR
-        if (direction === 'ltr') {
-            currentPosition = -contentWidth;
+        function setInitialPosition() {
+            if (!contentWidth) return;
+            currentPosition = direction === 'ltr' ? -contentWidth : 0;
             content.style.transform = `translateX(${currentPosition}px)`;
-            console.log('Set initial LTR position to:', currentPosition);
         }
         
         function animate(currentTime) {
-            if (isUserScrolling) {
-                lastTime = currentTime;
-                animationId = requestAnimationFrame(animate);
-                return;
-            }
-            
-            if (lastTime === 0) {
+            if (lastTime === null) {
                 lastTime = currentTime;
             }
             
@@ -88,12 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (direction === 'rtl') {
                 currentPosition -= deltaPixels;
                 if (currentPosition <= -contentWidth) {
-                    currentPosition = 0;
+                    currentPosition += contentWidth;
                 }
             } else {
                 currentPosition += deltaPixels;
                 if (currentPosition >= 0) {
-                    currentPosition = -contentWidth;
+                    currentPosition -= contentWidth;
                 }
             }
             
@@ -106,8 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
         function startAnimation() {
             if (!animationId) {
                 console.log('Starting animation for:', wrapperId);
-                lastTime = 0;
-                animationId = requestAnimationFrame(animate);
+                lastTime = null;
+                if (contentWidth > 0) {
+                    animationId = requestAnimationFrame(animate);
+                }
             }
         }
         
@@ -116,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Stopping animation for:', wrapperId);
                 cancelAnimationFrame(animationId);
                 animationId = null;
-                lastTime = 0;
+                lastTime = null;
             }
         }
         
@@ -127,53 +91,76 @@ document.addEventListener('DOMContentLoaded', function() {
             isRunning: function() { return animationId !== null; }
         };
         
-        // Handle scroll events for manual scrolling
-        wrapper.addEventListener('scroll', function() {
-            if (!isUserScrolling) {
-                console.log('User started scrolling:', wrapperId);
-                isUserScrolling = true;
-                // Temporarily disable transition for smoother manual scrolling
-                content.style.transition = 'none';
+        function updateMetrics() {
+            const newWidth = content.scrollWidth / 2;
+            if (!newWidth) {
+                return;
             }
             
-            // Handle infinite scroll during manual scrolling
-            const scrollLeft = wrapper.scrollLeft;
-            const maxScroll = content.scrollWidth - wrapper.clientWidth;
-            
-            if (scrollLeft >= contentWidth) {
-                wrapper.scrollLeft = 0;
-                if (direction === 'rtl') {
-                    currentPosition = 0;
-                } else {
-                    currentPosition = -contentWidth;
-                }
-                content.style.transform = `translateX(${currentPosition}px)`;
-            } else if (scrollLeft <= 0 && direction === 'ltr') {
-                wrapper.scrollLeft = contentWidth;
-                currentPosition = -contentWidth;
-                content.style.transform = `translateX(${currentPosition}px)`;
+            if (!hasMetrics) {
+                contentWidth = newWidth;
+                hasMetrics = true;
+                console.log('Single content width:', contentWidth);
+                setInitialPosition();
+                startAnimation();
+                return;
             }
             
-            clearTimeout(scrollTimer);
-            scrollTimer = setTimeout(function() {
-                console.log('Resuming animation after scroll for:', wrapperId);
-                // Re-enable transition smoothly
-                content.style.transition = 'transform 0.1s ease-out';
-                isUserScrolling = false;
-            }, 100);
-        });
+            if (newWidth !== contentWidth) {
+                const scale = newWidth / contentWidth;
+                currentPosition *= scale;
+                contentWidth = newWidth;
+            }
+            
+            if (currentPosition > 0) {
+                currentPosition -= contentWidth;
+            }
+            if (currentPosition < -contentWidth) {
+                currentPosition += contentWidth;
+            }
+            
+            content.style.transform = `translateX(${currentPosition}px)`;
+        }
         
-        // Start the animation
-        startAnimation();
+        function waitForImages() {
+            const images = Array.from(content.querySelectorAll('img'));
+            if (images.length === 0) {
+                updateMetrics();
+                return;
+            }
+            
+            let remaining = images.length;
+            function onImageReady() {
+                remaining -= 1;
+                if (remaining === 0) {
+                    updateMetrics();
+                }
+            }
+            
+            images.forEach(function(img) {
+                if (img.complete) {
+                    onImageReady();
+                } else {
+                    img.addEventListener('load', onImageReady, { once: true });
+                    img.addEventListener('error', onImageReady, { once: true });
+                }
+            });
+        }
+        
+        if (typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(function() {
+                updateMetrics();
+            });
+            resizeObserver.observe(content);
+        }
+        
+        waitForImages();
         console.log('Marquee initialized successfully:', wrapperId);
     }
     
     // Initialize both marquees
     createMarquee('commissioned-marquee', 'rtl');
     createMarquee('personal-marquee', 'ltr');
-    
-    // Center initial category elements after a short delay to ensure layout is complete
-    setTimeout(centerInitialCategory, 100);
     
     console.log('All marquees initialized');
     
