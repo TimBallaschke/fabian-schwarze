@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.remove('filter-2');
                     timers.push(setTimeout(function() {
                         item.classList.remove('filter-1');
-                    }, 800));
+                    }, 700));
                     itemTimers.set(item, timers);
                     return;
                 }
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.add('filter-1');
                     timers.push(setTimeout(function() {
                         item.classList.add('filter-2');
-                    }, 300));
+                    }, 200));
                     itemTimers.set(item, timers);
                 }
             });
