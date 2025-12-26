@@ -6,7 +6,7 @@ let isAboutAnimating = false;
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         document.body.classList.remove('initialized');
-    }, 0);
+    }, 500);
 
     setTimeout(() => {
         aboutContainer.classList.remove('display-none');
