@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing marquees...');
     
     const SPEED = 30; // pixels per second
+    const SCROLL_MULTIPLIER = 1.5; // How much wheel/touch movement affects position
     
     function createMarquee(wrapperId, direction) {
         console.log('Initializing marquee:', wrapperId, direction);
@@ -33,9 +34,28 @@ document.addEventListener('DOMContentLoaded', function() {
         let contentWidth = 0;
         let hasMetrics = false;
         
+        // Touch tracking
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+        let isDragging = false;
+        
+        function normalizePosition() {
+            // Keep position in valid range [-contentWidth, 0)
+            while (currentPosition >= 0) {
+                currentPosition -= contentWidth;
+            }
+            while (currentPosition < -contentWidth) {
+                currentPosition += contentWidth;
+            }
+        }
+        
         function setInitialPosition() {
             if (!contentWidth) return;
             currentPosition = direction === 'ltr' ? -contentWidth : 0;
+            content.style.transform = `translateX(${currentPosition}px)`;
+        }
+        
+        function applyPosition() {
             content.style.transform = `translateX(${currentPosition}px)`;
         }
         
@@ -49,17 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (direction === 'rtl') {
                 currentPosition -= deltaPixels;
-                if (currentPosition <= -contentWidth) {
-                    currentPosition += contentWidth;
-                }
             } else {
                 currentPosition += deltaPixels;
-                if (currentPosition >= 0) {
-                    currentPosition -= contentWidth;
-                }
             }
             
-            content.style.transform = `translateX(${currentPosition}px)`;
+            normalizePosition();
+            applyPosition();
             
             lastTime = currentTime;
             animationId = requestAnimationFrame(animate);
@@ -83,6 +98,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 lastTime = null;
             }
         }
+        
+        // Handle wheel events for infinite scrolling
+        function handleWheel(e) {
+            if (!contentWidth) return;
+            
+            // Use deltaX for horizontal scroll, fall back to deltaY if no horizontal
+            const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+            
+            // Apply scroll to position (negative because scrolling right should move content left)
+            currentPosition -= delta * SCROLL_MULTIPLIER;
+            normalizePosition();
+            applyPosition();
+            
+            // Prevent default to stop native scrolling
+            e.preventDefault();
+        }
+        
+        // Handle touch start
+        function handleTouchStart(e) {
+            if (!contentWidth) return;
+            
+            isDragging = true;
+            touchStartX = e.touches[0].clientX;
+            touchCurrentX = touchStartX;
+        }
+        
+        // Handle touch move
+        function handleTouchMove(e) {
+            if (!isDragging || !contentWidth) return;
+            
+            const newTouchX = e.touches[0].clientX;
+            const deltaX = touchCurrentX - newTouchX;
+            
+            // Apply movement to position
+            currentPosition -= deltaX * SCROLL_MULTIPLIER;
+            normalizePosition();
+            applyPosition();
+            
+            touchCurrentX = newTouchX;
+            
+            // Prevent default to stop native scrolling
+            e.preventDefault();
+        }
+        
+        // Handle touch end
+        function handleTouchEnd() {
+            isDragging = false;
+        }
+        
+        // Attach event listeners
+        wrapper.addEventListener('wheel', handleWheel, { passive: false });
+        wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+        wrapper.addEventListener('touchmove', handleTouchMove, { passive: false });
+        wrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
+        wrapper.addEventListener('touchcancel', handleTouchEnd, { passive: true });
         
         // Store control functions globally
         window.marqueeControls[wrapperId] = {
@@ -112,14 +182,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 contentWidth = newWidth;
             }
             
-            if (currentPosition > 0) {
-                currentPosition -= contentWidth;
-            }
-            if (currentPosition < -contentWidth) {
-                currentPosition += contentWidth;
-            }
-            
-            content.style.transform = `translateX(${currentPosition}px)`;
+            normalizePosition();
+            applyPosition();
         }
         
         function waitForImages() {
@@ -183,4 +247,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         console.log('All marquees started');
     };
-}); 
+});

@@ -406,15 +406,12 @@ body.about-open-2 .about-text {
 .marquee-wrapper {
   width: 100%;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden; /* Disable native scroll - JS handles infinite scrolling */
   position: relative;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scroll-behavior: smooth;
+  cursor: grab;
 }
-.marquee-wrapper::-webkit-scrollbar {
-  display: none; /* WebKit browsers */
+.marquee-wrapper:active {
+  cursor: grabbing;
 }
 
 .marquee-content {
