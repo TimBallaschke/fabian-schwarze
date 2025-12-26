@@ -20,8 +20,8 @@
         <div class="marquee-wrapper" id="<?= $sectionId ?>-marquee">
             <div class="marquee-content">
                 <?php 
-                // Render projects twice for marquee effect
-                for ($i = 0; $i < 2; $i++): 
+                // Render projects 4 times for marquee effect (handles filtering to few items)
+                for ($i = 0; $i < 4; $i++): 
                     foreach ($projects as $project):
                         snippet('project-card', ['project' => $project]);
                     endforeach;

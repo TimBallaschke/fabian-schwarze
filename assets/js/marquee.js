@@ -279,19 +279,19 @@ document.addEventListener('DOMContentLoaded', function() {
             updateMetrics: updateMetrics
         };
         
-        // Calculate the exact width of the first half of content (one complete set)
+        // Calculate the exact width of one complete set of content
         function calculateContentWidth() {
             const children = Array.from(content.children);
             if (children.length === 0) return 0;
             
-            // Content is duplicated, so take first half
-            const halfCount = Math.floor(children.length / 2);
-            if (halfCount === 0) return 0;
+            // Content is duplicated 4 times, so take first quarter
+            const quarterCount = Math.floor(children.length / 4);
+            if (quarterCount === 0) return 0;
             
-            // Sum the actual widths of the first half using getBoundingClientRect
+            // Sum the actual widths of the first quarter using getBoundingClientRect
             // This gives us precise subpixel measurements
             let totalWidth = 0;
-            for (let i = 0; i < halfCount; i++) {
+            for (let i = 0; i < quarterCount; i++) {
                 totalWidth += children[i].getBoundingClientRect().width;
             }
             
