@@ -41,6 +41,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
+                if (category === 'all') {
+                    const wasHidden = item.classList.contains('filter-2');
+                    item.setAttribute('data-visible', 'true');
+                    if (wasHidden) {
+                        const timers = [];
+                        item.classList.remove('filter-2');
+                        timers.push(setTimeout(function() {
+                            item.classList.remove('filter-1');
+                        }, 800));
+                        itemTimers.set(item, timers);
+                    } else {
+                        clearFilterClasses(item);
+                    }
+                    return;
+                }
+
                 item.setAttribute('data-visible', shouldShow ? 'true' : 'false');
 
                 if (shouldShow && isVisible) {
@@ -52,8 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const timers = [];
                     item.classList.remove('filter-2');
                     timers.push(setTimeout(function() {
-                        item.classList.add('filter-1');
-                    }, 200));
+                        item.classList.remove('filter-1');
+                    }, 800));
                     itemTimers.set(item, timers);
                     return;
                 }
@@ -63,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.add('filter-1');
                     timers.push(setTimeout(function() {
                         item.classList.add('filter-2');
-                    }, 200));
+                    }, 300));
                     itemTimers.set(item, timers);
                 }
             });
