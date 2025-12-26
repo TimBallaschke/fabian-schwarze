@@ -1,11 +1,11 @@
-<div class="projects-container" id="<?= $sectionId ?>-projects-container">
+<div class="projects-container" id="<?= $sectionId ?>-projects-container" data-section="<?= $sectionId ?>">
     <?php if ($position === 'top'): ?>
         <div class="projects-container-info projects-container-top" id="<?= $sectionId ?>-projects-top">
             <div class="section-title"><?= $sectionTitle ?></div>
             <div class="section-categories">
-                <div class="category circle-button active" id="category-1">All</div>
-                <div class="category circle-button" id="category-2"><?= $category1 ?></div>
-                <div class="category circle-button" id="category-3"><?= $category2 ?></div>
+                <div class="category circle-button active" data-category="all">All</div>
+                <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category1) ?>"><?= $category1 ?></div>
+                <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category2) ?>"><?= $category2 ?></div>
             </div>
         </div>
     <?php else: ?>
@@ -35,9 +35,9 @@
         <div class="projects-container-info projects-container-bottom" id="<?= $sectionId ?>-projects-bottom">
             <div class="section-title"><?= $sectionTitle ?></div>
             <div class="section-categories">
-                <div class="category circle-button active" id="category-1">All</div>
-                <div class="category circle-button" id="category-2"><?= $category1 ?></div>
-                <div class="category circle-button" id="category-3"><?= $category2 ?></div>
+                <div class="category circle-button active" data-category="all">All</div>
+                <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category1) ?>"><?= $category1 ?></div>
+                <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category2) ?>"><?= $category2 ?></div>
             </div>
         </div>
     <?php else: ?>
@@ -48,4 +48,3 @@
         </div>
     <?php endif; ?>
 </div>
-

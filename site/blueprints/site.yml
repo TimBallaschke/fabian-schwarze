@@ -3,3 +3,7 @@ title: Eliza Ostapenko
 sections:
   pages:
     type: pages
+    templates:
+      - home
+      - works
+      - error

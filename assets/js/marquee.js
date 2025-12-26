@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing marquees...');
     
     const BASE_SPEED = 30; // pixels per second for auto-scroll
-    const SCROLL_RESUME_DELAY = 800; // ms to wait after last scroll before resuming animation
-    const LERP_FACTOR = 0.1; // smoothing factor (0-1, lower = smoother but slower)
+    const SCROLL_RESUME_DELAY = 1000; // ms to wait after last scroll before resuming animation
+    const SMOOTHING_SPEED = 12; // how fast to catch up (higher = faster)
+    const MAX_DELTA_TIME = 50; // cap frame time to prevent jumps (ms)
     
     function createMarquee(wrapperId, direction) {
         console.log('Initializing marquee:', wrapperId, direction);
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let animationId = null;
         let lastTime = null;
         let currentPosition = 0;
-        let targetPosition = 0; // where we want to be (for smooth scrolling)
+        let targetOffset = 0; // accumulated offset from user input (not normalized)
         let contentWidth = 0;
         let hasMetrics = false;
         
@@ -43,9 +44,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Touch tracking
         let touchLastX = 0;
         
-        function normalizeValue(value) {
+        // Mouse drag tracking
+        let isDragging = false;
+        let mouseLastX = 0;
+        
+        // Normalize a value to range [-contentWidth, 0) for display
+        // Using while loops is more reliable than modulo for negative numbers
+        function normalizeForDisplay(value) {
             if (!contentWidth) return value;
-            // Normalize to range [-contentWidth, 0)
+            // Wrap to valid range using simple loops
             while (value >= 0) {
                 value -= contentWidth;
             }
@@ -58,54 +65,57 @@ document.addEventListener('DOMContentLoaded', function() {
         function setInitialPosition() {
             if (!contentWidth) return;
             currentPosition = direction === 'ltr' ? -contentWidth : 0;
-            targetPosition = currentPosition;
+            targetOffset = 0;
             content.style.transform = `translateX(${currentPosition}px)`;
         }
         
         function applyPosition() {
-            content.style.transform = `translateX(${currentPosition}px)`;
-        }
-        
-        // Linear interpolation
-        function lerp(current, target, factor) {
-            return current + (target - current) * factor;
+            // Always normalize for display to keep within valid visual range
+            const displayPosition = normalizeForDisplay(currentPosition);
+            content.style.transform = `translateX(${displayPosition}px)`;
         }
         
         function animate(currentTime) {
             if (lastTime === null) {
                 lastTime = currentTime;
+                animationId = requestAnimationFrame(animate);
+                return;
             }
             
-            const deltaTime = currentTime - lastTime;
+            // Cap delta time to prevent jumps from tab switching or frame drops
+            let deltaTime = currentTime - lastTime;
+            if (deltaTime > MAX_DELTA_TIME) {
+                deltaTime = MAX_DELTA_TIME;
+            }
             const deltaSeconds = deltaTime / 1000;
             
             if (isUserScrolling) {
                 // During user scroll: smoothly interpolate toward target
-                // Handle wrapping - find shortest path to target
-                let diff = targetPosition - currentPosition;
+                // targetOffset is the accumulated user input (not normalized)
+                const targetPosition = currentPosition + targetOffset;
                 
-                // If difference is more than half the content width, wrap around
-                if (contentWidth && Math.abs(diff) > contentWidth / 2) {
-                    if (diff > 0) {
-                        diff -= contentWidth;
-                    } else {
-                        diff += contentWidth;
-                    }
+                // Time-based exponential smoothing
+                // This ensures consistent behavior regardless of frame rate
+                const smoothFactor = 1 - Math.exp(-SMOOTHING_SPEED * deltaSeconds);
+                
+                // Move current position toward target
+                const diff = targetPosition - currentPosition;
+                currentPosition += diff * smoothFactor;
+                
+                // Reduce targetOffset as we catch up
+                targetOffset -= diff * smoothFactor;
+                
+                // Clean up tiny offsets to prevent floating point drift
+                if (Math.abs(targetOffset) < 0.01) {
+                    targetOffset = 0;
                 }
-                
-                // Apply lerp
-                currentPosition += diff * LERP_FACTOR;
-                currentPosition = normalizeValue(currentPosition);
             } else {
                 // Auto-scroll mode
                 let movement = BASE_SPEED * deltaSeconds;
                 if (direction === 'rtl') {
                     movement = -movement;
                 }
-                
                 currentPosition += movement;
-                currentPosition = normalizeValue(currentPosition);
-                targetPosition = currentPosition; // Keep target synced
             }
             
             applyPosition();
@@ -135,10 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Called when user starts scrolling
         function onScrollStart() {
-            if (!isUserScrolling) {
-                // Sync target with current position when starting to scroll
-                targetPosition = currentPosition;
-            }
             isUserScrolling = true;
             // Clear any pending resume timeout
             if (scrollResumeTimeout) {
@@ -156,9 +162,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Wait a bit before resuming animation
             scrollResumeTimeout = setTimeout(function() {
                 isUserScrolling = false;
-                // Sync current to target before resuming auto-scroll
-                currentPosition = normalizeValue(targetPosition);
-                targetPosition = currentPosition;
+                // Apply any remaining offset smoothly (don't snap)
+                currentPosition += targetOffset;
+                targetOffset = 0;
                 scrollResumeTimeout = null;
             }, SCROLL_RESUME_DELAY);
         }
@@ -172,9 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Use deltaX for horizontal scroll, fall back to deltaY if no horizontal
             const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
             
-            // Adjust target position (will be smoothly interpolated in animate())
-            targetPosition -= delta;
-            targetPosition = normalizeValue(targetPosition);
+            // Add to target offset (will be smoothly applied in animate())
+            targetOffset -= delta;
             
             // Schedule resume
             onScrollEnd();
@@ -198,9 +203,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const newTouchX = e.touches[0].clientX;
             const deltaX = touchLastX - newTouchX;
             
-            // Adjust target position
-            targetPosition -= deltaX;
-            targetPosition = normalizeValue(targetPosition);
+            // Add to target offset
+            targetOffset -= deltaX;
             
             touchLastX = newTouchX;
             
@@ -213,12 +217,59 @@ document.addEventListener('DOMContentLoaded', function() {
             onScrollEnd();
         }
         
+        // Handle mouse down (start drag)
+        function handleMouseDown(e) {
+            if (!contentWidth) return;
+            
+            isDragging = true;
+            onScrollStart();
+            mouseLastX = e.clientX;
+            
+            // Prevent text selection while dragging
+            e.preventDefault();
+        }
+        
+        // Handle mouse move (dragging)
+        function handleMouseMove(e) {
+            if (!isDragging || !contentWidth) return;
+            
+            const newMouseX = e.clientX;
+            const deltaX = mouseLastX - newMouseX;
+            
+            // Add to target offset
+            targetOffset -= deltaX;
+            
+            mouseLastX = newMouseX;
+        }
+        
+        // Handle mouse up (end drag)
+        function handleMouseUp() {
+            if (isDragging) {
+                isDragging = false;
+                onScrollEnd();
+            }
+        }
+        
+        // Handle mouse leave (end drag if dragging)
+        function handleMouseLeave() {
+            if (isDragging) {
+                isDragging = false;
+                onScrollEnd();
+            }
+        }
+        
         // Attach event listeners
         wrapper.addEventListener('wheel', handleWheel, { passive: false });
         wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
         wrapper.addEventListener('touchmove', handleTouchMove, { passive: false });
         wrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
         wrapper.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+        
+        // Mouse drag events
+        wrapper.addEventListener('mousedown', handleMouseDown);
+        wrapper.addEventListener('mousemove', handleMouseMove);
+        wrapper.addEventListener('mouseup', handleMouseUp);
+        wrapper.addEventListener('mouseleave', handleMouseLeave);
         
         // Store control functions globally
         window.marqueeControls[wrapperId] = {
@@ -227,8 +278,27 @@ document.addEventListener('DOMContentLoaded', function() {
             isRunning: function() { return animationId !== null && !isUserScrolling; }
         };
         
+        // Calculate the exact width of the first half of content (one complete set)
+        function calculateContentWidth() {
+            const children = Array.from(content.children);
+            if (children.length === 0) return 0;
+            
+            // Content is duplicated, so take first half
+            const halfCount = Math.floor(children.length / 2);
+            if (halfCount === 0) return 0;
+            
+            // Sum the actual widths of the first half using getBoundingClientRect
+            // This gives us precise subpixel measurements
+            let totalWidth = 0;
+            for (let i = 0; i < halfCount; i++) {
+                totalWidth += children[i].getBoundingClientRect().width;
+            }
+            
+            return totalWidth;
+        }
+        
         function updateMetrics() {
-            const newWidth = content.scrollWidth / 2;
+            const newWidth = calculateContentWidth();
             if (!newWidth) {
                 return;
             }
@@ -236,21 +306,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!hasMetrics) {
                 contentWidth = newWidth;
                 hasMetrics = true;
-                console.log('Single content width:', contentWidth);
+                console.log('Single content width (measured):', contentWidth);
                 setInitialPosition();
                 startAnimation();
                 return;
             }
             
-            if (newWidth !== contentWidth) {
+            if (Math.abs(newWidth - contentWidth) > 0.5) {
                 const scale = newWidth / contentWidth;
                 currentPosition *= scale;
-                targetPosition *= scale;
+                targetOffset *= scale;
                 contentWidth = newWidth;
             }
             
-            currentPosition = normalizeValue(currentPosition);
-            targetPosition = normalizeValue(targetPosition);
             applyPosition();
         }
         

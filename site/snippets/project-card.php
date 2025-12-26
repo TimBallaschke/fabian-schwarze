@@ -1,4 +1,4 @@
-<div class="single-project-wrapper">
+<div class="single-project-wrapper" data-subcategory="<?= $project->subCategory()->value() ?>">
     <div class="single-project-container">
         <?php 
         $projectImages = $project->projectimages()->toStructure();
@@ -20,4 +20,3 @@
         </div>
     </div>
 </div>
-
