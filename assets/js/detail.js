@@ -4,7 +4,7 @@ let detailViewState = {
     currentIndex: 0,
     totalProjects: 0,
     allProjects: [],
-    activeClones: new Map(),
+    activeClones: [],
     projectsContainer: null,
     detailDuplicatesContainer: null,
     destinationWidth: 0,
@@ -30,7 +30,6 @@ function isInViewport(element) {
 function createCloneForIndex(index, animateFromOriginal = true) {
     const state = detailViewState;
     if (index < 0 || index >= state.allProjects.length) return null;
-    if (state.activeClones.has(index)) return state.activeClones.get(index);
     
     const wrapper = state.allProjects[index];
     const currentRect = wrapper.getBoundingClientRect();
@@ -69,7 +68,7 @@ function createCloneForIndex(index, animateFromOriginal = true) {
     clone.style.setProperty('--text-color', state.textColor);
     
     document.body.appendChild(clone);
-    state.activeClones.set(index, clone);
+    state.activeClones.push(clone);
     
     return clone;
 }
@@ -145,61 +144,75 @@ function animateDetailToMarquee() {
     const state = detailViewState;
     if (!state.isOpen || !state.detailDuplicatesContainer) return;
 
-    const duplicate = state.detailDuplicatesContainer.querySelector(
-        `.detail-duplicate[data-project-index="${state.currentIndex}"]`
-    );
-    if (!duplicate) return;
+    const duplicates = state.detailDuplicatesContainer.querySelectorAll('.detail-duplicate');
+    const clones = [];
 
-    // Find the target marquee element
-    const targetMarqueeElement = getClosestMarqueeWrapperForCurrentIndex();
-    if (!targetMarqueeElement) return;
+    // Find all visible marquee elements and create clones for their corresponding duplicates
+    state.allProjects.forEach((wrapper, marqueeIndex) => {
+        if (!isInViewport(wrapper)) return;
+        
+        // Calculate the unique project index (handles 4x repetition in marquee)
+        const uniqueIndex = marqueeIndex % state.totalProjects;
+        
+        // Find the corresponding duplicate
+        const duplicate = duplicates[uniqueIndex];
+        if (!duplicate) return;
+        
+        // Get positions
+        const sourceRect = duplicate.getBoundingClientRect();
+        const targetRect = wrapper.getBoundingClientRect();
+        
+        // Get the target element's computed padding
+        const targetStyles = getComputedStyle(wrapper);
+        const targetPadding = `${targetStyles.paddingTop} ${targetStyles.paddingRight} ${targetStyles.paddingBottom} ${targetStyles.paddingLeft}`;
 
-    // Clone the outer duplicate element to preserve exact positioning and padding
-    const sourceRect = duplicate.getBoundingClientRect();
-    const targetRect = targetMarqueeElement.getBoundingClientRect();
-    
-    // Get the target element's computed padding
-    const targetStyles = getComputedStyle(targetMarqueeElement);
-    const targetPadding = `${targetStyles.paddingTop} ${targetStyles.paddingRight} ${targetStyles.paddingBottom} ${targetStyles.paddingLeft}`;
+        const clone = duplicate.cloneNode(true);
+        clone.classList.add('detail-duplicate-clone');
+        
+        // Override the CSS variable positioning with fixed inline styles - start at source position
+        clone.style.position = 'fixed';
+        clone.style.left = sourceRect.left + 'px';
+        clone.style.top = sourceRect.top + 'px';
+        clone.style.width = sourceRect.width + 'px';
+        clone.style.height = sourceRect.height + 'px';
+        clone.style.padding = '2rem 4rem 3rem 4rem'; // Match detail-duplicate padding
+        clone.style.zIndex = '9999';
+        clone.style.transition = 'none'; // Start with no transition
+        clone.style.setProperty('--background-color', state.backgroundColor);
+        clone.style.setProperty('--text-color', state.textColor);
 
-    const clone = duplicate.cloneNode(true);
-    clone.classList.add('detail-duplicate-clone');
-    
-    // Override the CSS variable positioning with fixed inline styles - start at source position
-    clone.style.position = 'fixed';
-    clone.style.left = sourceRect.left + 'px';
-    clone.style.top = sourceRect.top + 'px';
-    clone.style.width = sourceRect.width + 'px';
-    clone.style.height = sourceRect.height + 'px';
-    clone.style.padding = '2rem 4rem 3rem 4rem'; // Match detail-duplicate padding
-    clone.style.zIndex = '9999';
-    clone.style.transition = 'none'; // Start with no transition
-    clone.style.setProperty('--background-color', state.backgroundColor);
-    clone.style.setProperty('--text-color', state.textColor);
+        document.body.appendChild(clone);
+        duplicate.style.visibility = 'hidden';
+        
+        clones.push({ clone, targetRect, targetPadding });
+    });
 
-    document.body.appendChild(clone);
-    duplicate.style.visibility = 'hidden';
+    if (clones.length === 0) return;
 
     // Trigger animation to marquee position on next frame
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            // Add transition for smooth animation (including padding)
-            clone.style.transition = 'left 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
-                                     'top 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
-                                     'width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
-                                     'height 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
-                                     'padding 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
-            
-            // Animate to target marquee position and padding
-            clone.style.left = targetRect.left + 'px';
-            clone.style.top = targetRect.top + 'px';
-            clone.style.width = targetRect.width + 'px';
-            clone.style.height = targetRect.height + 'px';
-            clone.style.padding = targetPadding;
+            clones.forEach(({ clone, targetRect, targetPadding }) => {
+                // Add transition for smooth animation (including padding)
+                clone.style.transition = 'left 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                         'top 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                         'width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                         'height 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                         'padding 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                
+                // Animate to target marquee position and padding
+                clone.style.left = targetRect.left + 'px';
+                clone.style.top = targetRect.top + 'px';
+                clone.style.width = targetRect.width + 'px';
+                clone.style.height = targetRect.height + 'px';
+                clone.style.padding = targetPadding;
+            });
 
-            // Remove clone after animation completes
+            // Remove all clones after animation completes
             setTimeout(() => {
-                clone.remove();
+                clones.forEach(({ clone }) => {
+                    clone.remove();
+                });
             }, 750); // Slightly longer than the 700ms transition
         });
     });
@@ -239,7 +252,7 @@ function transitionToduplicates() {
     state.activeClones.forEach(clone => {
         clone.remove();
     });
-    state.activeClones.clear();
+    state.activeClones = [];
     
     console.log('Transitioned to duplicates');
 }
@@ -295,7 +308,7 @@ function openProject(projectElement) {
         currentIndex: clickedIndex,
         totalProjects: totalProjects,
         allProjects: allProjectWrappers,
-        activeClones: new Map(),
+        activeClones: [],
         projectsContainer: projectsContainer,
         detailDuplicatesContainer: detailDuplicatesContainer,
         destinationWidth: destinationWidth,
@@ -327,51 +340,49 @@ function openProject(projectElement) {
     
     // Create clones for visible projects (for animation)
     const visibleClones = [];
-    const createdUniqueIndices = new Set();
-    
+
     allProjectWrappers.forEach((wrapper, marqueeIndex) => {
-        if (isInViewport(wrapper)) {
-            // Calculate the unique project index (handles 4x repetition in marquee)
-            const uniqueIndex = marqueeIndex % totalProjects;
-            
-            // Only create one clone per unique project
-            if (!createdUniqueIndices.has(uniqueIndex)) {
-                createdUniqueIndices.add(uniqueIndex);
-                
-                const currentRect = wrapper.getBoundingClientRect();
-                
-                // Calculate final position based on unique index relative to clicked project
-                const relativePosition = uniqueIndex - clickedIndex;
-                const finalLeft = destinationLeft + (relativePosition * destinationWidth);
-                
-                // Clone the wrapper
-                const clone = wrapper.cloneNode(true);
-                clone.classList.add('project-clone');
-                clone.dataset.projectIndex = uniqueIndex;
-                
-                // Set initial position (from original location)
-                clone.style.setProperty('--clone-initial-left', currentRect.left + 'px');
-                clone.style.setProperty('--clone-initial-top', currentRect.top + 'px');
-                clone.style.setProperty('--clone-initial-width', currentRect.width + 'px');
-                clone.style.setProperty('--clone-initial-height', currentRect.height + 'px');
-                
-                // Set final position
-                clone.style.setProperty('--clone-final-left', finalLeft + 'px');
-                clone.style.setProperty('--clone-final-top', destinationTop + 'px');
-                clone.style.setProperty('--clone-final-width', destinationWidth + 'px');
-                clone.style.setProperty('--clone-final-height', destinationHeight + 'px');
-                
-                // Copy color variables
-                clone.style.setProperty('--background-color', backgroundColor);
-                clone.style.setProperty('--text-color', textColor);
-                
-                document.body.appendChild(clone);
-                detailViewState.activeClones.set(uniqueIndex, clone);
-                visibleClones.push(clone);
-                
-                console.log('Created clone for unique index:', uniqueIndex, 'from marquee index:', marqueeIndex);
-            }
+        if (!isInViewport(wrapper) && wrapper !== clickedProjectWrapper) return;
+
+        const uniqueIndex = marqueeIndex % totalProjects;
+        if (uniqueIndex === clickedIndex && wrapper !== clickedProjectWrapper) return;
+
+        const currentRect = wrapper.getBoundingClientRect();
+
+        // Calculate final position based on unique index relative to clicked project
+        const relativePosition = uniqueIndex - clickedIndex;
+        const finalLeft = destinationLeft + (relativePosition * destinationWidth);
+
+        // Clone the wrapper
+        const clone = wrapper.cloneNode(true);
+        clone.classList.add('project-clone');
+        clone.dataset.projectIndex = uniqueIndex;
+
+        // Set initial position (from original location)
+        clone.style.setProperty('--clone-initial-left', currentRect.left + 'px');
+        clone.style.setProperty('--clone-initial-top', currentRect.top + 'px');
+        clone.style.setProperty('--clone-initial-width', currentRect.width + 'px');
+        clone.style.setProperty('--clone-initial-height', currentRect.height + 'px');
+
+        // Set final position
+        clone.style.setProperty('--clone-final-left', finalLeft + 'px');
+        clone.style.setProperty('--clone-final-top', destinationTop + 'px');
+        clone.style.setProperty('--clone-final-width', destinationWidth + 'px');
+        clone.style.setProperty('--clone-final-height', destinationHeight + 'px');
+
+        // Copy color variables
+        clone.style.setProperty('--background-color', backgroundColor);
+        clone.style.setProperty('--text-color', textColor);
+
+        if (wrapper === clickedProjectWrapper) {
+            clone.style.zIndex = '10000';
         }
+
+        document.body.appendChild(clone);
+        detailViewState.activeClones.push(clone);
+        visibleClones.push(clone);
+
+        console.log('Created clone for unique index:', uniqueIndex, 'from marquee index:', marqueeIndex);
     });
     
     console.log('Clicked index:', clickedIndex);
