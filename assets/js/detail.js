@@ -150,25 +150,59 @@ function animateDetailToMarquee() {
     );
     if (!duplicate) return;
 
+    // Find the target marquee element
+    const targetMarqueeElement = getClosestMarqueeWrapperForCurrentIndex();
+    if (!targetMarqueeElement) return;
+
     // Clone the outer duplicate element to preserve exact positioning and padding
     const sourceRect = duplicate.getBoundingClientRect();
+    const targetRect = targetMarqueeElement.getBoundingClientRect();
+    
+    // Get the target element's computed padding
+    const targetStyles = getComputedStyle(targetMarqueeElement);
+    const targetPadding = `${targetStyles.paddingTop} ${targetStyles.paddingRight} ${targetStyles.paddingBottom} ${targetStyles.paddingLeft}`;
 
     const clone = duplicate.cloneNode(true);
     clone.classList.add('detail-duplicate-clone');
     
-    // Override the CSS variable positioning with fixed inline styles
+    // Override the CSS variable positioning with fixed inline styles - start at source position
     clone.style.position = 'fixed';
     clone.style.left = sourceRect.left + 'px';
     clone.style.top = sourceRect.top + 'px';
     clone.style.width = sourceRect.width + 'px';
     clone.style.height = sourceRect.height + 'px';
+    clone.style.padding = '2rem 4rem 3rem 4rem'; // Match detail-duplicate padding
     clone.style.zIndex = '9999';
-    clone.style.transition = 'none'; // Remove transitions for exact positioning
+    clone.style.transition = 'none'; // Start with no transition
     clone.style.setProperty('--background-color', state.backgroundColor);
     clone.style.setProperty('--text-color', state.textColor);
 
     document.body.appendChild(clone);
     duplicate.style.visibility = 'hidden';
+
+    // Trigger animation to marquee position on next frame
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // Add transition for smooth animation (including padding)
+            clone.style.transition = 'left 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                     'top 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                     'width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                     'height 700ms cubic-bezier(0.4, 0.0, 0.2, 1), ' +
+                                     'padding 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+            
+            // Animate to target marquee position and padding
+            clone.style.left = targetRect.left + 'px';
+            clone.style.top = targetRect.top + 'px';
+            clone.style.width = targetRect.width + 'px';
+            clone.style.height = targetRect.height + 'px';
+            clone.style.padding = targetPadding;
+
+            // Remove clone after animation completes
+            setTimeout(() => {
+                clone.remove();
+            }, 750); // Slightly longer than the 700ms transition
+        });
+    });
 }
 
 // Navigate to a specific project index (using duplicates)
