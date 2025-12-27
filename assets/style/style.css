@@ -179,6 +179,18 @@ body.about-open-2 .about-text {
   display: flex;
   justify-content: space-between;
 }
+.detail-view .section-categories {
+  display: none;
+}
+
+.section-navigation {
+  width: 25vw;
+  display: none;
+  justify-content: space-between;
+}
+.detail-view .section-navigation {
+  display: flex;
+}
 
 .arrow {
   position: absolute;
@@ -543,7 +555,7 @@ body.about-open-2 .about-text {
 }
 .duplicates-active .detail-view-duplicates {
   display: block;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .detail-duplicate {
