@@ -37,9 +37,13 @@ function scrollDuplicatesToIndex(index) {
 function openProject(projectElement) {
     console.log('Opening project');
     
-    // Remove any existing clones
+    // Remove any existing clones and duplicates-active class from previous project
     detailViewState.visibleClones.forEach(clone => clone.remove());
     detailViewState.visibleClones = [];
+    
+    if (detailViewState.projectsContainer) {
+        detailViewState.projectsContainer.classList.remove('duplicates-active');
+    }
     
     // Find the clicked project's container
     const clickedProjectWrapper = projectElement.closest('.single-project-wrapper');
@@ -161,9 +165,21 @@ function openProject(projectElement) {
     console.log('Created', clonedProjects.length, 'clones for visible projects:', clonedProjects);
     
     // Animate clones to their corresponding duplicates
-    // Use requestAnimationFrame to ensure duplicates are in position first
+    // Use requestAnimationFrame to ensure everything starts together
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
+            // Apply classes to projects containers (synced with clone animation)
+            const allProjectsContainers = document.querySelectorAll('.projects-container');
+            allProjectsContainers.forEach(container => {
+                if (container === projectsContainer) {
+                    // Add detail-view to the clicked container
+                    container.classList.add('detail-view');
+                } else {
+                    // Add not-visible to other containers
+                    container.classList.add('not-visible');
+                }
+            });
+            
             detailViewState.visibleClones.forEach(clone => {
                 const marqueeIndex = parseInt(clone.dataset.marqueeIndex, 10);
                 const correspondingDuplicate = allDuplicates[marqueeIndex];
@@ -187,6 +203,18 @@ function openProject(projectElement) {
                 
                 console.log('Animating clone', marqueeIndex, 'to duplicate position:', duplicateRect.left, duplicateRect.top);
             });
+            
+            // After animation completes, show duplicates and remove clones
+            setTimeout(() => {
+                // Add duplicates-active class to show the duplicates
+                projectsContainer.classList.add('duplicates-active');
+                
+                // Remove all clones from DOM
+                detailViewState.visibleClones.forEach(clone => clone.remove());
+                detailViewState.visibleClones = [];
+                
+                console.log('Animation complete - showing duplicates, clones removed');
+            }, 750); // Slightly longer than the 700ms transition
         });
     });
 }

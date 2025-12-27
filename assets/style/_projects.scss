@@ -540,37 +540,36 @@ body {
     transition: transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-// Project clone animation (CSS-driven for smoother performance)
-.project-clone {
-    position: fixed;
-    left: var(--clone-initial-left);
-    top: var(--clone-initial-top);
-    width: var(--clone-initial-width);
-    height: var(--clone-initial-height);
-    z-index: 9999;
-    padding: 0.45rem 0.225rem;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    transition: left 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                top 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                width 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                height 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
-                padding 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+// // Project clone animation (CSS-driven for smoother performance)
+// .project-clone {
+//     position: fixed;
+//     left: var(--clone-initial-left);
+//     top: var(--clone-initial-top);
+//     width: var(--clone-initial-width);
+//     height: var(--clone-initial-height);
+//     z-index: 9999;
+//     padding: 0.45rem 0.225rem;
+//     background-color: var(--background-color);
+//     color: var(--text-color);
+//     transition: left 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
+//                 top 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
+//                 width 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
+//                 height 700ms cubic-bezier(0.4, 0.0, 0.2, 1),
+//                 padding 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
     
-    &.animate-to-detail {
-        left: var(--clone-final-left);
-        top: var(--clone-final-top);
-        width: var(--clone-final-width);
-        height: var(--clone-final-height);
-        padding: 2rem 4rem 3rem 4rem;
-    }
-}
+//     &.animate-to-detail {
+//         left: var(--clone-final-left);
+//         top: var(--clone-final-top);
+//         width: var(--clone-final-width);
+//         height: var(--clone-final-height);
+//         padding: 2rem 4rem 3rem 4rem;
+//     }
+// }
 
 // Detail view duplicates (pre-existing in DOM, shown after clone animation)
 .detail-view-duplicates {
     display: flex;
     position: fixed;
-    top: var(--info-bar-height);
     left: 0;
     width: fit-content;
     height: calc(100dvh - var(--info-bar-height) * 2);
@@ -580,10 +579,18 @@ body {
     align-items: center;
     transform: translateX(0);
     
+    // Position from top for commissioned works
+    #commissioned-projects-container & {
+        top: var(--info-bar-height);
+    }
+    
+    // Position from bottom for personal works
+    #personal-projects-container & {
+        bottom: var(--info-bar-height);
+    }
+    
     .duplicates-active & {
-        display: flex;
-        // pointer-events: auto;
-        // opacity: 1;
+        opacity: 1;
     }
 }
 

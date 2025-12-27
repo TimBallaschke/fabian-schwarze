@@ -1,4 +1,4 @@
-<div class="projects-container <?= $position === 'top' ? 'duplicates-active' : '' ?>" id="<?= $sectionId ?>-projects-container" data-section="<?= $sectionId ?>">
+<div class="projects-container" id="<?= $sectionId ?>-projects-container" data-section="<?= $sectionId ?>">
     <?php if ($position === 'top'): ?>
         <div class="projects-container-info projects-container-top" id="<?= $sectionId ?>-projects-top">
             <div class="section-title"><?= $sectionTitle ?></div>
