@@ -288,90 +288,108 @@ function closeDetailView() {
     console.log('=== CLOSE DEBUG ===');
     console.log('Current index:', state.currentIndex);
     console.log('Unique project count:', state.uniqueProjectCount);
-    console.log('Unique project index:', state.currentIndex % state.uniqueProjectCount);
     
-    // Get marquee element dimensions
-    const marqueeRectBefore = currentMarqueeProject.getBoundingClientRect();
-    console.log('Marquee element current position:', marqueeRectBefore.left, marqueeRectBefore.top);
-    console.log('Marquee element dimensions:', marqueeRectBefore.width, marqueeRectBefore.height);
+    // Get current marquee element position and dimensions
+    const currentMarqueeRect = currentMarqueeProject.getBoundingClientRect();
+    const elementWidth = currentMarqueeRect.width;
+    const elementHeight = currentMarqueeRect.height;
+    const elementTop = currentMarqueeRect.top;
     
-    // Calculate where the element SHOULD be when centered
-    // (viewport center - half element width)
-    const viewportCenterX = (window.innerWidth - marqueeRectBefore.width) / 2;
-    const centeredTargetRect = {
-        left: viewportCenterX,
-        top: marqueeRectBefore.top,
-        width: marqueeRectBefore.width,
-        height: marqueeRectBefore.height
-    };
-    console.log('Calculated centered position:', centeredTargetRect.left, centeredTargetRect.top);
+    // Calculate where the centered element SHOULD be
+    const viewportCenterX = (window.innerWidth - elementWidth) / 2;
     
-    // Still call centerOnElement to update the marquee (for when animation completes)
-    marqueeControl.centerOnElement(currentMarqueeProject);
+    // Calculate the delta (how much everything shifts to center the current element)
+    const deltaX = viewportCenterX - currentMarqueeRect.left;
+    console.log('Delta X to center:', deltaX);
     
-    // Get the current duplicate
-    const currentDuplicate = state.allDuplicates[state.currentIndex];
-    if (!currentDuplicate) {
-        console.log('No duplicate found at index:', state.currentIndex);
-        return;
-    }
-    
-    // Get duplicate position
-    const duplicateRect = currentDuplicate.getBoundingClientRect();
-    console.log('Duplicate position:', duplicateRect.left, duplicateRect.top, duplicateRect.width, duplicateRect.height);
-    
-    // Get styles from the duplicate
-    const duplicateStyles = getComputedStyle(currentDuplicate);
+    // Get styles from the container
     const containerStyles = getComputedStyle(state.projectsContainer);
     const textColor = containerStyles.getPropertyValue('--text-color').trim();
     const backgroundColor = containerStyles.getPropertyValue('--background-color').trim();
-    
-    // Create a clone of the duplicate
-    const clone = currentDuplicate.cloneNode(true);
-    clone.classList.add('duplicate-to-marquee-clone');
-    
-    // Position at duplicate's current position
-    clone.style.position = 'fixed';
-    clone.style.boxSizing = 'border-box';
-    clone.style.left = duplicateRect.left + 'px';
-    clone.style.top = duplicateRect.top + 'px';
-    clone.style.width = duplicateRect.width + 'px';
-    clone.style.height = duplicateRect.height + 'px';
-    clone.style.padding = duplicateStyles.getPropertyValue('padding');
-    clone.style.zIndex = '10000';
-    clone.style.pointerEvents = 'none';
-    clone.style.transition = 'none';
-    clone.style.opacity = '0.4';
-    clone.style.backgroundColor = backgroundColor;
-    clone.style.setProperty('--text-color', textColor);
-    clone.style.setProperty('--background-color', backgroundColor);
-    
-    // Append clone to body
-    document.body.appendChild(clone);
-    
-    // Store clone reference
-    state.visibleClones.push(clone);
-    
-    console.log('Clone created at:', duplicateRect.left, duplicateRect.top);
     
     // Get marquee project's padding for the animation target
     const marqueeStyles = getComputedStyle(currentMarqueeProject);
     const marqueePadding = marqueeStyles.getPropertyValue('padding');
     
-    // Animate clone to the CALCULATED centered position (not the actual marquee position)
+    // Find all marquee projects that will be visible AFTER centering
+    // and create clones of their corresponding duplicates
+    const cloneData = [];
+    
+    state.allProjects.forEach((marqueeProject, index) => {
+        const rect = marqueeProject.getBoundingClientRect();
+        
+        // Calculate where this element will be after centering
+        const targetLeft = rect.left + deltaX;
+        const targetRight = targetLeft + rect.width;
+        
+        // Check if it will be visible in viewport after centering
+        if (targetRight > 0 && targetLeft < window.innerWidth) {
+            // This project will be visible - get its corresponding duplicate
+            const duplicate = state.allDuplicates[index];
+            if (!duplicate) return;
+            
+            const duplicateRect = duplicate.getBoundingClientRect();
+            const duplicateStyles = getComputedStyle(duplicate);
+            
+            // Create clone of the duplicate
+            const clone = duplicate.cloneNode(true);
+            clone.classList.add('duplicate-to-marquee-clone');
+            clone.dataset.marqueeIndex = index;
+            
+            // Position at duplicate's current position
+            clone.style.position = 'fixed';
+            clone.style.boxSizing = 'border-box';
+            clone.style.left = duplicateRect.left + 'px';
+            clone.style.top = duplicateRect.top + 'px';
+            clone.style.width = duplicateRect.width + 'px';
+            clone.style.height = duplicateRect.height + 'px';
+            clone.style.padding = duplicateStyles.getPropertyValue('padding');
+            clone.style.zIndex = '10000';
+            clone.style.pointerEvents = 'none';
+            clone.style.transition = 'none';
+            clone.style.opacity = '0.4';
+            clone.style.backgroundColor = backgroundColor;
+            clone.style.setProperty('--text-color', textColor);
+            clone.style.setProperty('--background-color', backgroundColor);
+            
+            document.body.appendChild(clone);
+            state.visibleClones.push(clone);
+            
+            // Store target position for animation
+            cloneData.push({
+                clone: clone,
+                targetRect: {
+                    left: targetLeft,
+                    top: elementTop,
+                    width: elementWidth,
+                    height: elementHeight
+                },
+                index: index
+            });
+            
+            console.log('Created clone for index:', index, 'target position:', targetLeft);
+        }
+    });
+    
+    console.log('Total clones created:', cloneData.length);
+    
+    // Call centerOnElement to update the marquee (for when animation completes)
+    marqueeControl.centerOnElement(currentMarqueeProject);
+    
+    // Animate all clones to their target positions
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            console.log('Animating clone to CALCULATED centered position:', centeredTargetRect.left, centeredTargetRect.top);
-            console.log('Viewport width:', window.innerWidth);
+            cloneData.forEach(({ clone, targetRect, index }) => {
+                clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                clone.style.left = targetRect.left + 'px';
+                clone.style.top = targetRect.top + 'px';
+                clone.style.width = targetRect.width + 'px';
+                clone.style.height = targetRect.height + 'px';
+                clone.style.padding = marqueePadding;
+                
+                console.log('Animating clone', index, 'to:', targetRect.left, targetRect.top);
+            });
             
-            clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
-            clone.style.left = centeredTargetRect.left + 'px';
-            clone.style.top = centeredTargetRect.top + 'px';
-            clone.style.width = centeredTargetRect.width + 'px';
-            clone.style.height = centeredTargetRect.height + 'px';
-            clone.style.padding = marqueePadding;
-            
-            console.log('Animating clone TO:', centeredTargetRect.left, centeredTargetRect.top, centeredTargetRect.width, centeredTargetRect.height);
             console.log('=== END CLOSE DEBUG ===');
         });
     });
