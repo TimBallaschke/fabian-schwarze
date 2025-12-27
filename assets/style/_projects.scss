@@ -530,6 +530,12 @@ body {
     &:active {
         cursor: grabbing;
     }
+    
+    // Personal Works marquee aligned to bottom
+    #personal-projects-container & {
+        display: flex;
+        align-items: end;
+    }
 }
 
 .marquee-content {

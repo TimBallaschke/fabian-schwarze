@@ -514,6 +514,10 @@ body.about-open-2 .about-text {
 .marquee-wrapper:active {
   cursor: grabbing;
 }
+#personal-projects-container .marquee-wrapper {
+  display: flex;
+  align-items: end;
+}
 
 .marquee-content {
   display: flex;
