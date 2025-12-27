@@ -327,6 +327,7 @@ body.about-open-2 .about-text {
 }
 
 .projects-container-main {
+  position: relative;
   width: 100%;
   overflow-x: auto;
   scrollbar-width: none; /* Firefox */
@@ -544,31 +545,32 @@ body.about-open-2 .about-text {
 }
 
 .detail-view-duplicates {
-  display: none;
+  display: flex;
   position: fixed;
-  top: 0;
+  top: var(--info-bar-height);
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: calc(100dvh - var(--info-bar-height) * 2);
   z-index: 9998;
   pointer-events: none;
+  opacity: 0.5;
+  align-items: center;
+  transform: translateX(0);
 }
 .duplicates-active .detail-view-duplicates {
-  display: block;
-  pointer-events: none;
+  display: flex;
 }
 
 .detail-duplicate {
-  position: fixed;
-  top: var(--duplicate-top);
-  left: var(--duplicate-left);
-  width: var(--duplicate-width);
-  height: var(--duplicate-height);
+  height: 100%;
+  width: 100vw;
+  flex-shrink: 0;
   padding: 2rem 4rem 3rem 4rem;
   background-color: var(--background-color);
   color: var(--text-color);
   cursor: pointer;
-  transition: left 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 700ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .detail-duplicate .detail-duplicate-inner {
   width: 100%;

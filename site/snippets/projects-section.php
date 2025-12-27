@@ -1,4 +1,4 @@
-<div class="projects-container" id="<?= $sectionId ?>-projects-container" data-section="<?= $sectionId ?>">
+<div class="projects-container <?= $position === 'top' ? 'duplicates-active' : '' ?>" id="<?= $sectionId ?>-projects-container" data-section="<?= $sectionId ?>">
     <?php if ($position === 'top'): ?>
         <div class="projects-container-info projects-container-top" id="<?= $sectionId ?>-projects-top">
             <div class="section-title"><?= $sectionTitle ?></div>
@@ -36,35 +36,37 @@
         </div>
         
         <!-- Detail view duplicates (hidden, shown after clone animation) -->
+        <!-- Rendered 4 times like marquee for infinite looping -->
         <div class="detail-view-duplicates" id="<?= $sectionId ?>-detail-duplicates">
             <?php 
-            $projectIndex = 0;
-            foreach ($projects as $project): ?>
-                <div class="detail-duplicate" data-project-index="<?= $projectIndex ?>" data-subcategory="<?= $project->subCategory()->value() ?>">
-                    <div class="detail-duplicate-inner">
-                        <?php 
-                        $projectImages = $project->projectimages()->toStructure();
-                        if ($projectImages->isNotEmpty()): 
-                            $firstImage = $projectImages->first()->projectimage()->toFile();
-                            if ($firstImage): ?>
-                                <img src="<?= $firstImage->url() ?>" alt="<?= $project->title() ?>" class="project-image">
-                            <?php endif;
-                        endif; ?>
-                        <div class="top-squares">
-                            <div class="square-top-left"></div>
-                            <div class="project-title"><?= $project->projectTitle() ?></div>
-                            <div class="square-top-right"></div>
-                        </div>
-                        <div class="bottom-squares">
-                            <div class="square-bottom-left"></div>
-                            <div class="project-date"><?= $project->projectDate() ?></div>
-                            <div class="square-bottom-right"></div>
+            // Render duplicates 4 times for infinite looping (matching marquee structure)
+            for ($i = 0; $i < 4; $i++): 
+                foreach ($projects as $project): ?>
+                    <div class="detail-duplicate" data-subcategory="<?= $project->subCategory()->value() ?>">
+                        <div class="detail-duplicate-inner">
+                            <?php 
+                            $projectImages = $project->projectimages()->toStructure();
+                            if ($projectImages->isNotEmpty()): 
+                                $firstImage = $projectImages->first()->projectimage()->toFile();
+                                if ($firstImage): ?>
+                                    <img src="<?= $firstImage->url() ?>" alt="<?= $project->title() ?>" class="project-image">
+                                <?php endif;
+                            endif; ?>
+                            <div class="top-squares">
+                                <div class="square-top-left"></div>
+                                <div class="project-title"><?= $project->projectTitle() ?></div>
+                                <div class="square-top-right"></div>
+                            </div>
+                            <div class="bottom-squares">
+                                <div class="square-bottom-left"></div>
+                                <div class="project-date"><?= $project->projectDate() ?></div>
+                                <div class="square-bottom-right"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php 
-            $projectIndex++;
-            endforeach; ?>
+                <?php 
+                endforeach;
+            endfor; ?>
         </div>
     </div>
     
