@@ -26,29 +26,6 @@ function isInViewport(element) {
     );
 }
 
-// Handle click on duplicate for navigation
-function handleDuplicateClick(event) {
-    event.stopPropagation();
-    
-    const duplicate = event.currentTarget;
-    const index = parseInt(duplicate.dataset.projectIndex, 10);
-    
-    // If clicking on current project, check which half was clicked
-    if (index === detailViewState.currentIndex) {
-        const rect = duplicate.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        const halfWidth = rect.width / 2;
-        
-        if (clickX < halfWidth) {
-            navigatePrev();
-        } else {
-            navigateNext();
-        }
-    } else {
-        navigateToProject(index);
-    }
-}
-
 // Create a clone for a specific project index (for initial animation only)
 function createCloneForIndex(index, animateFromOriginal = true) {
     const state = detailViewState;
@@ -224,8 +201,6 @@ function openProject(projectElement) {
         const left = destinationLeft + (relativePosition * destinationWidth);
         duplicate.style.setProperty('--duplicate-left', left + 'px');
         
-        // Add click handler
-        duplicate.addEventListener('click', handleDuplicateClick);
     });
     
     // Create clones for visible projects (for animation)
@@ -337,15 +312,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         image.style.cursor = 'pointer';
     });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(event) {
-        if (!document.body.classList.contains('detail-view-active')) return;
-        
-        if (event.key === 'ArrowRight') {
-            navigateNext();
-        } else if (event.key === 'ArrowLeft') {
-            navigatePrev();
-        }
+
+    const navigationButtons = document.querySelectorAll('.section-navigation .circle-button');
+    navigationButtons.forEach(function(button) {
+        const label = button.textContent.trim().toLowerCase();
+        if (label !== 'previous' && label !== 'next') return;
+
+        button.addEventListener('click', function(event) {
+            if (!detailViewState.isOpen) return;
+            const container = button.closest('.projects-container');
+            if (container !== detailViewState.projectsContainer) return;
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (label === 'previous') {
+                navigatePrev();
+            } else {
+                navigateNext();
+            }
+        });
     });
 });
