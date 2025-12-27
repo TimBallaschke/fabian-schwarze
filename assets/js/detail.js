@@ -6,7 +6,8 @@ let detailViewState = {
     allProjects: [],
     allDuplicates: [],
     projectsContainer: null,
-    detailDuplicatesContainer: null
+    detailDuplicatesContainer: null,
+    clickedClone: null
 };
 
 // Move duplicates container to show the current index
@@ -24,6 +25,12 @@ function scrollDuplicatesToIndex(index) {
 // Function to handle project opening
 function openProject(projectElement) {
     console.log('Opening project');
+    
+    // Remove any existing clone
+    if (detailViewState.clickedClone) {
+        detailViewState.clickedClone.remove();
+        detailViewState.clickedClone = null;
+    }
     
     // Find the clicked project's container
     const clickedProjectWrapper = projectElement.closest('.single-project-wrapper');
@@ -43,6 +50,32 @@ function openProject(projectElement) {
     // Find the index of the clicked wrapper in the marquee
     const clickedIndex = allProjectWrappers.indexOf(clickedProjectWrapper);
     
+    // Get the position and dimensions of the clicked project
+    const clickedRect = clickedProjectWrapper.getBoundingClientRect();
+    
+    // Get computed styles of the clicked project to replicate exactly
+    const clickedStyles = getComputedStyle(clickedProjectWrapper);
+    const backgroundColor = clickedStyles.getPropertyValue('background-color');
+    const color = clickedStyles.getPropertyValue('color');
+    
+    // Create a clone of the clicked project
+    const clone = clickedProjectWrapper.cloneNode(true);
+    clone.classList.add('clicked-project-clone');
+    
+    // Position it exactly where the clicked project is
+    clone.style.position = 'fixed';
+    clone.style.left = clickedRect.left + 'px';
+    clone.style.top = clickedRect.top + 'px';
+    clone.style.width = clickedRect.width + 'px';
+    clone.style.height = clickedRect.height + 'px';
+    clone.style.backgroundColor = backgroundColor;
+    clone.style.color = color;
+    clone.style.zIndex = '10000';
+    clone.style.pointerEvents = 'none';
+    
+    // Append clone to body
+    document.body.appendChild(clone);
+    
     // Update state
     detailViewState = {
         isOpen: true,
@@ -51,7 +84,8 @@ function openProject(projectElement) {
         allProjects: allProjectWrappers,
         allDuplicates: allDuplicates,
         projectsContainer: projectsContainer,
-        detailDuplicatesContainer: detailDuplicatesContainer
+        detailDuplicatesContainer: detailDuplicatesContainer,
+        clickedClone: clone
     };
     
     // Move duplicates to show the clicked project
@@ -59,6 +93,7 @@ function openProject(projectElement) {
     
     console.log('Clicked index:', clickedIndex);
     console.log('Unique projects:', uniqueProjectCount, 'Total duplicates:', allDuplicates.length);
+    console.log('Created clone at position:', clickedRect.left, clickedRect.top);
 }
 
 // Navigate to next project
