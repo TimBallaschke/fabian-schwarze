@@ -411,6 +411,16 @@ function closeDetailView() {
     // Animate all clones to their target positions
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
+            // Remove classes from all project containers
+            const allProjectsContainers = document.querySelectorAll('.projects-container');
+            allProjectsContainers.forEach(container => {
+                container.classList.remove('detail-view');
+                container.classList.remove('not-visible');
+            });
+            
+            // Remove duplicates-active class
+            state.projectsContainer.classList.remove('duplicates-active');
+            
             cloneData.forEach(({ clone, targetRect, duplicateIndex, offset }) => {
                 clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
                 clone.style.left = targetRect.left + 'px';
@@ -421,6 +431,23 @@ function closeDetailView() {
                 
                 console.log('Animating clone (duplicate:', duplicateIndex, 'offset:', offset, ') to:', targetRect.left, targetRect.top);
             });
+            
+            // After animation completes, remove clones and reset state
+            setTimeout(() => {
+                // Remove all clones
+                state.visibleClones.forEach(clone => clone.remove());
+                state.visibleClones = [];
+                
+                // Reset detail view state
+                state.isOpen = false;
+                
+                // Restart all marquees
+                if (window.startAllMarquees) {
+                    window.startAllMarquees();
+                }
+                
+                console.log('Close animation complete - clones removed, state reset, marquees restarted');
+            }, 750); // Slightly longer than the 700ms transition
             
             console.log('=== END CLOSE DEBUG ===');
         });
