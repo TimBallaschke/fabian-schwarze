@@ -576,7 +576,7 @@ body {
     height: calc(100dvh - var(--info-bar-height) * 2);
     z-index: 9998;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0;
     align-items: center;
     transform: translateX(0);
     

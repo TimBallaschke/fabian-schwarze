@@ -83,12 +83,19 @@ function openProject(projectElement) {
         
         // Get computed styles to replicate exactly
         const styles = getComputedStyle(wrapper);
-        const backgroundColor = styles.getPropertyValue('background-color');
-        const color = styles.getPropertyValue('color');
+        const padding = styles.getPropertyValue('padding');
+        
+        // Get CSS variables from the projects container (needed for squares color)
+        const containerStyles = getComputedStyle(projectsContainer);
+        const textColor = containerStyles.getPropertyValue('--text-color').trim();
+        const backgroundColor = containerStyles.getPropertyValue('--background-color').trim();
+        
+        console.log('CSS Variables:', { textColor, backgroundColor });
         
         // Create a clone
         const clone = wrapper.cloneNode(true);
         clone.classList.add('marquee-project-clone');
+        clone.dataset.marqueeIndex = index; // Store the index for matching with duplicate
         
         // Mark the clicked project's clone
         if (wrapper === clickedProjectWrapper) {
@@ -97,17 +104,49 @@ function openProject(projectElement) {
         
         // Position it exactly where the original project is
         clone.style.position = 'fixed';
+        clone.style.boxSizing = 'border-box';
         clone.style.left = rect.left + 'px';
         clone.style.top = rect.top + 'px';
         clone.style.width = rect.width + 'px';
         clone.style.height = rect.height + 'px';
-        clone.style.backgroundColor = backgroundColor;
-        clone.style.color = color;
+        clone.style.padding = padding;
         clone.style.zIndex = '10000';
         clone.style.pointerEvents = 'none';
+        clone.style.transition = 'none'; // No transition initially
+        clone.style.overflow = 'visible';
+        
+        // Set CSS variables explicitly - needed for squares and other elements
+        if (textColor) {
+            clone.style.setProperty('--text-color', textColor);
+            clone.style.color = textColor; // Also set color directly
+        }
+        if (backgroundColor) {
+            clone.style.setProperty('--background-color', backgroundColor);
+            clone.style.backgroundColor = backgroundColor; // Also set background-color directly
+        }
+        
+
         
         // Append clone to body
         document.body.appendChild(clone);
+        
+        // Explicitly set background color on square elements to ensure visibility
+        const squares = clone.querySelectorAll('.square-top-left, .square-top-right, .square-bottom-left, .square-bottom-right');
+        console.log('Found', squares.length, 'squares in clone', index);
+        squares.forEach(square => {
+            if (textColor) {
+                square.style.backgroundColor = textColor;
+                console.log('Set square backgroundColor to:', textColor, square);
+            }
+        });
+        
+        // Also set color on title and date elements
+        const titleElements = clone.querySelectorAll('.project-title, .project-date');
+        titleElements.forEach(element => {
+            if (textColor) {
+                element.style.color = textColor;
+            }
+        });
         
         // Store in state
         detailViewState.visibleClones.push(clone);
@@ -120,6 +159,36 @@ function openProject(projectElement) {
     console.log('Clicked index:', clickedIndex);
     console.log('Unique projects:', uniqueProjectCount, 'Total duplicates:', allDuplicates.length);
     console.log('Created', clonedProjects.length, 'clones for visible projects:', clonedProjects);
+    
+    // Animate clones to their corresponding duplicates
+    // Use requestAnimationFrame to ensure duplicates are in position first
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            detailViewState.visibleClones.forEach(clone => {
+                const marqueeIndex = parseInt(clone.dataset.marqueeIndex, 10);
+                const correspondingDuplicate = allDuplicates[marqueeIndex];
+                
+                if (!correspondingDuplicate) return;
+                
+                // Get the duplicate's position and styles after it has been scrolled
+                const duplicateRect = correspondingDuplicate.getBoundingClientRect();
+                const duplicateStyles = getComputedStyle(correspondingDuplicate);
+                const duplicatePadding = duplicateStyles.getPropertyValue('padding');
+                
+                // Add transition for smooth animation
+                clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                
+                // Animate to duplicate's position and size
+                clone.style.left = duplicateRect.left + 'px';
+                clone.style.top = duplicateRect.top + 'px';
+                clone.style.width = duplicateRect.width + 'px';
+                clone.style.height = duplicateRect.height + 'px';
+                clone.style.padding = duplicatePadding;
+                
+                console.log('Animating clone', marqueeIndex, 'to duplicate position:', duplicateRect.left, duplicateRect.top);
+            });
+        });
+    });
 }
 
 // Navigate to next project
