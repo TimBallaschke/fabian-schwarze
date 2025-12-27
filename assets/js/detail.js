@@ -311,64 +311,98 @@ function closeDetailView() {
     const marqueeStyles = getComputedStyle(currentMarqueeProject);
     const marqueePadding = marqueeStyles.getPropertyValue('padding');
     
-    // Find all marquee projects that will be visible AFTER centering
-    // and create clones of their corresponding duplicates
+    // Calculate which UNIQUE projects will be visible after centering
+    // With infinite scroll, we need to handle wraparound
+    const uniqueCount = state.uniqueProjectCount;
+    const currentSet = Math.floor(state.currentIndex / uniqueCount);
+    const currentUniqueIndex = state.currentIndex % uniqueCount;
+    
+    // Calculate how many projects fit on each side of center
+    const projectsOnEachSide = Math.ceil(window.innerWidth / 2 / elementWidth);
+    
+    console.log('Current set:', currentSet, 'Current unique index:', currentUniqueIndex);
+    console.log('Projects on each side:', projectsOnEachSide);
+    
+    // Find all unique project indices that will be visible (with wraparound)
+    const visibleUniqueIndices = [];
+    for (let offset = -projectsOnEachSide; offset <= projectsOnEachSide; offset++) {
+        let uniqueIndex = currentUniqueIndex + offset;
+        // Wrap around for infinite scroll
+        while (uniqueIndex < 0) uniqueIndex += uniqueCount;
+        while (uniqueIndex >= uniqueCount) uniqueIndex -= uniqueCount;
+        
+        // Calculate which duplicate index to use (same set as current)
+        const duplicateIndex = currentSet * uniqueCount + uniqueIndex;
+        
+        // Calculate target position (centered element at viewportCenterX, others offset)
+        const targetLeft = viewportCenterX + (offset * elementWidth);
+        
+        visibleUniqueIndices.push({
+            uniqueIndex: uniqueIndex,
+            duplicateIndex: duplicateIndex,
+            offset: offset,
+            targetLeft: targetLeft
+        });
+    }
+    
+    console.log('Visible unique indices:', visibleUniqueIndices);
+    
+    // Create clones for each visible duplicate
     const cloneData = [];
     
-    state.allProjects.forEach((marqueeProject, index) => {
-        const rect = marqueeProject.getBoundingClientRect();
+    // Get the current duplicate's rect as reference (offset 0)
+    const currentDuplicate = state.allDuplicates[state.currentIndex];
+    const currentDuplicateRect = currentDuplicate.getBoundingClientRect();
+    
+    visibleUniqueIndices.forEach(({ uniqueIndex, duplicateIndex, offset, targetLeft }) => {
+        const duplicate = state.allDuplicates[duplicateIndex];
+        if (!duplicate) return;
         
-        // Calculate where this element will be after centering
-        const targetLeft = rect.left + deltaX;
-        const targetRight = targetLeft + rect.width;
+        const duplicateStyles = getComputedStyle(duplicate);
         
-        // Check if it will be visible in viewport after centering
-        if (targetRight > 0 && targetLeft < window.innerWidth) {
-            // This project will be visible - get its corresponding duplicate
-            const duplicate = state.allDuplicates[index];
-            if (!duplicate) return;
-            
-            const duplicateRect = duplicate.getBoundingClientRect();
-            const duplicateStyles = getComputedStyle(duplicate);
-            
-            // Create clone of the duplicate
-            const clone = duplicate.cloneNode(true);
-            clone.classList.add('duplicate-to-marquee-clone');
-            clone.dataset.marqueeIndex = index;
-            
-            // Position at duplicate's current position
-            clone.style.position = 'fixed';
-            clone.style.boxSizing = 'border-box';
-            clone.style.left = duplicateRect.left + 'px';
-            clone.style.top = duplicateRect.top + 'px';
-            clone.style.width = duplicateRect.width + 'px';
-            clone.style.height = duplicateRect.height + 'px';
-            clone.style.padding = duplicateStyles.getPropertyValue('padding');
-            clone.style.zIndex = '10000';
-            clone.style.pointerEvents = 'none';
-            clone.style.transition = 'none';
-            clone.style.opacity = '0.4';
-            clone.style.backgroundColor = backgroundColor;
-            clone.style.setProperty('--text-color', textColor);
-            clone.style.setProperty('--background-color', backgroundColor);
-            
-            document.body.appendChild(clone);
-            state.visibleClones.push(clone);
-            
-            // Store target position for animation
-            cloneData.push({
-                clone: clone,
-                targetRect: {
-                    left: targetLeft,
-                    top: elementTop,
-                    width: elementWidth,
-                    height: elementHeight
-                },
-                index: index
-            });
-            
-            console.log('Created clone for index:', index, 'target position:', targetLeft);
-        }
+        // Create clone of the duplicate
+        const clone = duplicate.cloneNode(true);
+        clone.classList.add('duplicate-to-marquee-clone');
+        clone.dataset.duplicateIndex = duplicateIndex;
+        
+        // Position based on OFFSET from current duplicate, not actual duplicate position
+        // This ensures left-side projects start from the left, right-side from the right
+        const cloneStartLeft = offset * window.innerWidth;
+        
+        clone.style.position = 'fixed';
+        clone.style.boxSizing = 'border-box';
+        clone.style.left = cloneStartLeft + 'px';
+        clone.style.top = currentDuplicateRect.top + 'px';
+        clone.style.width = currentDuplicateRect.width + 'px';
+        clone.style.height = currentDuplicateRect.height + 'px';
+        clone.style.padding = duplicateStyles.getPropertyValue('padding');
+        clone.style.zIndex = '10000';
+        clone.style.pointerEvents = 'none';
+        clone.style.transition = 'none';
+        clone.style.opacity = '0.4';
+        clone.style.backgroundColor = backgroundColor;
+        clone.style.setProperty('--text-color', textColor);
+        clone.style.setProperty('--background-color', backgroundColor);
+        
+        document.body.appendChild(clone);
+        state.visibleClones.push(clone);
+        
+        console.log('Clone for offset', offset, 'starts at x:', cloneStartLeft);
+        
+        // Store target position for animation
+        cloneData.push({
+            clone: clone,
+            targetRect: {
+                left: targetLeft,
+                top: elementTop,
+                width: elementWidth,
+                height: elementHeight
+            },
+            duplicateIndex: duplicateIndex,
+            offset: offset
+        });
+        
+        console.log('Created clone for unique:', uniqueIndex, 'duplicate:', duplicateIndex, 'offset:', offset, 'target:', targetLeft);
     });
     
     console.log('Total clones created:', cloneData.length);
@@ -379,7 +413,7 @@ function closeDetailView() {
     // Animate all clones to their target positions
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            cloneData.forEach(({ clone, targetRect, index }) => {
+            cloneData.forEach(({ clone, targetRect, duplicateIndex, offset }) => {
                 clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
                 clone.style.left = targetRect.left + 'px';
                 clone.style.top = targetRect.top + 'px';
@@ -387,7 +421,7 @@ function closeDetailView() {
                 clone.style.height = targetRect.height + 'px';
                 clone.style.padding = marqueePadding;
                 
-                console.log('Animating clone', index, 'to:', targetRect.left, targetRect.top);
+                console.log('Animating clone (duplicate:', duplicateIndex, 'offset:', offset, ') to:', targetRect.left, targetRect.top);
             });
             
             console.log('=== END CLOSE DEBUG ===');
