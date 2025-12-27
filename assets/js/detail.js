@@ -37,6 +37,11 @@ function scrollDuplicatesToIndex(index) {
 function openProject(projectElement) {
     console.log('Opening project');
     
+    // Stop all marquee animations
+    if (window.stopAllMarquees) {
+        window.stopAllMarquees();
+    }
+    
     // Remove any existing clones and duplicates-active class from previous project
     detailViewState.visibleClones.forEach(clone => clone.remove());
     detailViewState.visibleClones = [];
@@ -251,6 +256,40 @@ function navigatePrev() {
     scrollDuplicatesToIndex(newIndex);
 }
 
+// Close detail view - Step 1: Center marquee on current project
+function closeDetailView() {
+    const state = detailViewState;
+    if (!state.isOpen) return;
+    
+    console.log('Closing detail view');
+    
+    // Find the marquee wrapper in the current projects container
+    const marqueeWrapper = state.projectsContainer.querySelector('.marquee-wrapper');
+    if (!marqueeWrapper || !window.marqueeControls) {
+        console.log('No marquee wrapper or controls found');
+        return;
+    }
+    
+    // Get the marquee control for this wrapper
+    const marqueeControl = window.marqueeControls[marqueeWrapper.id];
+    if (!marqueeControl || typeof marqueeControl.centerOnElement !== 'function') {
+        console.log('No centerOnElement function available');
+        return;
+    }
+    
+    // Find the marquee element at the current index
+    const currentMarqueeProject = state.allProjects[state.currentIndex];
+    if (!currentMarqueeProject) {
+        console.log('No marquee project found at index:', state.currentIndex);
+        return;
+    }
+    
+    // Center the marquee on this element
+    marqueeControl.centerOnElement(currentMarqueeProject);
+    
+    console.log('Centered marquee on project at index:', state.currentIndex);
+}
+
 // Function to update the CSS custom property based on actual element width
 function updateProjectWidthVariable() {
     const projectWrapper = document.querySelector('.single-project-wrapper');
@@ -282,11 +321,11 @@ document.addEventListener('DOMContentLoaded', function() {
         image.style.cursor = 'pointer';
     });
 
-    // Navigation buttons
+    // Navigation buttons (previous, next, close)
     const navigationButtons = document.querySelectorAll('.section-navigation .circle-button');
     navigationButtons.forEach(function(button) {
         const label = button.textContent.trim().toLowerCase();
-        if (label !== 'previous' && label !== 'next') return;
+        if (label !== 'previous' && label !== 'next' && label !== 'close') return;
 
         button.addEventListener('click', function(event) {
             if (!detailViewState.isOpen) return;
@@ -299,6 +338,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigatePrev();
             } else if (label === 'next') {
                 navigateNext();
+            } else if (label === 'close') {
+                closeDetailView();
             }
         });
     });
