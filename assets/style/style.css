@@ -544,7 +544,7 @@ body.about-open-2 .about-text {
   bottom: var(--info-bar-height);
 }
 .duplicates-active .detail-view-duplicates {
-  opacity: 1;
+  opacity: 0.4;
 }
 
 .detail-duplicate {
