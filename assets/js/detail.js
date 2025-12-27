@@ -121,7 +121,6 @@ function openProject(projectElement) {
         clone.style.padding = padding;
         clone.style.zIndex = '10000';
         clone.style.pointerEvents = 'none';
-        clone.style.opacity = '0.4';
         clone.style.transition = 'none'; // No transition initially
         clone.style.overflow = 'visible';
         
@@ -379,7 +378,6 @@ function closeDetailView() {
         clone.style.zIndex = '10000';
         clone.style.pointerEvents = 'none';
         clone.style.transition = 'none';
-        clone.style.opacity = '0.4';
         clone.style.backgroundColor = backgroundColor;
         clone.style.setProperty('--text-color', textColor);
         clone.style.setProperty('--background-color', backgroundColor);
