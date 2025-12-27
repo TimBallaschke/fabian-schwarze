@@ -7,8 +7,19 @@ let detailViewState = {
     allDuplicates: [],
     projectsContainer: null,
     detailDuplicatesContainer: null,
-    clickedClone: null
+    visibleClones: []
 };
+
+// Check if element is in viewport
+function isInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.right > 0 &&
+        rect.left < window.innerWidth &&
+        rect.bottom > 0 &&
+        rect.top < window.innerHeight
+    );
+}
 
 // Move duplicates container to show the current index
 function scrollDuplicatesToIndex(index) {
@@ -26,11 +37,9 @@ function scrollDuplicatesToIndex(index) {
 function openProject(projectElement) {
     console.log('Opening project');
     
-    // Remove any existing clone
-    if (detailViewState.clickedClone) {
-        detailViewState.clickedClone.remove();
-        detailViewState.clickedClone = null;
-    }
+    // Remove any existing clones
+    detailViewState.visibleClones.forEach(clone => clone.remove());
+    detailViewState.visibleClones = [];
     
     // Find the clicked project's container
     const clickedProjectWrapper = projectElement.closest('.single-project-wrapper');
@@ -50,32 +59,6 @@ function openProject(projectElement) {
     // Find the index of the clicked wrapper in the marquee
     const clickedIndex = allProjectWrappers.indexOf(clickedProjectWrapper);
     
-    // Get the position and dimensions of the clicked project
-    const clickedRect = clickedProjectWrapper.getBoundingClientRect();
-    
-    // Get computed styles of the clicked project to replicate exactly
-    const clickedStyles = getComputedStyle(clickedProjectWrapper);
-    const backgroundColor = clickedStyles.getPropertyValue('background-color');
-    const color = clickedStyles.getPropertyValue('color');
-    
-    // Create a clone of the clicked project
-    const clone = clickedProjectWrapper.cloneNode(true);
-    clone.classList.add('clicked-project-clone');
-    
-    // Position it exactly where the clicked project is
-    clone.style.position = 'fixed';
-    clone.style.left = clickedRect.left + 'px';
-    clone.style.top = clickedRect.top + 'px';
-    clone.style.width = clickedRect.width + 'px';
-    clone.style.height = clickedRect.height + 'px';
-    clone.style.backgroundColor = backgroundColor;
-    clone.style.color = color;
-    clone.style.zIndex = '10000';
-    clone.style.pointerEvents = 'none';
-    
-    // Append clone to body
-    document.body.appendChild(clone);
-    
     // Update state
     detailViewState = {
         isOpen: true,
@@ -85,15 +68,58 @@ function openProject(projectElement) {
         allDuplicates: allDuplicates,
         projectsContainer: projectsContainer,
         detailDuplicatesContainer: detailDuplicatesContainer,
-        clickedClone: clone
+        visibleClones: []
     };
+    
+    // Create clones for ALL visible projects in the marquee viewport
+    const clonedProjects = [];
+    
+    allProjectWrappers.forEach((wrapper, index) => {
+        // Only clone projects that are currently visible in the viewport
+        if (!isInViewport(wrapper)) return;
+        
+        // Get the position and dimensions of this project
+        const rect = wrapper.getBoundingClientRect();
+        
+        // Get computed styles to replicate exactly
+        const styles = getComputedStyle(wrapper);
+        const backgroundColor = styles.getPropertyValue('background-color');
+        const color = styles.getPropertyValue('color');
+        
+        // Create a clone
+        const clone = wrapper.cloneNode(true);
+        clone.classList.add('marquee-project-clone');
+        
+        // Mark the clicked project's clone
+        if (wrapper === clickedProjectWrapper) {
+            clone.classList.add('clicked-clone');
+        }
+        
+        // Position it exactly where the original project is
+        clone.style.position = 'fixed';
+        clone.style.left = rect.left + 'px';
+        clone.style.top = rect.top + 'px';
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.backgroundColor = backgroundColor;
+        clone.style.color = color;
+        clone.style.zIndex = '10000';
+        clone.style.pointerEvents = 'none';
+        
+        // Append clone to body
+        document.body.appendChild(clone);
+        
+        // Store in state
+        detailViewState.visibleClones.push(clone);
+        clonedProjects.push({ index, isClicked: wrapper === clickedProjectWrapper });
+    });
     
     // Move duplicates to show the clicked project
     scrollDuplicatesToIndex(clickedIndex);
     
     console.log('Clicked index:', clickedIndex);
     console.log('Unique projects:', uniqueProjectCount, 'Total duplicates:', allDuplicates.length);
-    console.log('Created clone at position:', clickedRect.left, clickedRect.top);
+    console.log('Created', clonedProjects.length, 'clones for visible projects:', clonedProjects);
 }
 
 // Navigate to next project
