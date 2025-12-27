@@ -228,17 +228,18 @@ function navigatePrev() {
     navigateToProject(detailViewState.currentIndex - 1);
 }
 
-// Show duplicates and hide clones (called after clone animation completes)
+// Show duplicates and remove clones (called after clone animation completes)
 function transitionToduplicates() {
     const state = detailViewState;
     
     // Add class to show duplicates
     state.projectsContainer.classList.add('duplicates-active');
     
-    // Hide all clones
+    // Remove all clones from DOM
     state.activeClones.forEach(clone => {
-        clone.style.display = 'none';
+        clone.remove();
     });
+    state.activeClones.clear();
     
     console.log('Transitioned to duplicates');
 }
