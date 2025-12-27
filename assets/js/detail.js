@@ -103,15 +103,9 @@ function updateSectionNavigationVisibility() {
     });
 }
 
-function centerMarqueeOnCurrentProject() {
+function getClosestMarqueeWrapperForCurrentIndex() {
     const state = detailViewState;
-    if (!state.isOpen || !state.projectsContainer || state.totalProjects === 0) return;
-
-    const marqueeWrapper = state.projectsContainer.querySelector('.marquee-wrapper');
-    if (!marqueeWrapper || !window.marqueeControls) return;
-
-    const marqueeControl = window.marqueeControls[marqueeWrapper.id];
-    if (!marqueeControl || typeof marqueeControl.centerOnElement !== 'function') return;
+    if (!state.isOpen || state.totalProjects === 0) return null;
 
     const viewportCenter = window.innerWidth / 2;
     let closestElement = null;
@@ -128,8 +122,53 @@ function centerMarqueeOnCurrentProject() {
         }
     });
 
+    return closestElement;
+}
+
+function centerMarqueeOnCurrentProject() {
+    const state = detailViewState;
+    if (!state.isOpen || !state.projectsContainer || state.totalProjects === 0) return;
+
+    const marqueeWrapper = state.projectsContainer.querySelector('.marquee-wrapper');
+    if (!marqueeWrapper || !window.marqueeControls) return;
+
+    const marqueeControl = window.marqueeControls[marqueeWrapper.id];
+    if (!marqueeControl || typeof marqueeControl.centerOnElement !== 'function') return;
+
+    const closestElement = getClosestMarqueeWrapperForCurrentIndex();
+
     if (!closestElement) return;
     marqueeControl.centerOnElement(closestElement);
+}
+
+function animateDetailToMarquee() {
+    const state = detailViewState;
+    if (!state.isOpen || !state.detailDuplicatesContainer) return;
+
+    const duplicate = state.detailDuplicatesContainer.querySelector(
+        `.detail-duplicate[data-project-index="${state.currentIndex}"]`
+    );
+    if (!duplicate) return;
+
+    // Clone the outer duplicate element to preserve exact positioning and padding
+    const sourceRect = duplicate.getBoundingClientRect();
+
+    const clone = duplicate.cloneNode(true);
+    clone.classList.add('detail-duplicate-clone');
+    
+    // Override the CSS variable positioning with fixed inline styles
+    clone.style.position = 'fixed';
+    clone.style.left = sourceRect.left + 'px';
+    clone.style.top = sourceRect.top + 'px';
+    clone.style.width = sourceRect.width + 'px';
+    clone.style.height = sourceRect.height + 'px';
+    clone.style.zIndex = '9999';
+    clone.style.transition = 'none'; // Remove transitions for exact positioning
+    clone.style.setProperty('--background-color', state.backgroundColor);
+    clone.style.setProperty('--text-color', state.textColor);
+
+    document.body.appendChild(clone);
+    duplicate.style.visibility = 'hidden';
 }
 
 // Navigate to a specific project index (using duplicates)
@@ -379,6 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigateNext();
             } else {
                 centerMarqueeOnCurrentProject();
+                animateDetailToMarquee();
             }
         });
     });
