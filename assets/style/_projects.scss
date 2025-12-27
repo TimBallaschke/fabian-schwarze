@@ -56,7 +56,7 @@ body {
     will-change: transform, height;
 
     &.detail-view {
-        height: 100dvh;
+        height: calc(100dvh + 1px);
     }
 }
 

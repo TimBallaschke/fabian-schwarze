@@ -282,6 +282,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Pause: stops animation AND prevents ResizeObserver updates
             pause: function() {
                 isPaused = true;
+                // Reset interaction state so resume doesn't stay in "user scroll" mode
+                isUserScrolling = false;
+                isDragging = false;
+                targetOffset = 0;
                 stopAnimation();
                 if (scrollResumeTimeout) {
                     clearTimeout(scrollResumeTimeout);
@@ -291,6 +295,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Resume: re-enables updates and restarts animation
             resume: function() {
                 isPaused = false;
+                // Ensure we resume in auto-scroll mode
+                isUserScrolling = false;
+                isDragging = false;
+                targetOffset = 0;
                 startAnimation();
             },
             centerOnElement: function(element) {
