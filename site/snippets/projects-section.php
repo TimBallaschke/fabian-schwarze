@@ -78,6 +78,11 @@
                 <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category1) ?>"><?= $category1 ?></div>
                 <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category2) ?>"><?= $category2 ?></div>
             </div>
+            <div class="section-navigation">
+                <div class="circle-button" data-category="all">Previous</div>
+                <div class="circle-button" data-category="all">Next</div>
+                <div class="circle-button" data-category="all">Close</div>
+            </div>
         </div>
     <?php else: ?>
         <div class="projects-container-about-outter projects-container-bottom" id="<?= $sectionId ?>-projects-about-outter">
