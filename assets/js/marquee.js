@@ -293,6 +293,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 isPaused = false;
                 startAnimation();
             },
+            centerOnElement: function(element) {
+                if (!element || !content.contains(element)) return;
+                const rect = element.getBoundingClientRect();
+                const viewportCenter = window.innerWidth / 2;
+                const elementCenter = rect.left + rect.width / 2;
+                const delta = elementCenter - viewportCenter;
+
+                currentPosition -= delta;
+                targetOffset = 0;
+                const displayPosition = normalizeForDisplay(currentPosition);
+                content.style.transform = `translateX(${displayPosition}px)`;
+            },
             isRunning: function() { return animationId !== null && !isUserScrolling; },
             updateMetrics: updateMetrics
         };

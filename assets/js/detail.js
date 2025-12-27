@@ -103,6 +103,35 @@ function updateSectionNavigationVisibility() {
     });
 }
 
+function centerMarqueeOnCurrentProject() {
+    const state = detailViewState;
+    if (!state.isOpen || !state.projectsContainer || state.totalProjects === 0) return;
+
+    const marqueeWrapper = state.projectsContainer.querySelector('.marquee-wrapper');
+    if (!marqueeWrapper || !window.marqueeControls) return;
+
+    const marqueeControl = window.marqueeControls[marqueeWrapper.id];
+    if (!marqueeControl || typeof marqueeControl.centerOnElement !== 'function') return;
+
+    const viewportCenter = window.innerWidth / 2;
+    let closestElement = null;
+    let closestDistance = Infinity;
+
+    state.allProjects.forEach((wrapper, index) => {
+        if (index % state.totalProjects !== state.currentIndex) return;
+        const rect = wrapper.getBoundingClientRect();
+        const elementCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(elementCenter - viewportCenter);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestElement = wrapper;
+        }
+    });
+
+    if (!closestElement) return;
+    marqueeControl.centerOnElement(closestElement);
+}
+
 // Navigate to a specific project index (using duplicates)
 function navigateToProject(newIndex) {
     const state = detailViewState;
@@ -335,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navigationButtons = document.querySelectorAll('.section-navigation .circle-button');
     navigationButtons.forEach(function(button) {
         const label = button.textContent.trim().toLowerCase();
-        if (label !== 'previous' && label !== 'next') return;
+        if (label !== 'previous' && label !== 'next' && label !== 'close') return;
 
         button.addEventListener('click', function(event) {
             if (!detailViewState.isOpen) return;
@@ -346,8 +375,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (label === 'previous') {
                 navigatePrev();
-            } else {
+            } else if (label === 'next') {
                 navigateNext();
+            } else {
+                centerMarqueeOnCurrentProject();
             }
         });
     });

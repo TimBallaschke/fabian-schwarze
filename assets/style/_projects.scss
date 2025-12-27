@@ -534,7 +534,7 @@ body {
 .marquee-content {
     display: flex;
     width: fit-content;
-    height: 100%;
+    height: calc((50dvh + var(--info-bar-height) / 2) - (2 * var(--info-bar-height)));
     align-items: center;
     transition: transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
