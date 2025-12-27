@@ -2,9 +2,11 @@
 let detailViewState = {
     isOpen: false,
     currentIndex: 0,
+    totalProjects: 0,
     allProjects: [],
-    activeClones: new Map(), // Map of index -> clone element
+    activeClones: new Map(),
     projectsContainer: null,
+    detailDuplicatesContainer: null,
     destinationWidth: 0,
     destinationHeight: 0,
     destinationLeft: 0,
@@ -24,16 +26,16 @@ function isInViewport(element) {
     );
 }
 
-// Handle click on clone for navigation
-function handleCloneClick(event) {
-    event.stopPropagation(); // Prevent closing detail view
+// Handle click on duplicate for navigation
+function handleDuplicateClick(event) {
+    event.stopPropagation();
     
-    const clone = event.currentTarget;
-    const index = parseInt(clone.dataset.projectIndex, 10);
+    const duplicate = event.currentTarget;
+    const index = parseInt(duplicate.dataset.projectIndex, 10);
     
     // If clicking on current project, check which half was clicked
     if (index === detailViewState.currentIndex) {
-        const rect = clone.getBoundingClientRect();
+        const rect = duplicate.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
         const halfWidth = rect.width / 2;
         
@@ -43,12 +45,11 @@ function handleCloneClick(event) {
             navigateNext();
         }
     } else {
-        // Clicking on a different project navigates to it
         navigateToProject(index);
     }
 }
 
-// Create a clone for a specific project index
+// Create a clone for a specific project index (for initial animation only)
 function createCloneForIndex(index, animateFromOriginal = true) {
     const state = detailViewState;
     if (index < 0 || index >= state.allProjects.length) return null;
@@ -65,8 +66,6 @@ function createCloneForIndex(index, animateFromOriginal = true) {
     const clone = wrapper.cloneNode(true);
     clone.classList.add('project-clone');
     clone.dataset.projectIndex = index;
-    clone.style.cursor = 'pointer';
-    clone.addEventListener('click', handleCloneClick);
     
     if (animateFromOriginal) {
         // Animate from original position
@@ -75,12 +74,11 @@ function createCloneForIndex(index, animateFromOriginal = true) {
         clone.style.setProperty('--clone-initial-width', currentRect.width + 'px');
         clone.style.setProperty('--clone-initial-height', currentRect.height + 'px');
     } else {
-        // Start at final position (for navigation - already in detail view)
+        // Start at final position
         clone.style.setProperty('--clone-initial-left', finalLeft + 'px');
         clone.style.setProperty('--clone-initial-top', state.destinationTop + 'px');
         clone.style.setProperty('--clone-initial-width', state.destinationWidth + 'px');
         clone.style.setProperty('--clone-initial-height', state.destinationHeight + 'px');
-        // Immediately add animate class since it's already in detail view
         clone.classList.add('animate-to-detail');
     }
     
@@ -96,45 +94,30 @@ function createCloneForIndex(index, animateFromOriginal = true) {
     document.body.appendChild(clone);
     state.activeClones.set(index, clone);
     
-    console.log('Created clone for index:', index, 'animateFromOriginal:', animateFromOriginal);
-    
     return clone;
 }
 
-// Update clone positions based on current index
-function updateClonePositions() {
+// Update duplicate positions based on current index
+function updateDuplicatePositions() {
     const state = detailViewState;
+    if (!state.detailDuplicatesContainer) return;
     
-    state.activeClones.forEach((clone, index) => {
+    const duplicates = state.detailDuplicatesContainer.querySelectorAll('.detail-duplicate');
+    duplicates.forEach((duplicate, index) => {
         const relativePosition = index - state.currentIndex;
-        const finalLeft = state.destinationLeft + (relativePosition * state.destinationWidth);
-        clone.style.setProperty('--clone-final-left', finalLeft + 'px');
+        const left = state.destinationLeft + (relativePosition * state.destinationWidth);
+        duplicate.style.setProperty('--duplicate-left', left + 'px');
     });
 }
 
-// Navigate to a specific project index
+// Navigate to a specific project index (using duplicates)
 function navigateToProject(newIndex) {
     const state = detailViewState;
-    if (newIndex < 0 || newIndex >= state.allProjects.length) return;
+    if (newIndex < 0 || newIndex >= state.totalProjects) return;
     if (newIndex === state.currentIndex) return;
     
     state.currentIndex = newIndex;
-    
-    // Ensure we have clones for current, prev, and next
-    createCloneForIndex(newIndex - 1, false);
-    createCloneForIndex(newIndex, false);
-    createCloneForIndex(newIndex + 1, false);
-    
-    // Update all clone positions
-    updateClonePositions();
-    
-    // Remove clones that are too far away (more than 2 positions from current)
-    state.activeClones.forEach((clone, index) => {
-        if (Math.abs(index - newIndex) > 2) {
-            clone.remove();
-            state.activeClones.delete(index);
-        }
-    });
+    updateDuplicatePositions();
     
     console.log('Navigated to index:', newIndex);
 }
@@ -149,9 +132,23 @@ function navigatePrev() {
     navigateToProject(detailViewState.currentIndex - 1);
 }
 
+// Show duplicates and hide clones (called after clone animation completes)
+function transitionToduplicates() {
+    const state = detailViewState;
+    
+    // Add class to show duplicates
+    state.projectsContainer.classList.add('duplicates-active');
+    
+    // Hide all clones
+    state.activeClones.forEach(clone => {
+        clone.style.display = 'none';
+    });
+    
+    console.log('Transitioned to duplicates');
+}
+
 // Function to handle project opening
 function openProject(projectElement) {
-
     document.body.classList.add('detail-view-active');
 
     // Stop all marquee animations first
@@ -164,12 +161,17 @@ function openProject(projectElement) {
     
     if (!clickedProjectWrapper) return;
     
-    // Find the projects-container and all project wrappers within it
+    // Find the projects-container
     const projectsContainer = clickedProjectWrapper.closest('.projects-container');
-    const allProjectWrappers = Array.from(projectsContainer.querySelectorAll('.single-project-wrapper'));
+    const allProjectWrappers = Array.from(projectsContainer.querySelectorAll('.marquee-content .single-project-wrapper'));
     
-    // Find the index of the clicked wrapper
-    const clickedIndex = allProjectWrappers.indexOf(clickedProjectWrapper);
+    // Find the detail duplicates container
+    const detailDuplicatesContainer = projectsContainer.querySelector('.detail-view-duplicates');
+    const totalProjects = detailDuplicatesContainer.querySelectorAll('.detail-duplicate').length;
+    
+    // Find the index of the clicked wrapper (mod by unique projects since marquee repeats 4x)
+    const clickedWrapperIndex = allProjectWrappers.indexOf(clickedProjectWrapper);
+    const clickedIndex = clickedWrapperIndex % totalProjects;
     
     // Find the projects-container-top and projects-container-bottom elements
     const topElement = projectsContainer.querySelector('.projects-container-top');
@@ -182,7 +184,7 @@ function openProject(projectElement) {
     // Calculate destination size and position
     const destinationWidth = window.innerWidth;
     const destinationHeight = window.innerHeight - topHeight - bottomHeight;
-    const destinationLeft = (window.innerWidth - destinationWidth) / 2;
+    const destinationLeft = 0;
     const destinationTop = topHeight;
     
     // Get the CSS variables from the container
@@ -194,9 +196,11 @@ function openProject(projectElement) {
     detailViewState = {
         isOpen: true,
         currentIndex: clickedIndex,
+        totalProjects: totalProjects,
         allProjects: allProjectWrappers,
         activeClones: new Map(),
         projectsContainer: projectsContainer,
+        detailDuplicatesContainer: detailDuplicatesContainer,
         destinationWidth: destinationWidth,
         destinationHeight: destinationHeight,
         destinationLeft: destinationLeft,
@@ -205,36 +209,96 @@ function openProject(projectElement) {
         textColor: textColor
     };
     
-    // Only create clones for projects that are visible in the viewport
+    // Set up duplicates with correct positioning
+    const duplicates = detailDuplicatesContainer.querySelectorAll('.detail-duplicate');
+    duplicates.forEach((duplicate, index) => {
+        // Set the fixed position CSS variables
+        duplicate.style.setProperty('--duplicate-top', destinationTop + 'px');
+        duplicate.style.setProperty('--duplicate-width', destinationWidth + 'px');
+        duplicate.style.setProperty('--duplicate-height', destinationHeight + 'px');
+        duplicate.style.setProperty('--background-color', backgroundColor);
+        duplicate.style.setProperty('--text-color', textColor);
+        
+        // Calculate initial left position based on clicked index
+        const relativePosition = index - clickedIndex;
+        const left = destinationLeft + (relativePosition * destinationWidth);
+        duplicate.style.setProperty('--duplicate-left', left + 'px');
+        
+        // Add click handler
+        duplicate.addEventListener('click', handleDuplicateClick);
+    });
+    
+    // Create clones for visible projects (for animation)
     const visibleClones = [];
-    allProjectWrappers.forEach((wrapper, index) => {
-        const inViewport = isInViewport(wrapper);
-        console.log('Project', index, 'in viewport:', inViewport, wrapper.getBoundingClientRect());
-        if (inViewport) {
-            const clone = createCloneForIndex(index, true);
-            if (clone) visibleClones.push(clone);
+    const createdUniqueIndices = new Set();
+    
+    allProjectWrappers.forEach((wrapper, marqueeIndex) => {
+        if (isInViewport(wrapper)) {
+            // Calculate the unique project index (handles 4x repetition in marquee)
+            const uniqueIndex = marqueeIndex % totalProjects;
+            
+            // Only create one clone per unique project
+            if (!createdUniqueIndices.has(uniqueIndex)) {
+                createdUniqueIndices.add(uniqueIndex);
+                
+                const currentRect = wrapper.getBoundingClientRect();
+                
+                // Calculate final position based on unique index relative to clicked project
+                const relativePosition = uniqueIndex - clickedIndex;
+                const finalLeft = destinationLeft + (relativePosition * destinationWidth);
+                
+                // Clone the wrapper
+                const clone = wrapper.cloneNode(true);
+                clone.classList.add('project-clone');
+                clone.dataset.projectIndex = uniqueIndex;
+                
+                // Set initial position (from original location)
+                clone.style.setProperty('--clone-initial-left', currentRect.left + 'px');
+                clone.style.setProperty('--clone-initial-top', currentRect.top + 'px');
+                clone.style.setProperty('--clone-initial-width', currentRect.width + 'px');
+                clone.style.setProperty('--clone-initial-height', currentRect.height + 'px');
+                
+                // Set final position
+                clone.style.setProperty('--clone-final-left', finalLeft + 'px');
+                clone.style.setProperty('--clone-final-top', destinationTop + 'px');
+                clone.style.setProperty('--clone-final-width', destinationWidth + 'px');
+                clone.style.setProperty('--clone-final-height', destinationHeight + 'px');
+                
+                // Copy color variables
+                clone.style.setProperty('--background-color', backgroundColor);
+                clone.style.setProperty('--text-color', textColor);
+                
+                document.body.appendChild(clone);
+                detailViewState.activeClones.set(uniqueIndex, clone);
+                visibleClones.push(clone);
+                
+                console.log('Created clone for unique index:', uniqueIndex, 'from marquee index:', marqueeIndex);
+            }
         }
     });
     
     console.log('Clicked index:', clickedIndex);
-    console.log('Total projects:', allProjectWrappers.length);
+    console.log('Total projects:', totalProjects);
     console.log('Visible clones created:', visibleClones.length);
     
-    // Trigger animation by adding the animate class after a frame
+    // Trigger clone animation
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            console.log('Adding animate-to-detail to', visibleClones.length, 'clones');
             visibleClones.forEach(clone => {
                 clone.classList.add('animate-to-detail');
-                console.log('Clone now has classes:', clone.className);
             });
+            
+            // After animation completes, transition to duplicates
+            setTimeout(() => {
+                transitionToduplicates();
+            }, 750); // Slightly longer than the 700ms transition
         });
     });
 
+    // Add classes to containers
     const allProjectsContainers = document.querySelectorAll('.projects-container');
     allProjectsContainers.forEach(container => {
         if (container !== projectsContainer) {
-            console.log('adding not-visible to', container);
             container.classList.add('not-visible');
         } else {
             container.classList.add('detail-view');
@@ -246,11 +310,19 @@ function openProject(projectElement) {
 function closeDetailView() {
     document.body.classList.remove('detail-view-active');
     
-    // Remove detail-view class from all containers
+    // Remove classes from all containers
     const allProjectsContainers = document.querySelectorAll('.projects-container');
     allProjectsContainers.forEach(container => {
-        container.classList.remove('detail-view', 'not-visible');
+        container.classList.remove('detail-view', 'not-visible', 'duplicates-active');
     });
+    
+    // Remove click handlers from duplicates
+    if (detailViewState.detailDuplicatesContainer) {
+        const duplicates = detailViewState.detailDuplicatesContainer.querySelectorAll('.detail-duplicate');
+        duplicates.forEach(duplicate => {
+            duplicate.removeEventListener('click', handleDuplicateClick);
+        });
+    }
     
     // Remove all clones
     detailViewState.activeClones.forEach(clone => {
@@ -272,48 +344,34 @@ function updateProjectWidthVariable() {
     const projectWrapper = document.querySelector('.single-project-wrapper');
     
     if (projectWrapper) {
-        // Get the computed width of the element
         const computedStyle = window.getComputedStyle(projectWrapper);
         const actualHeight = computedStyle.height;
-        
-        // Set the CSS custom property to match the actual width
         document.documentElement.style.setProperty('--single-project-width', actualHeight);
-        
         console.log('Updated --single-project-height to:', actualHeight);
-    } else {
-        console.warn('No .single-project-wrapper element found to measure');
     }
 }
 
-// Add event listeners to all single-project-wrapper elements
+// Add event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    // Update the CSS custom property based on actual element width
     updateProjectWidthVariable();
     
-    // Also update on window resize to handle responsive changes
     window.addEventListener('resize', function() {
         updateProjectWidthVariable();
     });
     
-    // Get all elements with the class 'single-project-wrapper'
-    const projectImages = document.querySelectorAll('.project-image');
+    // Get all project images in marquee
+    const projectImages = document.querySelectorAll('.marquee-content .project-image');
     
-    // Add click event listener to each wrapper
     projectImages.forEach(function(image) {
         image.addEventListener('click', function(event) {
-            // Prevent any default behavior and stop propagation
             event.preventDefault();
             event.stopPropagation();
-            
-            // Call the openProject function with the clicked element
             openProject(this);
         });
-        
-        // Optional: Add cursor pointer style to indicate clickability
         image.style.cursor = 'pointer';
     });
     
-    // Add keyboard event listener for closing and navigating detail view
+    // Keyboard navigation
     document.addEventListener('keydown', function(event) {
         if (!document.body.classList.contains('detail-view-active')) return;
         
@@ -326,14 +384,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Add click event listener to close detail view when clicking outside clones
+    // Click outside to close
     document.addEventListener('click', function(event) {
         if (document.body.classList.contains('detail-view-active')) {
-            // Check if click is on a clone (handled by clone click handler)
             const isClickOnClone = event.target.closest('.project-clone');
+            const isClickOnDuplicate = event.target.closest('.detail-duplicate');
             
-            // Only close if clicking outside the clones entirely
-            if (!isClickOnClone) {
+            if (!isClickOnClone && !isClickOnDuplicate) {
                 closeDetailView();
             }
         }
