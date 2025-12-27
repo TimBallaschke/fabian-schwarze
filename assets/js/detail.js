@@ -87,6 +87,22 @@ function updateDuplicatePositions() {
     });
 }
 
+function updateSectionNavigationVisibility() {
+    const state = detailViewState;
+    if (!state.isOpen || !state.projectsContainer) return;
+
+    const navButtons = state.projectsContainer.querySelectorAll('.section-navigation .circle-button');
+    navButtons.forEach(button => {
+        const label = button.textContent.trim().toLowerCase();
+        if (label !== 'previous' && label !== 'next') return;
+
+        const isPrev = label === 'previous';
+        const isVisible = isPrev ? state.currentIndex > 0 : state.currentIndex < state.totalProjects - 1;
+        button.style.visibility = isVisible ? 'visible' : 'hidden';
+        button.style.pointerEvents = isVisible ? 'auto' : 'none';
+    });
+}
+
 // Navigate to a specific project index (using duplicates)
 function navigateToProject(newIndex) {
     const state = detailViewState;
@@ -95,6 +111,7 @@ function navigateToProject(newIndex) {
     
     state.currentIndex = newIndex;
     updateDuplicatePositions();
+    updateSectionNavigationVisibility();
     
     console.log('Navigated to index:', newIndex);
 }
@@ -202,6 +219,8 @@ function openProject(projectElement) {
         duplicate.style.setProperty('--duplicate-left', left + 'px');
         
     });
+
+    updateSectionNavigationVisibility();
     
     // Create clones for visible projects (for animation)
     const visibleClones = [];
