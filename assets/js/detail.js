@@ -306,39 +306,6 @@ function openProject(projectElement) {
     });
 }
 
-// Function to close detail view and clean up
-function closeDetailView() {
-    document.body.classList.remove('detail-view-active');
-    
-    // Remove classes from all containers
-    const allProjectsContainers = document.querySelectorAll('.projects-container');
-    allProjectsContainers.forEach(container => {
-        container.classList.remove('detail-view', 'not-visible', 'duplicates-active');
-    });
-    
-    // Remove click handlers from duplicates
-    if (detailViewState.detailDuplicatesContainer) {
-        const duplicates = detailViewState.detailDuplicatesContainer.querySelectorAll('.detail-duplicate');
-        duplicates.forEach(duplicate => {
-            duplicate.removeEventListener('click', handleDuplicateClick);
-        });
-    }
-    
-    // Remove all clones
-    detailViewState.activeClones.forEach(clone => {
-        clone.remove();
-    });
-    detailViewState.activeClones.clear();
-    
-    // Reset state
-    detailViewState.isOpen = false;
-    
-    // Restart marquee animations
-    if (window.startAllMarquees) {
-        window.startAllMarquees();
-    }
-}
-
 // Function to update the CSS custom property based on actual element width
 function updateProjectWidthVariable() {
     const projectWrapper = document.querySelector('.single-project-wrapper');
@@ -375,24 +342,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(event) {
         if (!document.body.classList.contains('detail-view-active')) return;
         
-        if (event.key === 'Escape') {
-            closeDetailView();
-        } else if (event.key === 'ArrowRight') {
+        if (event.key === 'ArrowRight') {
             navigateNext();
         } else if (event.key === 'ArrowLeft') {
             navigatePrev();
-        }
-    });
-    
-    // Click outside to close
-    document.addEventListener('click', function(event) {
-        if (document.body.classList.contains('detail-view-active')) {
-            const isClickOnClone = event.target.closest('.project-clone');
-            const isClickOnDuplicate = event.target.closest('.detail-duplicate');
-            
-            if (!isClickOnClone && !isClickOnDuplicate) {
-                closeDetailView();
-            }
         }
     });
 });
