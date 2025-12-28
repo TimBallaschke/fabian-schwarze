@@ -90,7 +90,11 @@
                             </div>
                             <div class="bottom-squares">
                                 <div class="square-bottom-left"></div>
-                                <div class="project-date"><?= $project->projectMonth() ?> <?= $project->projectYear() ?></div>
+                                <div class="project-navigation">
+                                    <div class="arrow-left-button">←</div>
+                                    <div class="number">01/08</div>
+                                    <div class="arrow-right-button">→</div>
+                                </div>
                                 <div class="square-bottom-right"></div>
                             </div>
                         </div>
