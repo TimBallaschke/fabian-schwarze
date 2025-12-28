@@ -322,55 +322,44 @@ function closeDetailView() {
     const marqueeStyles = getComputedStyle(currentMarqueeProject);
     const marqueePadding = marqueeStyles.getPropertyValue('padding');
     
-    // Calculate which UNIQUE projects will be visible after centering
-    // With infinite scroll, we need to handle wraparound
-    const uniqueCount = state.uniqueProjectCount;
-    const currentSet = Math.floor(state.currentIndex / uniqueCount);
-    const currentUniqueIndex = state.currentIndex % uniqueCount;
-    
-    // Calculate how many projects fit on each side of center
-    const projectsOnEachSide = Math.ceil(window.innerWidth / 2 / elementWidth);
-    
-    console.log('Current set:', currentSet, 'Current unique index:', currentUniqueIndex);
-    console.log('Projects on each side:', projectsOnEachSide);
-    
-    // Find all unique project indices that will be visible (with wraparound)
-    const visibleUniqueIndices = [];
-    for (let offset = -projectsOnEachSide; offset <= projectsOnEachSide; offset++) {
-        let uniqueIndex = currentUniqueIndex + offset;
-        // Wrap around for infinite scroll
-        while (uniqueIndex < 0) uniqueIndex += uniqueCount;
-        while (uniqueIndex >= uniqueCount) uniqueIndex -= uniqueCount;
-        
-        // Calculate which duplicate index to use (same set as current)
-        const duplicateIndex = currentSet * uniqueCount + uniqueIndex;
-        
-        // Calculate target position (centered element at viewportCenterX, others offset)
-        const targetLeft = viewportCenterX + (offset * elementWidth);
-        
-        visibleUniqueIndices.push({
-            uniqueIndex: uniqueIndex,
-            duplicateIndex: duplicateIndex,
-            offset: offset,
-            targetLeft: targetLeft
-        });
-    }
-    
-    console.log('Visible unique indices:', visibleUniqueIndices);
-    
-    // Create clones for each visible duplicate
-    const cloneData = [];
-    
-    // Get the current duplicate's rect as reference (offset 0)
+    // Get the current duplicate's rect as reference
     const currentDuplicate = state.allDuplicates[state.currentIndex];
     const currentDuplicateRect = currentDuplicate.getBoundingClientRect();
     
-    visibleUniqueIndices.forEach(({ uniqueIndex, duplicateIndex, offset, targetLeft }) => {
-        const duplicate = state.allDuplicates[duplicateIndex];
-        if (!duplicate) return;
+    // Find all VISIBLE duplicates (not filtered out) and their visual offsets from current
+    // We need to count only visible duplicates to calculate visual offsets
+    const cloneData = [];
+    
+    // Build a list of visible duplicate indices, sorted by position
+    const visibleDuplicateIndices = [];
+    state.allDuplicates.forEach((dup, idx) => {
+        if (dup.getAttribute('data-visible') !== 'false') {
+            visibleDuplicateIndices.push(idx);
+        }
+    });
+    
+    // Find the position of the current index in the visible list
+    const currentVisiblePosition = visibleDuplicateIndices.indexOf(state.currentIndex);
+    
+    console.log('Visible duplicates count:', visibleDuplicateIndices.length);
+    console.log('Current visible position:', currentVisiblePosition);
+    
+    // Determine how many visible projects fit on each side
+    const projectsOnEachSide = Math.ceil(window.innerWidth / 2 / elementWidth) + 1;
+    
+    // Create clones for visible duplicates within range
+    for (let visualOffset = -projectsOnEachSide; visualOffset <= projectsOnEachSide; visualOffset++) {
+        // Calculate the position in the visible list
+        let visiblePosition = currentVisiblePosition + visualOffset;
         
-        // Skip filtered-out duplicates
-        if (duplicate.getAttribute('data-visible') === 'false') return;
+        // Handle wraparound for infinite scroll (visible duplicates loop)
+        const visibleCount = visibleDuplicateIndices.length;
+        while (visiblePosition < 0) visiblePosition += visibleCount;
+        while (visiblePosition >= visibleCount) visiblePosition -= visibleCount;
+        
+        const duplicateIndex = visibleDuplicateIndices[visiblePosition];
+        const duplicate = state.allDuplicates[duplicateIndex];
+        if (!duplicate) continue;
         
         const duplicateStyles = getComputedStyle(duplicate);
         
@@ -378,10 +367,11 @@ function closeDetailView() {
         const clone = duplicate.cloneNode(true);
         clone.classList.add('duplicate-to-marquee-clone');
         clone.dataset.duplicateIndex = duplicateIndex;
+        clone.dataset.visualOffset = visualOffset;
         
-        // Position based on OFFSET from current duplicate, not actual duplicate position
-        // This ensures left-side projects start from the left, right-side from the right
-        const cloneStartLeft = offset * window.innerWidth;
+        // Position based on visual offset from current duplicate
+        // Current duplicate is at center (0), others at visualOffset * 100vw
+        const cloneStartLeft = visualOffset * window.innerWidth;
         
         clone.style.position = 'fixed';
         clone.style.boxSizing = 'border-box';
@@ -400,7 +390,10 @@ function closeDetailView() {
         document.body.appendChild(clone);
         state.visibleClones.push(clone);
         
-        console.log('Clone for offset', offset, 'starts at x:', cloneStartLeft);
+        // Target position in marquee: current at center, others at visual offsets
+        const targetLeft = viewportCenterX + (visualOffset * elementWidth);
+        
+        console.log('Clone for visualOffset', visualOffset, 'starts at x:', cloneStartLeft, 'target:', targetLeft);
         
         // Store target position for animation
         cloneData.push({
@@ -412,11 +405,9 @@ function closeDetailView() {
                 height: elementHeight
             },
             duplicateIndex: duplicateIndex,
-            offset: offset
+            visualOffset: visualOffset
         });
-        
-        console.log('Created clone for unique:', uniqueIndex, 'duplicate:', duplicateIndex, 'offset:', offset, 'target:', targetLeft);
-    });
+    }
     
     console.log('Total clones created:', cloneData.length);
     
@@ -436,7 +427,7 @@ function closeDetailView() {
             // Remove duplicates-active class
             state.projectsContainer.classList.remove('duplicates-active');
             
-            cloneData.forEach(({ clone, targetRect, duplicateIndex, offset }) => {
+            cloneData.forEach(({ clone, targetRect, duplicateIndex, visualOffset }) => {
                 clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
                 clone.style.left = targetRect.left + 'px';
                 clone.style.top = targetRect.top + 'px';
@@ -444,7 +435,7 @@ function closeDetailView() {
                 clone.style.height = targetRect.height + 'px';
                 clone.style.padding = marqueePadding;
                 
-                console.log('Animating clone (duplicate:', duplicateIndex, 'offset:', offset, ') to:', targetRect.left, targetRect.top);
+                console.log('Animating clone (duplicate:', duplicateIndex, 'visualOffset:', visualOffset, ') to:', targetRect.left, targetRect.top);
             });
             
             // After animation completes, remove clones and reset state
