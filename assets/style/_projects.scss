@@ -623,6 +623,12 @@ body {
     cursor: pointer;
     transition: all 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
     
+    // Filtered out state - hide but maintain layout for infinite scroll positioning
+    &[data-visible="false"] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+    
     .detail-duplicate-inner {
         width: 100%;
         height: 100%;

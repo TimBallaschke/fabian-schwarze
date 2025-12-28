@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     containers.forEach(function(container) {
         const buttons = Array.from(container.querySelectorAll('.section-categories .category'));
         const items = Array.from(container.querySelectorAll('.single-project-wrapper'));
+        const duplicates = Array.from(container.querySelectorAll('.detail-duplicate'));
         const itemTimers = new Map();
         const sectionId = container.dataset.section;
         const marqueeId = sectionId + '-marquee';
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function applyFilter(category, skipAnimation) {
+            // Filter marquee items with animation
             items.forEach(function(item) {
                 const itemCategory = (item.dataset.subcategory || '').toLowerCase();
                 const shouldShow = category === 'all' || itemCategory === category;
@@ -108,6 +110,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 200));
                     itemTimers.set(item, timers);
                 }
+            });
+            
+            // Filter detail duplicates in sync (no animation needed, they're hidden by default)
+            duplicates.forEach(function(duplicate) {
+                const dupCategory = (duplicate.dataset.subcategory || '').toLowerCase();
+                const shouldShow = category === 'all' || dupCategory === category;
+                duplicate.setAttribute('data-visible', shouldShow ? 'true' : 'false');
             });
         }
 
