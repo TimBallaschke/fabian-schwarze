@@ -5,12 +5,34 @@
         if ($projectImages->isNotEmpty()): 
             $firstImage = $projectImages->first()->projectimage()->toFile();
             if ($firstImage): 
-                // Generate low-quality placeholder (same size, heavy compression - blur hides artifacts)
-                $placeholder = $firstImage->thumb(['quality' => 10]);
+                // Placeholder: same size as high-res, low quality (blur hides artifacts)
+                $placeholder = $firstImage->thumb([
+                    'width' => 600,
+                    'quality' => 5,
+                    'format' => 'webp'
+                ]);
+                
+                // Responsive srcset sizes for marquee cards
+                $sizes = [
+                    '400w' => $firstImage->thumb(['width' => 400, 'format' => 'webp']),
+                    '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
+                    '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
+                ];
+                
+                // Build srcset string
+                $srcset = implode(', ', array_map(
+                    fn($size, $thumb) => $thumb->url() . ' ' . $size,
+                    array_keys($sizes),
+                    array_values($sizes)
+                ));
+                
+                // Default src for high-res (medium size fallback)
+                $defaultSrc = $sizes['600w']->url();
                 ?>
                 <img 
                     src="<?= $placeholder->url() ?>" 
-                    data-src="<?= $firstImage->url() ?>" 
+                    data-src="<?= $defaultSrc ?>"
+                    data-srcset="<?= $srcset ?>"
                     alt="<?= $project->title() ?>" 
                     class="project-image blur-placeholder"
                 >

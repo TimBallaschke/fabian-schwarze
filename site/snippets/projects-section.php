@@ -49,12 +49,35 @@
                             if ($projectImages->isNotEmpty()): 
                                 $firstImage = $projectImages->first()->projectimage()->toFile();
                                 if ($firstImage): 
-                                    // Generate low-quality placeholder (same size, heavy compression - blur hides artifacts)
-                                    $placeholder = $firstImage->thumb(['quality' => 10]);
+                                    // Placeholder: tiny low-quality WebP (blur hides artifacts)
+                                    $placeholder = $firstImage->thumb([
+                                        'width' => 100,
+                                        'quality' => 20,
+                                        'format' => 'webp'
+                                    ]);
+                                    
+                                    // Responsive srcset sizes for detail view (full screen)
+                                    $sizes = [
+                                        '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
+                                        '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
+                                        '1200w' => $firstImage->thumb(['width' => 1200, 'format' => 'webp']),
+                                        '1600w' => $firstImage->thumb(['width' => 1600, 'format' => 'webp']),
+                                    ];
+                                    
+                                    // Build srcset string
+                                    $srcset = implode(', ', array_map(
+                                        fn($size, $thumb) => $thumb->url() . ' ' . $size,
+                                        array_keys($sizes),
+                                        array_values($sizes)
+                                    ));
+                                    
+                                    // Default src for high-res (large size fallback)
+                                    $defaultSrc = $sizes['1200w']->url();
                                     ?>
                                     <img 
                                         src="<?= $placeholder->url() ?>" 
-                                        data-src="<?= $firstImage->url() ?>" 
+                                        data-src="<?= $defaultSrc ?>"
+                                        data-srcset="<?= $srcset ?>"
                                         alt="<?= $project->title() ?>" 
                                         class="project-image blur-placeholder"
                                     >
