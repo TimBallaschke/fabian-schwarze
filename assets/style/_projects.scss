@@ -424,22 +424,6 @@ body {
     height: 1rem;
     background-color: var(--text-color);
     position: relative;
-
-    &::after {
-        content: "01";
-        position: absolute;
-        top: calc(var(--font-size) * var(--line-height) * 1.5);
-        margin-left: var(--page-padding);
-        opacity: 0;
-        transition: opacity 500ms ease-in-out;
-    }
-
-    .detail-view & {
-        &::after {
-            transition-delay: 300ms;
-            opacity: 1;
-        }
-    }
 }
 
 .square-top-right {
@@ -448,23 +432,6 @@ body {
     background-color: var(--text-color);
     color: var(--text-color);
     position: relative;
-
-    &::after {
-        content: "08";
-        position: absolute;
-        top: calc(var(--font-size) * var(--line-height) * 1.5);
-        margin-right: var(--page-padding);
-        right: 0;
-        opacity: 0;
-        transition: opacity 500ms ease-in-out;
-    }
-
-    .detail-view & {
-        &::after {
-            transition-delay: 300ms;
-            opacity: 1;
-        }
-    }
 }
 
 .bottom-squares {
@@ -489,22 +456,6 @@ body {
     height: 1rem;
     background-color: var(--text-color);
 
-    &::after {
-        content: "Prev.";
-        position: absolute;
-        top: calc(var(--font-size) * var(--line-height) * 1.5);
-        left: 0;
-        opacity: 0;
-        transform: translateX(calc(-90% - var(--page-padding)));
-        transition: opacity 500ms ease-in-out;
-    }
-
-    .detail-view & {
-        &::after {
-            transition-delay: 300ms;
-            opacity: 1;
-        }
-    }
 }
 
 .square-bottom-right {
@@ -512,23 +463,6 @@ body {
     height: 1rem;
     background-color: var(--text-color);
     z-index: 2;
-
-    &::after {
-        content: "Next";
-        position: absolute;
-        top: calc(var(--font-size) * var(--line-height) * 1.5);
-        right: 0;
-        opacity: 0;
-        transform: translateX(calc(100% + var(--page-padding)));
-        transition: opacity 500ms ease-in-out;
-    }
-
-    .detail-view & {
-        &::after {
-            transition-delay: 300ms;
-            opacity: 1;
-        }
-    }
 }
 
 /* Marquee Animation Styles */
@@ -547,6 +481,14 @@ body {
     #personal-projects-container & {
         display: flex;
         align-items: end;
+    }
+
+    .detail-view & {
+        pointer-events: none;
+    }
+
+    .not-visible & {
+        pointer-events: none;
     }
 }
 
@@ -610,6 +552,7 @@ body {
     .duplicates-active & {
         opacity: 1;
         transition: transform 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+        pointer-events: none;
     }
 }
 
@@ -617,7 +560,7 @@ body {
     height: 100%;
     width: 100vw;
     flex-shrink: 0;
-    padding: 2rem 4rem 3rem 4rem;
+    padding: 1rem 1rem 1rem 1rem;
     background-color: var(--background-color);
     color: var(--text-color);
     cursor: pointer;
@@ -638,8 +581,8 @@ body {
         align-items: center;
         
         .project-image {
-            max-width: 80%;
-            max-height: 80%;
+            max-width: 90%;
+            max-height: 90%;
             object-fit: contain;
             transition: filter 600ms cubic-bezier(0.4, 0.0, 0.2, 1);
             

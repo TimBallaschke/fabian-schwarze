@@ -159,16 +159,24 @@ function openProject(projectElement) {
             }
         });
         
-        // Also set color on title and date elements
-        const titleElements = clone.querySelectorAll('.project-title, .project-date');
-        titleElements.forEach(element => {
-            if (textColor) {
-                element.style.color = textColor;
-            }
-        });
-        
-        // Store in state
-        detailViewState.visibleClones.push(clone);
+                // Also set color on title and date elements
+                const titleElements = clone.querySelectorAll('.project-title, .project-date');
+                titleElements.forEach(element => {
+                    if (textColor) {
+                        element.style.color = textColor;
+                    }
+                });
+                
+                // Set initial image size (80% for marquee state)
+                const cloneImage = clone.querySelector('.project-image');
+                if (cloneImage) {
+                    cloneImage.style.maxWidth = '80%';
+                    cloneImage.style.maxHeight = '80%';
+                    cloneImage.style.transition = 'max-width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), max-height 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                }
+                
+                // Store in state
+                detailViewState.visibleClones.push(clone);
         clonedProjects.push({ index, visualOffset, isClicked: wrapper === clickedProjectWrapper });
     });
     
@@ -217,6 +225,13 @@ function openProject(projectElement) {
                 clone.style.width = clickedDuplicateRect.width + 'px';
                 clone.style.height = clickedDuplicateRect.height + 'px';
                 clone.style.padding = duplicatePadding;
+                
+                // Animate image to detail size (90%)
+                const cloneImage = clone.querySelector('.project-image');
+                if (cloneImage) {
+                    cloneImage.style.maxWidth = '90%';
+                    cloneImage.style.maxHeight = '90%';
+                }
                 
                 console.log('Animating clone with visualOffset', visualOffset, 'to position:', targetLeft, clickedDuplicateRect.top);
             });
@@ -387,6 +402,14 @@ function closeDetailView() {
         clone.style.setProperty('--text-color', textColor);
         clone.style.setProperty('--background-color', backgroundColor);
         
+        // Set initial image size (90% for detail state)
+        const cloneImage = clone.querySelector('.project-image');
+        if (cloneImage) {
+            cloneImage.style.maxWidth = '90%';
+            cloneImage.style.maxHeight = '90%';
+            cloneImage.style.transition = 'max-width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), max-height 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+        }
+        
         document.body.appendChild(clone);
         state.visibleClones.push(clone);
         
@@ -434,6 +457,13 @@ function closeDetailView() {
                 clone.style.width = targetRect.width + 'px';
                 clone.style.height = targetRect.height + 'px';
                 clone.style.padding = marqueePadding;
+                
+                // Animate image to marquee size (80%)
+                const cloneImage = clone.querySelector('.project-image');
+                if (cloneImage) {
+                    cloneImage.style.maxWidth = '80%';
+                    cloneImage.style.maxHeight = '80%';
+                }
                 
                 console.log('Animating clone (duplicate:', duplicateIndex, 'visualOffset:', visualOffset, ') to:', targetRect.left, targetRect.top);
             });
