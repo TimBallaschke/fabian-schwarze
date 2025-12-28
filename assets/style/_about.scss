@@ -31,6 +31,13 @@
     height: 100dvh;
     background-color: white;
     z-index: -2;
+    transition: background-color 0ms linear;
+    transition-delay: 700ms;
+
+    .no-mouse-move-personal & {
+        background-color: black;
+        transition-delay: 0ms;
+    }
 }
 
 #about-container-black {
@@ -40,6 +47,13 @@
     height: 100dvh;
     background-color: black;
     z-index: -2;
+    transition: background-color 0ms linear;
+    transition-delay: 700ms;
+
+    .no-mouse-move-commissioned & {
+        background-color: white;
+        transition-delay: 0ms;
+    }
 }
 
 #about-text {

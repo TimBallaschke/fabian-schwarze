@@ -38,6 +38,7 @@
         <!-- Detail view duplicates (hidden, shown after clone animation) -->
         <!-- Rendered 4 times like marquee for infinite looping -->
         <div class="detail-view-duplicates" id="<?= $sectionId ?>-detail-duplicates">
+            <div class="detail-view-background"></div>
             <?php 
             // Render duplicates 4 times for infinite looping (matching marquee structure)
             for ($i = 0; $i < 4; $i++): 
