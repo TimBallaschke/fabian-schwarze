@@ -609,6 +609,10 @@ body {
         visibility: hidden;
         pointer-events: none;
     }
+
+    .no-mouse-move & {
+        padding: 0rem 0rem 0rem 0rem;
+    }
     
     .detail-duplicate-inner {
         width: 100%;
@@ -648,6 +652,10 @@ body {
             z-index: 2;
             text-transform: capitalize;
             letter-spacing: -0.03rem;
+
+            .no-mouse-move & {
+                opacity: 0;
+            }
         }
         
         .bottom-squares {
@@ -660,6 +668,10 @@ body {
             justify-content: space-between;
             align-items: center;
             z-index: 2;
+
+            .no-mouse-move & {
+                opacity: 0;
+            }
         }
         
         .square-top-left,
@@ -669,6 +681,7 @@ body {
             width: 1px;
             height: 1rem;
             background-color: var(--text-color);
+            transition: opacity 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
         }
     }
 }
