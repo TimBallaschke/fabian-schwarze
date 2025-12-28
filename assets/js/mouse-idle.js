@@ -1,17 +1,23 @@
 // Mouse idle detection for detail view
 // Adds 'no-mouse-move' and 'no-mouse-move-{section}' classes to body when mouse is idle
+// Resets on any mouse interaction: movement, clicks, scroll wheel
 
 let mouseIdleState = {
     timeoutId: null,
     isIdle: false,
-    idleDelay: 2000, // 3 seconds
+    idleDelay: 2800, // 3 seconds
     currentSection: null
 };
 
-// Handle mouse movement - reset idle timer
-function handleMouseMove() {
+// Handle mouse activity (movement, clicks, scroll) - reset idle timer
+function handleMouseActivity(e) {
     // Check if detail view is open (uses global detailViewState from detail.js)
     if (typeof detailViewState === 'undefined' || !detailViewState.isOpen) return;
+    
+    // Debug: log event type (remove this after confirming it works)
+    if (e && e.type !== 'mousemove') {
+        console.log('Mouse activity detected:', e.type);
+    }
     
     // Clear existing timeout
     if (mouseIdleState.timeoutId) {
@@ -49,15 +55,24 @@ function handleMouseMove() {
 
 // Start mouse idle detection
 function startMouseIdleDetection() {
-    document.addEventListener('mousemove', handleMouseMove);
+    // Use capture phase (true) to catch events before they can be stopped
+    document.addEventListener('mousemove', handleMouseActivity, true);
+    document.addEventListener('mousedown', handleMouseActivity, true);
+    document.addEventListener('mouseup', handleMouseActivity, true);
+    document.addEventListener('click', handleMouseActivity, true);
+    document.addEventListener('wheel', handleMouseActivity, true);
     
     // Start the initial timer
-    handleMouseMove();
+    handleMouseActivity();
 }
 
 // Stop mouse idle detection and clean up
 function stopMouseIdleDetection() {
-    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mousemove', handleMouseActivity, true);
+    document.removeEventListener('mousedown', handleMouseActivity, true);
+    document.removeEventListener('mouseup', handleMouseActivity, true);
+    document.removeEventListener('click', handleMouseActivity, true);
+    document.removeEventListener('wheel', handleMouseActivity, true);
     
     // Clear timeout
     if (mouseIdleState.timeoutId) {
