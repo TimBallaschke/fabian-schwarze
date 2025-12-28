@@ -4,7 +4,7 @@
 let mouseIdleState = {
     timeoutId: null,
     isIdle: false,
-    idleDelay: 3000, // 3 seconds
+    idleDelay: 2000, // 3 seconds
     currentSection: null
 };
 

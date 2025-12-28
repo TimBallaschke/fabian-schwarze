@@ -108,12 +108,14 @@ body {
 
 #commissioned-projects-top {
     border-bottom: var(--border-thickness) solid var(--text-color);
-    transition: transform 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
     position: relative;
     z-index: 1000000;
+    opacity: 1;
 
     .no-mouse-move-commissioned & {
         transform: translateY(-100%);
+        opacity: 0;
     }
 }
 
@@ -161,14 +163,17 @@ body {
     width: 100%;
     height: var(--info-bar-height);
     display: flex;
-    transition: transform 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    opacity: 1;
 
     .no-mouse-move-commissioned & {
         transform: translateY(100%);
+        opacity: 0;
     }
 
     .no-mouse-move-personal & {
         transform: translateY(-100%);
+        opacity: 0;
     }
 }
 
@@ -210,12 +215,14 @@ body {
 
 #personal-projects-bottom {
     border-top: var(--border-thickness) solid var(--text-color);
-    transition: transform 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
     position: relative;
     z-index: 1000000;
+    opacity: 1;
 
     .no-mouse-move-personal & {
         transform: translateY(100%);
+        opacity: 0;
     }
 }
 
@@ -434,12 +441,19 @@ body {
     position: relative;
 }
 
-.arrow-left-button {
-    transform: translateY(-0.1rem);
-}
-
+.arrow-left-button,
 .arrow-right-button {
-    transform: translateY(-0.1rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    svg {
+        width: 1.4em;
+        height: 1.4em;
+        stroke: currentColor;
+        stroke-width: 0.9;
+
+    }
 }
 
 .plus-button {

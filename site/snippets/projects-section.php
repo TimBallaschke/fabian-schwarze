@@ -92,9 +92,19 @@
                             <div class="bottom-squares">
                                 <div class="square-bottom-left"></div>
                                 <div class="project-navigation">
-                                    <div class="arrow-left-button">←</div>
+                                    <div class="arrow-left-button">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                                            <polyline points="12 19 5 12 12 5"></polyline>
+                                        </svg>
+                                    </div>
                                     <div class="number"></div>
-                                    <div class="arrow-right-button">→</div>
+                                    <div class="arrow-right-button">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                        </svg>
+                                    </div>
                                     <!-- <div class="plus-button">+</div> -->
                                 </div>
                                 <div class="square-bottom-right"></div>
