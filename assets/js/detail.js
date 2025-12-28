@@ -83,21 +83,32 @@ function openProject(projectElement) {
     // Create clones for ALL visible projects in the marquee viewport
     const clonedProjects = [];
     
+    // Get the clicked project's rect for calculating visual offsets
+    const clickedRect = clickedProjectWrapper.getBoundingClientRect();
+    const clickedCenterX = clickedRect.left + clickedRect.width / 2;
+    
+    // Get CSS variables from the projects container (needed for squares color)
+    const containerStyles = getComputedStyle(projectsContainer);
+    const textColor = containerStyles.getPropertyValue('--text-color').trim();
+    const backgroundColor = containerStyles.getPropertyValue('--background-color').trim();
+    
     allProjectWrappers.forEach((wrapper, index) => {
+        // Skip filtered-out projects (collapsed to width: 0)
+        if (wrapper.getAttribute('data-visible') === 'false' || wrapper.classList.contains('filter-2')) return;
+        
         // Only clone projects that are currently visible in the viewport
         if (!isInViewport(wrapper)) return;
         
         // Get the position and dimensions of this project
         const rect = wrapper.getBoundingClientRect();
         
+        // Calculate visual offset from clicked project (in terms of project widths)
+        const wrapperCenterX = rect.left + rect.width / 2;
+        const visualOffset = Math.round((wrapperCenterX - clickedCenterX) / rect.width);
+        
         // Get computed styles to replicate exactly
         const styles = getComputedStyle(wrapper);
         const padding = styles.getPropertyValue('padding');
-        
-        // Get CSS variables from the projects container (needed for squares color)
-        const containerStyles = getComputedStyle(projectsContainer);
-        const textColor = containerStyles.getPropertyValue('--text-color').trim();
-        const backgroundColor = containerStyles.getPropertyValue('--background-color').trim();
         
         console.log('CSS Variables:', { textColor, backgroundColor });
         
@@ -105,6 +116,7 @@ function openProject(projectElement) {
         const clone = wrapper.cloneNode(true);
         clone.classList.add('marquee-project-clone');
         clone.dataset.marqueeIndex = index; // Store the index for matching with duplicate
+        clone.dataset.visualOffset = visualOffset; // Store visual offset for animation
         
         // Mark the clicked project's clone
         if (wrapper === clickedProjectWrapper) {
@@ -134,8 +146,6 @@ function openProject(projectElement) {
             clone.style.backgroundColor = backgroundColor; // Also set background-color directly
         }
         
-
-        
         // Append clone to body
         document.body.appendChild(clone);
         
@@ -159,7 +169,7 @@ function openProject(projectElement) {
         
         // Store in state
         detailViewState.visibleClones.push(clone);
-        clonedProjects.push({ index, isClicked: wrapper === clickedProjectWrapper });
+        clonedProjects.push({ index, visualOffset, isClicked: wrapper === clickedProjectWrapper });
     });
     
     // Move duplicates to show the clicked project
@@ -185,28 +195,30 @@ function openProject(projectElement) {
                 }
             });
             
+            // Get the clicked duplicate's position as reference
+            const clickedDuplicate = allDuplicates[clickedIndex];
+            const clickedDuplicateRect = clickedDuplicate.getBoundingClientRect();
+            const clickedDuplicateStyles = getComputedStyle(clickedDuplicate);
+            const duplicatePadding = clickedDuplicateStyles.getPropertyValue('padding');
+            
             detailViewState.visibleClones.forEach(clone => {
-                const marqueeIndex = parseInt(clone.dataset.marqueeIndex, 10);
-                const correspondingDuplicate = allDuplicates[marqueeIndex];
+                const visualOffset = parseInt(clone.dataset.visualOffset, 10);
                 
-                if (!correspondingDuplicate) return;
-                
-                // Get the duplicate's position and styles after it has been scrolled
-                const duplicateRect = correspondingDuplicate.getBoundingClientRect();
-                const duplicateStyles = getComputedStyle(correspondingDuplicate);
-                const duplicatePadding = duplicateStyles.getPropertyValue('padding');
+                // Calculate target position based on visual offset from clicked duplicate
+                // Clicked duplicate is at center (position 0), others are offset by visualOffset * 100vw
+                const targetLeft = clickedDuplicateRect.left + (visualOffset * window.innerWidth);
                 
                 // Add transition for smooth animation
                 clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
                 
-                // Animate to duplicate's position and size
-                clone.style.left = duplicateRect.left + 'px';
-                clone.style.top = duplicateRect.top + 'px';
-                clone.style.width = duplicateRect.width + 'px';
-                clone.style.height = duplicateRect.height + 'px';
+                // Animate to calculated position (same size as clicked duplicate)
+                clone.style.left = targetLeft + 'px';
+                clone.style.top = clickedDuplicateRect.top + 'px';
+                clone.style.width = clickedDuplicateRect.width + 'px';
+                clone.style.height = clickedDuplicateRect.height + 'px';
                 clone.style.padding = duplicatePadding;
                 
-                console.log('Animating clone', marqueeIndex, 'to duplicate position:', duplicateRect.left, duplicateRect.top);
+                console.log('Animating clone with visualOffset', visualOffset, 'to position:', targetLeft, clickedDuplicateRect.top);
             });
             
             // After animation completes, show duplicates and remove clones
@@ -356,6 +368,9 @@ function closeDetailView() {
     visibleUniqueIndices.forEach(({ uniqueIndex, duplicateIndex, offset, targetLeft }) => {
         const duplicate = state.allDuplicates[duplicateIndex];
         if (!duplicate) return;
+        
+        // Skip filtered-out duplicates
+        if (duplicate.getAttribute('data-visible') === 'false') return;
         
         const duplicateStyles = getComputedStyle(duplicate);
         
