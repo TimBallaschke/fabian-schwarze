@@ -4,6 +4,8 @@ sections:
   commissioned:
     type: pages
     template: commissioned
+    headline: false
   personal:
     type: pages
     template: personal
+    headline: false

@@ -2,6 +2,16 @@ title: Artwork
 
 
 columns:
+  - width: 1/1
+    sections:
+      projectTitle:
+        type: fields
+        fields:
+          projectTitle:
+            type: text
+            label: Title
+            required: true
+
   - width: 1/2
     sections:
       projectImages:
@@ -24,20 +34,63 @@ columns:
       projectInfo:
         type: fields
         fields:
-          projectTitle:
-            type: text
-            label: Title
+          projectMonth:
+            type: select
+            label: Month
             required: true
-          projectDate:
-            type: text
-            label: Date
+            width: 1/2
+            options:
+              January: January
+              February: February
+              March: March
+              April: April
+              May: May
+              June: June
+              July: July
+              August: August
+              September: September
+              October: October
+              November: November
+              December: December
+          projectYear:
+            type: select
+            label: Year
             required: true
+            width: 1/2
+            options:
+              2030: 2030
+              2029: 2029
+              2028: 2028
+              2027: 2027
+              2026: 2026
+              2025: 2025
+              2024: 2024
+              2023: 2023
+              2022: 2022
+              2021: 2021
+              2020: 2020
+              2019: 2019
+              2018: 2018
+              2017: 2017
+              2016: 2016
+              2015: 2015
+              2014: 2014
+              2013: 2013
+              2012: 2012
+              2011: 2011
+              2010: 2010
           subCategory:
             type: select
             label: Sub-category
             options:
               event: Event
               portrait: Portrait
+          projectText:
+            type: textarea
+            label: Text
+            required: false
+            size: large
+            buttons: false
 
 
 
