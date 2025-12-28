@@ -413,6 +413,7 @@ body.about-open-2 .about-text {
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
+  position: relative;
 }
 
 .arrow-left-button {
@@ -421,6 +422,14 @@ body.about-open-2 .about-text {
 
 .arrow-right-button {
   transform: translateY(-0.1rem);
+}
+
+.plus-button {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 1.5rem;
+  left: 0;
 }
 
 .top-squares {
@@ -526,13 +535,22 @@ body.about-open-2 .about-text {
 #commissioned-projects-container .detail-view-duplicates {
   top: var(--info-bar-height);
 }
+.no-mouse-move #commissioned-projects-container .detail-view-duplicates {
+  top: 0;
+}
 #personal-projects-container .detail-view-duplicates {
   bottom: var(--info-bar-height);
 }
+.no-mouse-move #personal-projects-container .detail-view-duplicates {
+  bottom: 0;
+}
 .duplicates-active .detail-view-duplicates {
   opacity: 1;
-  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1), height 700ms cubic-bezier(0.4, 0, 0.2, 1), top 700ms cubic-bezier(0.4, 0, 0.2, 1), bottom 700ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
+}
+.no-mouse-move .detail-view-duplicates {
+  height: 100dvh;
 }
 
 .detail-duplicate {

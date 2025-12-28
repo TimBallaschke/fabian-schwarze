@@ -1,5 +1,5 @@
-// Detail view state
-let detailViewState = {
+// Detail view state (exposed globally for mouse-idle.js)
+var detailViewState = {
     isOpen: false,
     currentIndex: 0,
     uniqueProjectCount: 0,
@@ -245,6 +245,11 @@ function openProject(projectElement) {
                 detailViewState.visibleClones.forEach(clone => clone.remove());
                 detailViewState.visibleClones = [];
                 
+                // Start mouse idle detection
+                if (window.startMouseIdleDetection) {
+                    window.startMouseIdleDetection();
+                }
+                
                 console.log('Animation complete - showing duplicates, clones removed');
             }, 750); // Slightly longer than the 700ms transition
         });
@@ -473,6 +478,11 @@ function closeDetailView() {
                 // Remove all clones
                 state.visibleClones.forEach(clone => clone.remove());
                 state.visibleClones = [];
+                
+                // Stop mouse idle detection
+                if (window.stopMouseIdleDetection) {
+                    window.stopMouseIdleDetection();
+                }
                 
                 // Reset detail view state
                 state.isOpen = false;
