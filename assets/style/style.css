@@ -383,6 +383,17 @@ body.about-open-2 .about-text {
   opacity: 1;
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+.project-image.blur-placeholder {
+  filter: blur(20px);
+  -webkit-clip-path: inset(0);
+          clip-path: inset(0);
+}
+.project-image.loaded {
+  filter: blur(0px);
+  -webkit-clip-path: none;
+          clip-path: none;
+  transition: filter 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 .project-title {
   filter: blur(0px);
@@ -575,6 +586,17 @@ body.about-open-2 .about-text {
   max-height: 80%;
   -o-object-fit: contain;
      object-fit: contain;
+  transition: filter 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.detail-duplicate .detail-duplicate-inner .project-image.blur-placeholder {
+  filter: blur(20px);
+  -webkit-clip-path: inset(0);
+          clip-path: inset(0);
+}
+.detail-duplicate .detail-duplicate-inner .project-image.loaded {
+  filter: blur(0px);
+  -webkit-clip-path: none;
+          clip-path: none;
 }
 .detail-duplicate .detail-duplicate-inner .top-squares {
   position: absolute;
