@@ -260,11 +260,18 @@ body.about-open-2 .about-text {
   justify-content: end;
   border-top: var(--border-thickness) solid var(--text-color);
   border-right: white 1px solid;
+  transition: all 0ms linear;
+  transition-delay: 600ms;
 }
 .about-open-1 #commissioned-projects-about-inner {
   border-right: black 1px solid;
+  transition-delay: 0ms;
 }
 .about-open-2 #commissioned-projects-about-inner {
+  border-right: black 1px solid;
+  transition-delay: 0ms;
+}
+.initialized #commissioned-projects-about-inner {
   border-right: black 1px solid;
 }
 
@@ -281,11 +288,18 @@ body.about-open-2 .about-text {
   justify-content: start;
   border-bottom: var(--border-thickness) solid var(--text-color);
   border-left: black 1px solid;
+  transition: all 0ms linear;
+  transition-delay: 600ms;
 }
 .about-open-1 #personal-projects-about-inner {
   border-left: white 1px solid;
+  transition-delay: 0ms;
 }
 .about-open-2 #personal-projects-about-inner {
+  border-left: white 1px solid;
+  transition-delay: 0ms;
+}
+.initialized #personal-projects-about-inner {
   border-left: white 1px solid;
 }
 

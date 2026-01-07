@@ -194,12 +194,20 @@ body {
     justify-content: end;
     border-top: var(--border-thickness) solid var(--text-color);
     border-right: white 1px solid;
+    transition: all 0ms linear;
+    transition-delay: 600ms;
 
     .about-open-1 & {
         border-right: black 1px solid;
+        transition-delay: 0ms;
     }
 
     .about-open-2 & {
+        border-right: black 1px solid;
+        transition-delay: 0ms;
+    }
+
+    .initialized & {
         border-right: black 1px solid;
     }
 }
@@ -217,12 +225,20 @@ body {
     justify-content: start;
     border-bottom: var(--border-thickness) solid var(--text-color);
     border-left: black 1px solid;
+    transition: all 0ms linear;
+    transition-delay: 600ms;
 
     .about-open-1 & {
         border-left: white 1px solid;
+        transition-delay: 0ms;
     }
 
     .about-open-2 & {
+        border-left: white 1px solid;
+        transition-delay: 0ms;
+    }
+
+    .initialized & {
         border-left: white 1px solid;
     }
 }
