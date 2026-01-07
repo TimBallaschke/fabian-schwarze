@@ -511,6 +511,41 @@ function updateProjectWidthVariable() {
     }
 }
 
+// Switch to a specific image index within a detail-duplicate
+function switchProjectImage(detailDuplicate, newIndex) {
+    const images = JSON.parse(detailDuplicate.dataset.images || '[]');
+    const imageCount = parseInt(detailDuplicate.dataset.imageCount, 10) || 1;
+    
+    if (images.length === 0) return;
+    
+    // Wrap around index
+    if (newIndex < 0) newIndex = imageCount - 1;
+    if (newIndex >= imageCount) newIndex = 0;
+    
+    // Update data attribute
+    detailDuplicate.dataset.imageIndex = newIndex;
+    
+    // Update image src
+    const img = detailDuplicate.querySelector('.project-image');
+    if (img && images[newIndex]) {
+        img.src = images[newIndex];
+        // Also update srcset to prevent browser from loading old srcset
+        img.removeAttribute('srcset');
+    }
+}
+
+// Navigate to previous image within a project
+function navigatePrevImage(detailDuplicate) {
+    const currentIndex = parseInt(detailDuplicate.dataset.imageIndex, 10) || 0;
+    switchProjectImage(detailDuplicate, currentIndex - 1);
+}
+
+// Navigate to next image within a project
+function navigateNextImage(detailDuplicate) {
+    const currentIndex = parseInt(detailDuplicate.dataset.imageIndex, 10) || 0;
+    switchProjectImage(detailDuplicate, currentIndex + 1);
+}
+
 // Add event listeners
 document.addEventListener('DOMContentLoaded', function() {
     updateProjectWidthVariable();
@@ -552,5 +587,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeDetailView();
             }
         });
+    });
+    
+    // Image navigation arrows (left/right within a project)
+    const leftArrows = document.querySelectorAll('.detail-duplicate .arrow-left-button');
+    const rightArrows = document.querySelectorAll('.detail-duplicate .arrow-right-button');
+    
+    leftArrows.forEach(function(arrow) {
+        arrow.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const detailDuplicate = arrow.closest('.detail-duplicate');
+            if (detailDuplicate) {
+                navigatePrevImage(detailDuplicate);
+            }
+        });
+        arrow.style.cursor = 'pointer';
+    });
+    
+    rightArrows.forEach(function(arrow) {
+        arrow.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const detailDuplicate = arrow.closest('.detail-duplicate');
+            if (detailDuplicate) {
+                navigateNextImage(detailDuplicate);
+            }
+        });
+        arrow.style.cursor = 'pointer';
     });
 });

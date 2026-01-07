@@ -42,11 +42,22 @@
             <?php 
             // Render duplicates 4 times for infinite looping (matching marquee structure)
             for ($i = 0; $i < 4; $i++): 
-                foreach ($projects as $project): ?>
-                    <div class="detail-duplicate" data-subcategory="<?= $project->subCategory()->value() ?>">
+                foreach ($projects as $project): 
+                    $projectImages = $project->projectimages()->toStructure();
+                    $imageCount = $projectImages->count();
+                    
+                    // Build array of all image URLs for this project
+                    $allImageUrls = [];
+                    foreach ($projectImages as $imgItem) {
+                        $imgFile = $imgItem->projectimage()->toFile();
+                        if ($imgFile) {
+                            $allImageUrls[] = $imgFile->thumb(['width' => 1200, 'format' => 'webp'])->url();
+                        }
+                    }
+                    ?>
+                    <div class="detail-duplicate" data-subcategory="<?= $project->subCategory()->value() ?>" data-image-index="0" data-image-count="<?= $imageCount ?>" data-images='<?= json_encode($allImageUrls) ?>'>
                         <div class="detail-duplicate-inner">
                             <?php 
-                            $projectImages = $project->projectimages()->toStructure();
                             if ($projectImages->isNotEmpty()): 
                                 $firstImage = $projectImages->first()->projectimage()->toFile();
                                 if ($firstImage): 
@@ -98,7 +109,6 @@
                                             <polyline points="12 19 5 12 12 5"></polyline>
                                         </svg>
                                     </div>
-                                    <div class="number"></div>
                                     <div class="arrow-right-button">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                             <line x1="5" y1="12" x2="19" y2="12"></line>

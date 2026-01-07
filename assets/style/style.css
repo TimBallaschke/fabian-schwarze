@@ -317,6 +317,7 @@ body.about-open-2 .about-text {
   left: 0.4rem;
   color: var(--text-color);
   transition: opacity 1000ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
 }
 .arrow-left.no-opacity {
   opacity: 0;
@@ -327,6 +328,7 @@ body.about-open-2 .about-text {
   right: 0.4rem;
   color: var(--text-color);
   transition: opacity 1000ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
 }
 .arrow-right.no-opacity {
   opacity: 0;
@@ -459,6 +461,7 @@ body.about-open-2 .about-text {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: auto;
 }
 .arrow-left-button svg,
 .arrow-right-button svg {
