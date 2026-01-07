@@ -170,9 +170,16 @@ function openProject(projectElement) {
                 // Set initial image size (80% for marquee state)
                 const cloneImage = clone.querySelector('.project-image');
                 if (cloneImage) {
-                    cloneImage.style.maxWidth = '80%';
-                    cloneImage.style.maxHeight = '80%';
-                    cloneImage.style.transition = 'max-width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), max-height 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                    // Clear any leftover inline styles from previous syncs
+                    cloneImage.style.filter = '';
+                    cloneImage.style.opacity = '';
+                    cloneImage.style.transition = 'none';
+                    // Set initial size - use exact pixel values from current rendered size
+                    const imgRect = cloneImage.getBoundingClientRect();
+                    cloneImage.style.width = imgRect.width + 'px';
+                    cloneImage.style.height = imgRect.height + 'px';
+                    cloneImage.style.maxWidth = 'none';
+                    cloneImage.style.maxHeight = 'none';
                 }
                 
                 // Store in state
@@ -209,6 +216,10 @@ function openProject(projectElement) {
             const clickedDuplicateStyles = getComputedStyle(clickedDuplicate);
             const duplicatePadding = clickedDuplicateStyles.getPropertyValue('padding');
             
+            // Get the detail duplicate's image dimensions for exact matching
+            const duplicateImage = clickedDuplicate.querySelector('.project-image');
+            const duplicateImageRect = duplicateImage ? duplicateImage.getBoundingClientRect() : null;
+            
             detailViewState.visibleClones.forEach(clone => {
                 const visualOffset = parseInt(clone.dataset.visualOffset, 10);
                 
@@ -226,11 +237,12 @@ function openProject(projectElement) {
                 clone.style.height = clickedDuplicateRect.height + 'px';
                 clone.style.padding = duplicatePadding;
                 
-                // Animate image to detail size (90%)
+                // Animate image to exact detail duplicate image size
                 const cloneImage = clone.querySelector('.project-image');
-                if (cloneImage) {
-                    cloneImage.style.maxWidth = '90%';
-                    cloneImage.style.maxHeight = '90%';
+                if (cloneImage && duplicateImageRect) {
+                    cloneImage.style.transition = 'width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), height 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                    cloneImage.style.width = duplicateImageRect.width + 'px';
+                    cloneImage.style.height = duplicateImageRect.height + 'px';
                 }
                 
                 // Fade out the project date during transition
@@ -347,8 +359,24 @@ function syncImageToMarquee(detailDuplicate, allMarqueeProjects, uniqueProjectCo
             const marqueeImages = JSON.parse(marqueeProject.dataset.images || '[]');
             const img = marqueeProject.querySelector('.project-image');
             if (img && marqueeImages[imageIndex]) {
+                // Disable transitions temporarily to prevent aspect ratio jump
+                img.style.transition = 'none';
+                // Clear any inline styles that might interfere
+                img.style.filter = '';
+                img.style.opacity = '';
+                img.style.maxWidth = '';
+                img.style.maxHeight = '';
+                
                 img.src = marqueeImages[imageIndex];
                 img.removeAttribute('srcset');
+                
+                // Force reflow to apply changes immediately
+                img.offsetHeight;
+                
+                // Re-enable transitions after a frame
+                requestAnimationFrame(() => {
+                    img.style.transition = '';
+                });
             }
         }
     });
@@ -360,8 +388,21 @@ function syncImageToMarquee(detailDuplicate, allMarqueeProjects, uniqueProjectCo
             const dupImages = JSON.parse(dup.dataset.images || '[]');
             const img = dup.querySelector('.project-image');
             if (img && dupImages[imageIndex]) {
+                // Disable transitions temporarily
+                img.style.transition = 'none';
+                img.style.filter = '';
+                img.style.opacity = '';
+                
                 img.src = dupImages[imageIndex];
                 img.removeAttribute('srcset');
+                
+                // Force reflow
+                img.offsetHeight;
+                
+                // Re-enable transitions
+                requestAnimationFrame(() => {
+                    img.style.transition = '';
+                });
             }
         }
     });
@@ -501,6 +542,10 @@ function performCloseTransition() {
         clone.dataset.duplicateIndex = duplicateIndex;
         clone.dataset.visualOffset = visualOffset;
         
+        // Get the duplicate's image dimensions before cloning
+        const duplicateImg = duplicate.querySelector('.project-image');
+        const duplicateImgRect = duplicateImg ? duplicateImg.getBoundingClientRect() : null;
+        
         // Position based on visual offset from current duplicate
         // Current duplicate is at center (0), others at visualOffset * 100vw
         const cloneStartLeft = visualOffset * window.innerWidth;
@@ -519,12 +564,14 @@ function performCloseTransition() {
         clone.style.setProperty('--text-color', textColor);
         clone.style.setProperty('--background-color', backgroundColor);
         
-        // Set initial image size (90% for detail state)
+        // Set initial image size to exact pixel dimensions from duplicate
         const cloneImage = clone.querySelector('.project-image');
-        if (cloneImage) {
-            cloneImage.style.maxWidth = '90%';
-            cloneImage.style.maxHeight = '90%';
-            cloneImage.style.transition = 'max-width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), max-height 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+        if (cloneImage && duplicateImgRect) {
+            cloneImage.style.transition = 'none';
+            cloneImage.style.maxWidth = 'none';
+            cloneImage.style.maxHeight = 'none';
+            cloneImage.style.width = duplicateImgRect.width + 'px';
+            cloneImage.style.height = duplicateImgRect.height + 'px';
         }
         
         document.body.appendChild(clone);
@@ -532,6 +579,12 @@ function performCloseTransition() {
         
         // Target position in marquee: current at center, others at visual offsets
         const targetLeft = viewportCenterX + (visualOffset * elementWidth);
+        
+        // Get the corresponding marquee project's image dimensions
+        const marqueeProjectIndex = duplicateIndex;
+        const marqueeProject = state.allProjects[marqueeProjectIndex];
+        const marqueeImg = marqueeProject ? marqueeProject.querySelector('.project-image') : null;
+        const marqueeImgRect = marqueeImg ? marqueeImg.getBoundingClientRect() : null;
         
         console.log('Clone for visualOffset', visualOffset, 'starts at x:', cloneStartLeft, 'target:', targetLeft);
         
@@ -544,6 +597,7 @@ function performCloseTransition() {
                 width: elementWidth,
                 height: elementHeight
             },
+            marqueeImgRect: marqueeImgRect,
             duplicateIndex: duplicateIndex,
             visualOffset: visualOffset
         });
@@ -567,7 +621,7 @@ function performCloseTransition() {
             // Remove duplicates-active class
             state.projectsContainer.classList.remove('duplicates-active');
             
-            cloneData.forEach(({ clone, targetRect, duplicateIndex, visualOffset }) => {
+            cloneData.forEach(({ clone, targetRect, marqueeImgRect, duplicateIndex, visualOffset }) => {
                 clone.style.transition = 'all 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
                 clone.style.left = targetRect.left + 'px';
                 clone.style.top = targetRect.top + 'px';
@@ -575,11 +629,12 @@ function performCloseTransition() {
                 clone.style.height = targetRect.height + 'px';
                 clone.style.padding = marqueePadding;
                 
-                // Animate image to marquee size (80%)
+                // Animate image to exact marquee image dimensions
                 const cloneImage = clone.querySelector('.project-image');
-                if (cloneImage) {
-                    cloneImage.style.maxWidth = '80%';
-                    cloneImage.style.maxHeight = '80%';
+                if (cloneImage && marqueeImgRect) {
+                    cloneImage.style.transition = 'width 700ms cubic-bezier(0.4, 0.0, 0.2, 1), height 700ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+                    cloneImage.style.width = marqueeImgRect.width + 'px';
+                    cloneImage.style.height = marqueeImgRect.height + 'px';
                 }
                 
                 // Fade out the navigation elements during transition
