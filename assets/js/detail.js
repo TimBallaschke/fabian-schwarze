@@ -695,4 +695,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         arrow.style.cursor = 'pointer';
     });
+    
+    // Plus button (toggle description visibility)
+    const plusButtons = document.querySelectorAll('.detail-duplicate .plus-button');
+    
+    plusButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const detailDuplicate = button.closest('.detail-duplicate');
+            if (detailDuplicate) {
+                detailDuplicate.classList.toggle('description-visible');
+            }
+        });
+        button.style.cursor = 'pointer';
+    });
 });
