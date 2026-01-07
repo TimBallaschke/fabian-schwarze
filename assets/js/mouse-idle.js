@@ -14,6 +14,12 @@ function handleMouseActivity(e) {
     // Check if detail view is open (uses global detailViewState from detail.js)
     if (typeof detailViewState === 'undefined' || !detailViewState.isOpen) return;
     
+    // Don't apply idle logic when about is open
+    if (document.body.classList.contains('about-open-1') || 
+        document.body.classList.contains('about-open-2')) {
+        return;
+    }
+    
     // Debug: log event type (remove this after confirming it works)
     if (e && e.type !== 'mousemove') {
         console.log('Mouse activity detected:', e.type);
@@ -36,6 +42,12 @@ function handleMouseActivity(e) {
     // Set new timeout
     mouseIdleState.timeoutId = setTimeout(() => {
         if (detailViewState.isOpen && detailViewState.projectsContainer) {
+            // Don't go idle when about is open
+            if (document.body.classList.contains('about-open-1') || 
+                document.body.classList.contains('about-open-2')) {
+                return;
+            }
+            
             // Check if any visible duplicate has description-visible class
             const currentDuplicate = detailViewState.allDuplicates[detailViewState.currentIndex];
             if (currentDuplicate && currentDuplicate.classList.contains('description-visible')) {
