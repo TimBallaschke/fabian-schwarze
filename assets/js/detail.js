@@ -561,12 +561,15 @@ function updateProjectWidthVariable() {
     }
 }
 
-// Switch to a specific image index within a detail-duplicate
+// Switch to a specific image index within a detail-duplicate (with blur transition)
 function switchProjectImage(detailDuplicate, newIndex) {
     const images = JSON.parse(detailDuplicate.dataset.images || '[]');
     const imageCount = parseInt(detailDuplicate.dataset.imageCount, 10) || 1;
     
     if (images.length === 0) return;
+    
+    // Prevent rapid clicking during transition
+    if (detailDuplicate.dataset.transitioning === 'true') return;
     
     // Wrap around index
     if (newIndex < 0) newIndex = imageCount - 1;
@@ -575,12 +578,38 @@ function switchProjectImage(detailDuplicate, newIndex) {
     // Update data attribute
     detailDuplicate.dataset.imageIndex = newIndex;
     
-    // Update image src
+    // Update image src with blur transition
     const img = detailDuplicate.querySelector('.project-image');
     if (img && images[newIndex]) {
-        img.src = images[newIndex];
-        // Also update srcset to prevent browser from loading old srcset
-        img.removeAttribute('srcset');
+        // Mark as transitioning
+        detailDuplicate.dataset.transitioning = 'true';
+        
+        // Set up transition for filter
+        img.style.transition = 'all 150ms ease-out';
+        
+        // Apply blur
+        img.style.filter = 'blur(0px)';
+        img.style.opacity = '1';
+        
+        // After blur is applied, change the image
+        setTimeout(() => {
+            img.src = images[newIndex];
+            // Also update srcset to prevent browser from loading old srcset
+            img.removeAttribute('srcset');
+            
+            // Remove blur after image is changed
+            setTimeout(() => {
+                img.style.filter = 'blur(0px)';
+                img.style.opacity = '1';
+                
+                // Clean up after transition completes
+                setTimeout(() => {
+                    img.style.transition = '';
+                    img.style.filter = '';
+                    detailDuplicate.dataset.transitioning = 'false';
+                }, 0);
+            }, 0); // Small delay to ensure new image starts loading
+        }, 0); // Match the blur transition duration
     }
 }
 
