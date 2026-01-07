@@ -7,6 +7,15 @@ Projectimages:
 - 
   projectimage:
     - file://DR7Sm7Bw35OR8ZYc
+- 
+  projectimage:
+    - file://umper9UnMmt70EUC
+- 
+  projectimage:
+    - file://lW5KhmJ0il7JKdG9
+- 
+  projectimage:
+    - file://DwUgADEJUElusvHf
 
 ----
 
@@ -14,11 +23,19 @@ Projecttitle: lorem ante
 
 ----
 
-Projectdate: Sep 2024
+Projectmonth: December
+
+----
+
+Projectyear: 2022
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 

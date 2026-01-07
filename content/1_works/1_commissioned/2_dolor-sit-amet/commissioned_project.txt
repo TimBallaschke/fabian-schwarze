@@ -2,23 +2,40 @@ Title: dolor sit amet
 
 ----
 
+Projecttitle: Dolor sit amet
+
+----
+
 Projectimages:
 
 - 
   projectimage:
     - file://fHMI9RnDbKrheuYo
+- 
+  projectimage:
+    - file://gR540dzXjTCa5ST7
+- 
+  projectimage:
+    - file://QA2RbUCF5mdxxiiy
+- 
+  projectimage:
+    - file://ELlGrkUZ8yZk1xKn
 
 ----
 
-Projecttitle: Dolor sit amet
+Projectmonth: September
 
 ----
 
-Projectdate: Jan 2024
+Projectyear: 2022
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 

@@ -7,6 +7,15 @@ Projectimages:
 - 
   projectimage:
     - file://cJoeSNCwBgflfWfa
+- 
+  projectimage:
+    - file://eNSfPmpGORoQ04Nt
+- 
+  projectimage:
+    - file://SjzDpLJcmAJQOKpN
+- 
+  projectimage:
+    - file://e7W1HrnjBHlWvSOM
 
 ----
 
@@ -14,11 +23,19 @@ Projecttitle: blandit vel
 
 ----
 
-Projectdate: Dec 2024
+Projectmonth: September
+
+----
+
+Projectyear: 2021
 
 ----
 
 Subcategory: diary
+
+----
+
+Projecttext: 
 
 ----
 

@@ -7,6 +7,18 @@ Projectimages:
 - 
   projectimage:
     - file://jWE5qOwc8rVZ7j5j
+- 
+  projectimage:
+    - file://XjpKSY2jOWjSkLYw
+- 
+  projectimage:
+    - file://HC03n4YVISDRYDDq
+- 
+  projectimage:
+    - file://DR7Sm7Bw35OR8ZYc
+- 
+  projectimage:
+    - file://YSK2TP5L3JpsLMAL
 
 ----
 
@@ -14,11 +26,19 @@ Projecttitle: Donec vitae
 
 ----
 
-Projectdate: Feb 2022
+Projectmonth: October
+
+----
+
+Projectyear: 2022
 
 ----
 
 Subcategory: diary
+
+----
+
+Projecttext: 
 
 ----
 

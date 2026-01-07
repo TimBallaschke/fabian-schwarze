@@ -7,6 +7,18 @@ Projectimages:
 - 
   projectimage:
     - file://ELlGrkUZ8yZk1xKn
+- 
+  projectimage:
+    - file://6fVSDAyWjSFYlNav
+- 
+  projectimage:
+    - file://FEhD4OkTitSR6oVz
+- 
+  projectimage:
+    - file://gkhkLwNyHEGYjNFN
+- 
+  projectimage:
+    - file://qU964bjfvBwUUhcQ
 
 ----
 
@@ -14,11 +26,19 @@ Projecttitle: sagittis magna
 
 ----
 
-Projectdate: Jul 2023
+Projectmonth: July
+
+----
+
+Projectyear: 2023
 
 ----
 
 Subcategory: diary
+
+----
+
+Projecttext: 
 
 ----
 

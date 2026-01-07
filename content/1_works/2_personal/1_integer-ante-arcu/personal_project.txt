@@ -7,6 +7,15 @@ Projectimages:
 - 
   projectimage:
     - file://g8mYYkX9EU4GTypn
+- 
+  projectimage:
+    - file://QA2RbUCF5mdxxiiy
+- 
+  projectimage:
+    - file://gR540dzXjTCa5ST7
+- 
+  projectimage:
+    - file://IOKApWBX8XEncouj
 
 ----
 
@@ -14,7 +23,11 @@ Projecttitle: Integer ante arcu
 
 ----
 
-Projectdate: Jan 2024
+Projectmonth: January
+
+----
+
+Projectyear: 2024
 
 ----
 
@@ -22,7 +35,7 @@ Subcategory: diary
 
 ----
 
-Text: 
+Projecttext: 
 
 ----
 

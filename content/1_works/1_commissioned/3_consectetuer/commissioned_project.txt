@@ -7,6 +7,15 @@ Projectimages:
 - 
   projectimage:
     - file://pUeIUftxzzhqfOBe
+- 
+  projectimage:
+    - file://amhcV3u8Ka6sNsgx
+- 
+  projectimage:
+    - file://McBwQ2Z4xpQgB9h1
+- 
+  projectimage:
+    - file://TS33BhcKx5KziCFx
 
 ----
 
@@ -14,11 +23,19 @@ Projecttitle: consectetuer
 
 ----
 
-Projectdate: Feb 2024
+Projectmonth: February
+
+----
+
+Projectyear: 2024
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 

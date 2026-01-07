@@ -2,23 +2,37 @@ Title: leo eget
 
 ----
 
+Projecttitle: leo eget
+
+----
+
 Projectimages:
 
 - 
   projectimage:
     - file://gkhkLwNyHEGYjNFN
+- 
+  projectimage:
+    - file://qU964bjfvBwUUhcQ
+- 
+  projectimage:
+    - file://uvyvWLHmGbtzJ2R9
 
 ----
 
-Projecttitle: eo eget
+Projectmonth: August
 
 ----
 
-Projectdate: Aug 2024
+Projectyear: 2024
 
 ----
 
-Subcategory: diary
+Subcategory: story
+
+----
+
+Projecttext: 
 
 ----
 

@@ -7,6 +7,12 @@ Projectimages:
 - 
   projectimage:
     - file://HC03n4YVISDRYDDq
+- 
+  projectimage:
+    - file://pUeIUftxzzhqfOBe
+- 
+  projectimage:
+    - file://6fVSDAyWjSFYlNav
 
 ----
 
@@ -14,11 +20,19 @@ Projecttitle: tincidunt tempus
 
 ----
 
-Projectdate: Jul 2024
+Projectmonth: April
+
+----
+
+Projectyear: 2024
 
 ----
 
 Subcategory: event
+
+----
+
+Projecttext: 
 
 ----
 

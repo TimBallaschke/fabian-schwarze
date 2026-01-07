@@ -2,23 +2,37 @@ Title: Maecenas
 
 ----
 
+Projecttitle: Maecenas
+
+----
+
 Projectimages:
 
 - 
   projectimage:
     - file://amhcV3u8Ka6sNsgx
+- 
+  projectimage:
+    - file://McBwQ2Z4xpQgB9h1
+- 
+  projectimage:
+    - file://Ilrk8ANCRsG69o1y
 
 ----
 
-Projecttitle: Maecenas
+Projectmonth: December
 
 ----
 
-Projectdate: Dec 2024
+Projectyear: 2024
 
 ----
 
 Subcategory: diary
+
+----
+
+Projecttext: 
 
 ----
 

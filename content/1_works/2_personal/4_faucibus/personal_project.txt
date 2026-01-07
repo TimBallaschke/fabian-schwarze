@@ -2,23 +2,43 @@ Title: faucibus
 
 ----
 
+Projecttitle: faucibus
+
+----
+
 Projectimages:
 
 - 
   projectimage:
     - file://Ilrk8ANCRsG69o1y
+- 
+  projectimage:
+    - file://1mP1qNZXh7cjGXB8
+- 
+  projectimage:
+    - file://XQx38FaBe6NUVHdH
+- 
+  projectimage:
+    - file://amhcV3u8Ka6sNsgx
+- 
+  projectimage:
+    - file://McBwQ2Z4xpQgB9h1
 
 ----
 
-Projecttitle: faucibus
+Projectmonth: March
 
 ----
 
-Projectdate: Mar 2025
+Projectyear: 2025
 
 ----
 
 Subcategory: diary
+
+----
+
+Projecttext: 
 
 ----
 

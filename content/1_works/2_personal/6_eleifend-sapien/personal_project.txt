@@ -11,6 +11,15 @@ Projectimages:
 - 
   projectimage:
     - file://TS33BhcKx5KziCFx
+- 
+  projectimage:
+    - file://9YSn2JdOSykyngFc
+- 
+  projectimage:
+    - file://fHMI9RnDbKrheuYo
+- 
+  projectimage:
+    - file://pUeIUftxzzhqfOBe
 
 ----
 
@@ -18,7 +27,7 @@ Projectmonth: April
 
 ----
 
-Projectyear: 2019
+Projectyear: 2023
 
 ----
 
@@ -27,10 +36,6 @@ Subcategory: diary
 ----
 
 Projecttext: 
-
-----
-
-Projectdate: 2027-02-20 00:00:00
 
 ----
 

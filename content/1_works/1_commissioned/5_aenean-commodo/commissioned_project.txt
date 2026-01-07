@@ -7,6 +7,15 @@ Projectimages:
 - 
   projectimage:
     - file://IOKApWBX8XEncouj
+- 
+  projectimage:
+    - file://DR7Sm7Bw35OR8ZYc
+- 
+  projectimage:
+    - file://YSK2TP5L3JpsLMAL
+- 
+  projectimage:
+    - file://FEhD4OkTitSR6oVz
 
 ----
 
@@ -14,11 +23,19 @@ Projecttitle: Aenean commodo
 
 ----
 
-Projectdate: Jul 2024
+Projectmonth: November
+
+----
+
+Projectyear: 2024
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 

@@ -2,23 +2,43 @@ Title: Lorem ipsum
 
 ----
 
+Projecttitle: Lorem ipsum
+
+----
+
 Projectimages:
 
 - 
   projectimage:
     - file://SjzDpLJcmAJQOKpN
+- 
+  projectimage:
+    - file://dft1ii2Q63vC7XpP
+- 
+  projectimage:
+    - file://e7W1HrnjBHlWvSOM
+- 
+  projectimage:
+    - file://g8mYYkX9EU4GTypn
+- 
+  projectimage:
+    - file://jWE5qOwc8rVZ7j5j
 
 ----
 
-Projecttitle: Lorem ipsum
+Projectmonth: March
 
 ----
 
-Projectdate: Nov 2023
+Projectyear: 2023
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 

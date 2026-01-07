@@ -7,6 +7,18 @@ Projectimages:
 - 
   projectimage:
     - file://FEhD4OkTitSR6oVz
+- 
+  projectimage:
+    - file://gkhkLwNyHEGYjNFN
+- 
+  projectimage:
+    - file://qU964bjfvBwUUhcQ
+- 
+  projectimage:
+    - file://Ilrk8ANCRsG69o1y
+- 
+  projectimage:
+    - file://XQx38FaBe6NUVHdH
 
 ----
 
@@ -14,11 +26,19 @@ Projecttitle: ligula eget
 
 ----
 
-Projectdate: Feb 2025
+Projectmonth: May
+
+----
+
+Projectyear: 2025
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 

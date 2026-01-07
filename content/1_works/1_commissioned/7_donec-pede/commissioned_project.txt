@@ -7,6 +7,15 @@ Projectimages:
 - 
   projectimage:
     - file://YSK2TP5L3JpsLMAL
+- 
+  projectimage:
+    - file://1mP1qNZXh7cjGXB8
+- 
+  projectimage:
+    - file://eNSfPmpGORoQ04Nt
+- 
+  projectimage:
+    - file://9YSn2JdOSykyngFc
 
 ----
 
@@ -14,11 +23,19 @@ Projecttitle: Donec pede
 
 ----
 
-Projectdate: May 2025
+Projectmonth: August
+
+----
+
+Projectyear: 2023
 
 ----
 
 Subcategory: portrait
+
+----
+
+Projecttext: 
 
 ----
 
