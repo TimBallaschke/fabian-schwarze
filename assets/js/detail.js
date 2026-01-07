@@ -288,6 +288,50 @@ function navigatePrev() {
     scrollDuplicatesToIndex(newIndex);
 }
 
+// Sync image index from detail duplicate to all corresponding marquee projects
+function syncImageToMarquee(detailDuplicate, allMarqueeProjects, uniqueProjectCount) {
+    const imageIndex = parseInt(detailDuplicate.dataset.imageIndex, 10) || 0;
+    const images = JSON.parse(detailDuplicate.dataset.images || '[]');
+    
+    if (imageIndex === 0 || images.length === 0) return; // No sync needed if still on first image
+    
+    // Find which unique project this is (0 to uniqueProjectCount-1)
+    const allDuplicates = Array.from(detailDuplicate.closest('.detail-view-duplicates').querySelectorAll('.detail-duplicate'));
+    const duplicateIndex = allDuplicates.indexOf(detailDuplicate);
+    const uniqueProjectIndex = duplicateIndex % uniqueProjectCount;
+    
+    console.log('Syncing image index', imageIndex, 'for unique project', uniqueProjectIndex);
+    
+    // Update all instances of this project in the marquee (there are 4 sets)
+    allMarqueeProjects.forEach((marqueeProject, idx) => {
+        if (idx % uniqueProjectCount === uniqueProjectIndex) {
+            // Update the data attribute
+            marqueeProject.dataset.imageIndex = imageIndex;
+            
+            // Update the image src
+            const marqueeImages = JSON.parse(marqueeProject.dataset.images || '[]');
+            const img = marqueeProject.querySelector('.project-image');
+            if (img && marqueeImages[imageIndex]) {
+                img.src = marqueeImages[imageIndex];
+                img.removeAttribute('srcset');
+            }
+        }
+    });
+    
+    // Also sync all other detail duplicates of the same project
+    allDuplicates.forEach((dup, idx) => {
+        if (idx % uniqueProjectCount === uniqueProjectIndex && dup !== detailDuplicate) {
+            dup.dataset.imageIndex = imageIndex;
+            const dupImages = JSON.parse(dup.dataset.images || '[]');
+            const img = dup.querySelector('.project-image');
+            if (img && dupImages[imageIndex]) {
+                img.src = dupImages[imageIndex];
+                img.removeAttribute('srcset');
+            }
+        }
+    });
+}
+
 // Close detail view
 function closeDetailView() {
     const state = detailViewState;
@@ -314,6 +358,12 @@ function closeDetailView() {
     if (!currentMarqueeProject) {
         console.log('No marquee project found at index:', state.currentIndex);
         return;
+    }
+    
+    // Sync current image from detail view to marquee
+    const currentDuplicateForSync = state.allDuplicates[state.currentIndex];
+    if (currentDuplicateForSync) {
+        syncImageToMarquee(currentDuplicateForSync, state.allProjects, state.uniqueProjectCount);
     }
     
     console.log('=== CLOSE DEBUG ===');

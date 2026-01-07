@@ -1,7 +1,19 @@
-<div class="single-project-wrapper" data-subcategory="<?= $project->subCategory()->value() ?>">
+<?php 
+$projectImages = $project->projectimages()->toStructure();
+$imageCount = $projectImages->count();
+
+// Build array of all image URLs for this project (for marquee size)
+$allImageUrls = [];
+foreach ($projectImages as $imgItem) {
+    $imgFile = $imgItem->projectimage()->toFile();
+    if ($imgFile) {
+        $allImageUrls[] = $imgFile->thumb(['width' => 600, 'format' => 'webp'])->url();
+    }
+}
+?>
+<div class="single-project-wrapper" data-subcategory="<?= $project->subCategory()->value() ?>" data-image-index="0" data-image-count="<?= $imageCount ?>" data-images='<?= json_encode($allImageUrls) ?>'>
     <div class="single-project-container">
         <?php 
-        $projectImages = $project->projectimages()->toStructure();
         if ($projectImages->isNotEmpty()): 
             $firstImage = $projectImages->first()->projectimage()->toFile();
             if ($firstImage): 
