@@ -193,6 +193,15 @@ body {
 #commissioned-projects-about-inner {
     justify-content: end;
     border-top: var(--border-thickness) solid var(--text-color);
+    border-right: white 1px solid;
+
+    .about-open-1 & {
+        border-right: black 1px solid;
+    }
+
+    .about-open-2 & {
+        border-right: black 1px solid;
+    }
 }
 
 #website-title {
@@ -207,6 +216,15 @@ body {
 #personal-projects-about-inner {
     justify-content: start;
     border-bottom: var(--border-thickness) solid var(--text-color);
+    border-left: black 1px solid;
+
+    .about-open-1 & {
+        border-left: white 1px solid;
+    }
+
+    .about-open-2 & {
+        border-left: white 1px solid;
+    }
 }
 
 #about-button {
@@ -237,8 +255,8 @@ body {
         height: calc(var(--font-size) * 0.7);
         border-radius: calc(var(--font-size) * 0.7 / 2);
         border: 1px solid var(--text-color);
-        margin-right: 0.3rem;
-        transform: translateY(calc(var(--font-size) * (-0.03)));
+        margin-right: 0.25rem;
+        transform: translateY(calc(var(--font-size) * (0)));
     }
 
     &.active {

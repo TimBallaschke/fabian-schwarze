@@ -665,6 +665,11 @@ function switchProjectImage(detailDuplicate, newIndex) {
     // Update data attribute
     detailDuplicate.dataset.imageIndex = newIndex;
     
+    // Sync image to marquee immediately so they stay in sync
+    if (detailViewState.isOpen) {
+        syncImageToMarquee(detailDuplicate, detailViewState.allProjects, detailViewState.uniqueProjectCount);
+    }
+    
     // Update image src with blur transition
     const img = detailDuplicate.querySelector('.project-image');
     if (img && images[newIndex]) {
