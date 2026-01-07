@@ -195,7 +195,7 @@ body.about-open-2 .about-text {
 }
 
 .section-categories {
-  width: 25vw;
+  width: 20rem;
   display: flex;
   justify-content: space-between;
 }
@@ -204,7 +204,7 @@ body.about-open-2 .about-text {
 }
 
 .section-navigation {
-  width: 25vw;
+  width: 20rem;
   display: none;
   justify-content: space-between;
 }
