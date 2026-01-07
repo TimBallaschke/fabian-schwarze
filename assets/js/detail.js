@@ -797,4 +797,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         button.style.cursor = 'pointer';
     });
+    
+    // Keyboard navigation for images in detail view
+    document.addEventListener('keydown', function(event) {
+        // Only handle when detail view is open
+        if (!detailViewState.isOpen) return;
+        
+        // Get the current detail duplicate
+        const currentDuplicate = detailViewState.allDuplicates[detailViewState.currentIndex];
+        if (!currentDuplicate) return;
+        
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            navigatePrevImage(currentDuplicate);
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            navigateNextImage(currentDuplicate);
+        }
+    });
 });

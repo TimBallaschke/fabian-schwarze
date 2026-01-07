@@ -1,3 +1,4 @@
+    <script src="<?= url('assets/js/favicon.js') ?>"></script>
     <script src="<?= url('assets/js/image-loader.js') ?>"></script>
     <script src="<?= url('assets/js/mouse-idle.js') ?>"></script>
     <script src="<?= url('assets/js/detail.js') ?>"></script>
