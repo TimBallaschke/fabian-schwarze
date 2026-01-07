@@ -286,6 +286,11 @@ function navigateNext() {
     const state = detailViewState;
     if (!state.isOpen) return;
     
+    // Close description on all duplicates (no delay)
+    state.allDuplicates.forEach(dup => {
+        dup.classList.remove('description-visible');
+    });
+    
     let newIndex = state.currentIndex + 1;
     
     // Handle infinite looping - jump to middle sets when hitting edges
@@ -301,6 +306,11 @@ function navigateNext() {
 function navigatePrev() {
     const state = detailViewState;
     if (!state.isOpen) return;
+    
+    // Close description on all duplicates (no delay)
+    state.allDuplicates.forEach(dup => {
+        dup.classList.remove('description-visible');
+    });
     
     let newIndex = state.currentIndex - 1;
     
@@ -363,6 +373,33 @@ function closeDetailView() {
     if (!state.isOpen) return;
     
     console.log('Closing detail view');
+    
+    // Check if any duplicate has description-visible
+    const hasDescriptionVisible = state.allDuplicates.some(dup => 
+        dup.classList.contains('description-visible')
+    );
+    
+    if (hasDescriptionVisible) {
+        // Remove description-visible from ALL duplicates
+        state.allDuplicates.forEach(dup => {
+            dup.classList.remove('description-visible');
+        });
+        
+        // Wait 600ms then continue with close
+        setTimeout(() => {
+            performCloseTransition();
+        }, 600);
+        return;
+    }
+    
+    // No description visible, close immediately
+    performCloseTransition();
+}
+
+// Perform the actual close transition
+function performCloseTransition() {
+    const state = detailViewState;
+    if (!state.isOpen) return;
     
     // Find the marquee wrapper in the current projects container
     const marqueeWrapper = state.projectsContainer.querySelector('.marquee-wrapper');
