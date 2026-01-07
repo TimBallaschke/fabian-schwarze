@@ -23,7 +23,7 @@ Projectimages:
 
 ----
 
-Projectmonth: September
+Projectmonth: Sep
 
 ----
 

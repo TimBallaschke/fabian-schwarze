@@ -40,18 +40,18 @@ columns:
             required: true
             width: 1/2
             options:
-              January: Jan
-              February: Feb
-              March: Mar
-              April: Apr
+              Jan: January
+              Feb: February
+              Mar: March
+              Apr: April
               May: May
-              June: Jun
-              July: Jul
-              August: Aug
-              September: Sep
-              October: Oct
-              November: Nov
-              December: Dec
+              Jun: June
+              Jul: July
+              Aug: August
+              Sep: September
+              Oct: October
+              Nov: November
+              Dec: December
           projectYear:
             type: select
             label: Year

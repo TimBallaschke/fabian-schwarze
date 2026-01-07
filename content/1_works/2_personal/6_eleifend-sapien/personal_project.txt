@@ -23,7 +23,7 @@ Projectimages:
 
 ----
 
-Projectmonth: April
+Projectmonth: Apr
 
 ----
 

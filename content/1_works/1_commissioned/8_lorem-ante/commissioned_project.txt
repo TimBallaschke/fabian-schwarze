@@ -23,7 +23,7 @@ Projecttitle: lorem ante
 
 ----
 
-Projectmonth: December
+Projectmonth: Dec
 
 ----
 

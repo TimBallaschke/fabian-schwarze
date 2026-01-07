@@ -23,7 +23,7 @@ Projecttitle: blandit vel
 
 ----
 
-Projectmonth: September
+Projectmonth: Sep
 
 ----
 

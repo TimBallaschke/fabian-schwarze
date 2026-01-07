@@ -20,7 +20,7 @@ Projecttitle: tincidunt tempus
 
 ----
 
-Projectmonth: April
+Projectmonth: Apr
 
 ----
 

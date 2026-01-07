@@ -26,7 +26,7 @@ Projecttitle: Phasellus viverra
 
 ----
 
-Projectmonth: June
+Projectmonth: Jun
 
 ----
 

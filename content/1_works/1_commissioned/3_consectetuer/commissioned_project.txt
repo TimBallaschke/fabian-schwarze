@@ -23,7 +23,7 @@ Projecttitle: consectetuer
 
 ----
 
-Projectmonth: February
+Projectmonth: Feb
 
 ----
 

@@ -20,7 +20,7 @@ Projectimages:
 
 ----
 
-Projectmonth: August
+Projectmonth: Aug
 
 ----
 

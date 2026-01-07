@@ -23,7 +23,7 @@ Projecttitle: Integer ante arcu
 
 ----
 
-Projectmonth: January
+Projectmonth: Jan
 
 ----
 

@@ -26,7 +26,7 @@ Projecttitle: sagittis magna
 
 ----
 
-Projectmonth: July
+Projectmonth: Jul
 
 ----
 

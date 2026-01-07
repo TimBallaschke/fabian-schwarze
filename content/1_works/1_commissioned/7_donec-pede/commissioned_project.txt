@@ -23,7 +23,7 @@ Projecttitle: Donec pede
 
 ----
 
-Projectmonth: August
+Projectmonth: Aug
 
 ----
 

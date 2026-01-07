@@ -23,7 +23,7 @@ Projecttitle: Aenean commodo
 
 ----
 
-Projectmonth: November
+Projectmonth: Nov
 
 ----
 
