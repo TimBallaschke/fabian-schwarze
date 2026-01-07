@@ -2,6 +2,10 @@ Title: blandit vel
 
 ----
 
+Projecttitle: blandit vel
+
+----
+
 Projectimages:
 
 - 
@@ -19,10 +23,6 @@ Projectimages:
 
 ----
 
-Projecttitle: blandit vel
-
-----
-
 Projectmonth: Sep
 
 ----
@@ -31,7 +31,7 @@ Projectyear: 2021
 
 ----
 
-Subcategory: diary
+Subcategory: story
 
 ----
 

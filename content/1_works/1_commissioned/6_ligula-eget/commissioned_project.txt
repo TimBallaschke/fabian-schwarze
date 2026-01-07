@@ -2,6 +2,10 @@ Title: ligula eget
 
 ----
 
+Projecttitle: ligula eget
+
+----
+
 Projectimages:
 
 - 
@@ -22,10 +26,6 @@ Projectimages:
 
 ----
 
-Projecttitle: ligula eget
-
-----
-
 Projectmonth: May
 
 ----
@@ -34,7 +34,7 @@ Projectyear: 2025
 
 ----
 
-Subcategory: portrait
+Subcategory: event
 
 ----
 

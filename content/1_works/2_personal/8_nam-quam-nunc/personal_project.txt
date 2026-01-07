@@ -31,7 +31,7 @@ Projectyear: 2022
 
 ----
 
-Subcategory: diary
+Subcategory: story
 
 ----
 

@@ -2,6 +2,10 @@ Title: Donec vitae
 
 ----
 
+Projecttitle: Donec vitae
+
+----
+
 Projectimages:
 
 - 
@@ -22,10 +26,6 @@ Projectimages:
 
 ----
 
-Projecttitle: Donec vitae
-
-----
-
 Projectmonth: Oct
 
 ----
@@ -34,7 +34,7 @@ Projectyear: 2022
 
 ----
 
-Subcategory: diary
+Subcategory: story
 
 ----
 
