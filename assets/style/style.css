@@ -630,6 +630,7 @@ body.about-open-2 .about-text {
   opacity: 1;
   filter: blur(0px);
   bottom: 0;
+  transform: translateX(1.5rem) scale(1);
 }
 .detail-duplicate .detail-description {
   position: absolute;
@@ -643,9 +644,9 @@ body.about-open-2 .about-text {
   align-items: center;
   overflow: scroll;
   opacity: 0;
-  filter: blur(0px);
+  filter: blur(20px);
   transition: all 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(1rem);
+  transform: translateX(1.5rem) scale(0.5);
 }
 .detail-duplicate .detail-description-content {
   width: 50%;
