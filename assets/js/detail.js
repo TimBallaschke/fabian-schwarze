@@ -233,7 +233,23 @@ function openProject(projectElement) {
                     cloneImage.style.maxHeight = '90%';
                 }
                 
+                // Fade out the project date during transition
+                const cloneDate = clone.querySelector('.project-date');
+                if (cloneDate) {
+                    cloneDate.style.transition = 'opacity 300ms ease-out, filter 350ms ease-out';
+                    cloneDate.style.opacity = '0';
+                }
+                
                 console.log('Animating clone with visualOffset', visualOffset, 'to position:', targetLeft, clickedDuplicateRect.top);
+            });
+            
+            // Hide navigation elements in duplicates before they're shown
+            allDuplicates.forEach(dup => {
+                const nav = dup.querySelector('.project-navigation');
+                if (nav) {
+                    nav.style.opacity = '0';
+                    nav.style.transition = 'none';
+                }
             });
             
             // After animation completes, show duplicates and remove clones
@@ -244,6 +260,15 @@ function openProject(projectElement) {
                 // Remove all clones from DOM
                 detailViewState.visibleClones.forEach(clone => clone.remove());
                 detailViewState.visibleClones = [];
+                
+                // Fade in navigation elements on duplicates
+                allDuplicates.forEach(dup => {
+                    const nav = dup.querySelector('.project-navigation');
+                    if (nav) {
+                        nav.style.transition = 'opacity 300ms ease-out';
+                        nav.style.opacity = '1';
+                    }
+                });
                 
                 // Start mouse idle detection
                 if (window.startMouseIdleDetection) {
@@ -520,7 +545,23 @@ function closeDetailView() {
                     cloneImage.style.maxHeight = '80%';
                 }
                 
+                // Fade out the navigation elements during transition
+                const cloneNav = clone.querySelector('.project-navigation');
+                if (cloneNav) {
+                    cloneNav.style.transition = 'opacity 300ms ease-out';
+                    cloneNav.style.opacity = '0';
+                }
+                
                 console.log('Animating clone (duplicate:', duplicateIndex, 'visualOffset:', visualOffset, ') to:', targetRect.left, targetRect.top);
+            });
+            
+            // Hide project-date elements in marquee before they're shown
+            state.allProjects.forEach(proj => {
+                const date = proj.querySelector('.project-date');
+                if (date) {
+                    date.style.opacity = '0';
+                    date.style.transition = 'none';
+                }
             });
             
             // After animation completes, remove clones and reset state
@@ -528,6 +569,15 @@ function closeDetailView() {
                 // Remove all clones
                 state.visibleClones.forEach(clone => clone.remove());
                 state.visibleClones = [];
+                
+                // Fade in project-date elements on marquee
+                state.allProjects.forEach(proj => {
+                    const date = proj.querySelector('.project-date');
+                    if (date) {
+                        date.style.transition = 'opacity 300ms ease-out';
+                        date.style.opacity = '1';
+                    }
+                });
                 
                 // Stop mouse idle detection
                 if (window.stopMouseIdleDetection) {
