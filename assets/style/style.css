@@ -606,6 +606,7 @@ body.about-open-2 .about-text {
   height: 100%;
   width: 100vw;
   flex-shrink: 0;
+  position: relative;
   padding: 2rem 2rem 2rem 2rem;
   background-color: var(--background-color);
   color: var(--text-color);
@@ -624,6 +625,30 @@ body.about-open-2 .about-text {
 }
 .detail-duplicate.description-visible .project-image {
   max-height: 80% !important;
+}
+.detail-duplicate.description-visible .detail-description {
+  opacity: 1;
+  filter: blur(0px);
+  bottom: 0;
+}
+.detail-duplicate .detail-description {
+  position: absolute;
+  bottom: -19rem;
+  left: 0;
+  width: 100%;
+  height: 19rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: scroll;
+  opacity: 0;
+  filter: blur(0px);
+  transition: all 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(1rem);
+}
+.detail-duplicate .detail-description-content {
+  width: 50%;
 }
 .detail-duplicate .detail-duplicate-inner {
   width: 100%;

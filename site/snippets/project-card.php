@@ -60,10 +60,5 @@ foreach ($projectImages as $imgItem) {
             <div class="project-date"><?= $project->projectMonth() ?> <?= $project->projectYear() ?></div>
             <div class="square-bottom-right"></div>
         </div>
-        <?php if ($project->projectText()->isNotEmpty()): ?>
-        <div class="project-description">
-            <?= $project->projectText() ?>
-        </div>
-        <?php endif; ?>
     </div>
 </div>

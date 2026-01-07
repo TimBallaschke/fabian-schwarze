@@ -125,6 +125,11 @@
                                 <div class="square-bottom-right"></div>
                             </div>
                         </div>
+                        <div class="detail-description">
+                            <div class="detail-description-content">
+                                <?= $project->projectText() ?>
+                            </div>
+                        </div>
                     </div>
                 <?php 
                 endforeach;
