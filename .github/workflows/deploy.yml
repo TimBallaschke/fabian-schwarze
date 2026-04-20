@@ -1,0 +1,58 @@
+name: Deploy to one.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-one-com
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Sync via SFTP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
+      - name: Deploy
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USERNAME }}
+          SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
+          REMOTE_DIR: ${{ secrets.SFTP_REMOTE_DIR }}
+        run: |
+          lftp -c "
+          set sftp:auto-confirm yes;
+          set net:max-retries 3;
+          set net:timeout 20;
+          set mirror:parallel-transfer-count 4;
+          open -u '$SFTP_USER','$SFTP_PASS' sftp://$SFTP_HOST;
+          mirror --reverse --delete --verbose --parallel=4 \
+            --exclude '^\.git/' \
+            --exclude '^\.github/' \
+            --exclude '^\.DS_Store$' \
+            --exclude '\.DS_Store$' \
+            --exclude '^\.editorconfig$' \
+            --exclude '^\.gitignore$' \
+            --exclude '^\.herd/' \
+            --exclude '^\.vscode/' \
+            --exclude '^\.idea/' \
+            --exclude '^node_modules/' \
+            --exclude '^composer\.json$' \
+            --exclude '^composer\.lock$' \
+            --exclude '^README\.md$' \
+            --exclude '^site/accounts/' \
+            --exclude '^site/sessions/' \
+            --exclude '^site/cache/' \
+            --exclude '^site/config/\.license$' \
+            ./ $REMOTE_DIR;
+          bye;
+          "

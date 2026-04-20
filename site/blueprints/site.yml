@@ -1,5 +1,14 @@
 title: Fabian Schwarze
 
+fields:
+  live:
+    label: Site Live
+    type: toggle
+    text:
+      - Work in Progress
+      - Live
+    default: false
+
 sections:
   pages:
     type: pages
