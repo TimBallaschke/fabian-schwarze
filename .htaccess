@@ -67,8 +67,5 @@ Header set X-Content-Type-Options "nosniff"
 
 </IfModule>
 
-php_value upload_max_filesize 2000M
-php_value post_max_size 2000M
-php_value memory_limit 2000M
-php_value max_input_time 10000
-php_value max_execution_time 10000
+# PHP runtime settings live in .user.ini (one.com runs PHP as FastCGI,
+# so php_value directives here would trigger HTTP 500).
