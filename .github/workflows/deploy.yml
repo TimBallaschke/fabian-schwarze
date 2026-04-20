@@ -22,23 +22,37 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y lftp
 
-      - name: Deploy
+      - name: Sanity-check secrets are present
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_USER: ${{ secrets.SFTP_USERNAME }}
           SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
           REMOTE_DIR: ${{ secrets.SFTP_REMOTE_DIR }}
         run: |
-          lftp -c "
-          set sftp:auto-confirm yes;
-          set net:max-retries 3;
-          set net:timeout 20;
-          set mirror:parallel-transfer-count 4;
-          open -u '$SFTP_USER','$SFTP_PASS' sftp://$SFTP_HOST;
+          echo "HOST len:     ${#SFTP_HOST}"
+          echo "USER len:     ${#SFTP_USER}"
+          echo "PASS len:     ${#SFTP_PASS}"
+          echo "REMOTE len:   ${#REMOTE_DIR}"
+          if [ -z "$SFTP_HOST" ] || [ -z "$SFTP_USER" ] || [ -z "$SFTP_PASS" ] || [ -z "$REMOTE_DIR" ]; then
+            echo "::error::One or more SFTP secrets are empty"
+            exit 1
+          fi
+
+      - name: Deploy
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+          REMOTE_DIR: ${{ secrets.SFTP_REMOTE_DIR }}
+        run: |
+          lftp -u "$SFTP_USER" --env-password "sftp://$SFTP_HOST" <<LFTP_SCRIPT
+          set sftp:auto-confirm yes
+          set net:max-retries 3
+          set net:timeout 20
+          set mirror:parallel-transfer-count 4
           mirror --reverse --delete --verbose --parallel=4 \
             --exclude '^\.git/' \
             --exclude '^\.github/' \
-            --exclude '^\.DS_Store$' \
             --exclude '\.DS_Store$' \
             --exclude '^\.editorconfig$' \
             --exclude '^\.gitignore$' \
@@ -53,6 +67,6 @@ jobs:
             --exclude '^site/sessions/' \
             --exclude '^site/cache/' \
             --exclude '^site/config/\.license$' \
-            ./ $REMOTE_DIR;
-          bye;
-          "
+            ./ "$REMOTE_DIR"
+          bye
+          LFTP_SCRIPT
