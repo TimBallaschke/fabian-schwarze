@@ -67,6 +67,8 @@ jobs:
             --exclude '^site/sessions/' \
             --exclude '^site/cache/' \
             --exclude '^site/config/\.license$' \
+            --exclude '^content/' \
+            --exclude '^media/' \
             ./ "$REMOTE_DIR"
           bye
           LFTP_SCRIPT
