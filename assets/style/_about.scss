@@ -7,6 +7,7 @@
     z-index: -1;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    align-items: center;
     // grid-template-rows: 1fr 1fr;
     filter: blur(0.5rem);
     opacity: 0;
@@ -58,14 +59,20 @@
 
 #about-text {
     grid-column: 2/3;
-    padding: 19rem calc(var(--page-padding) * 16) 0 calc(var(--page-padding) * 3);
+    padding-right: calc(var(--page-padding) * 16);
+    padding-left: calc(var(--page-padding) * 3);
     color: black;
     height: auto;
+
+    @include tablet-down {
+        padding-right: calc(var(--page-padding) * 3);
+    }
 }
 
 #about-contact {
     grid-column: 1/2;
-    padding: 19rem calc(var(--page-padding) * 3) 0 var(--page-padding);
+    padding-right: calc(var(--page-padding) * 3);
+    padding-left: var(--page-padding);
     color: white;
     text-align: right;
 }

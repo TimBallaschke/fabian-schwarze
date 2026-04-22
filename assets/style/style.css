@@ -30,6 +30,10 @@ html {
   scrollbar-width: none; /* Firefox */
 }
 
+p {
+  margin-top: 0;
+}
+
 .about-container {
   width: 100vw;
   height: 100vh;
@@ -39,6 +43,7 @@ html {
   z-index: -1;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: center;
   filter: blur(0.5rem);
   opacity: 0;
   transform: scale(0.9);
@@ -85,14 +90,21 @@ html {
 
 #about-text {
   grid-column: 2/3;
-  padding: 19rem calc(var(--page-padding) * 16) 0 calc(var(--page-padding) * 3);
+  padding-right: calc(var(--page-padding) * 16);
+  padding-left: calc(var(--page-padding) * 3);
   color: black;
   height: auto;
+}
+@media (max-width: 63.99em) {
+  #about-text {
+    padding-right: calc(var(--page-padding) * 3);
+  }
 }
 
 #about-contact {
   grid-column: 1/2;
-  padding: 19rem calc(var(--page-padding) * 3) 0 var(--page-padding);
+  padding-right: calc(var(--page-padding) * 3);
+  padding-left: var(--page-padding);
   color: white;
   text-align: right;
 }

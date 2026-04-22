@@ -65,9 +65,13 @@ function openProject(projectElement) {
     // Calculate unique project count (total duplicates / 4 sets)
     const uniqueProjectCount = allDuplicates.length / 4;
     
-    // Find the index of the clicked wrapper in the marquee
-    const clickedIndex = allProjectWrappers.indexOf(clickedProjectWrapper);
-    
+    // Find the index of the clicked wrapper in the marquee, then normalize into the
+    // 2nd detail-duplicate set so prev/next always has a full set of projects on each
+    // side before hitting the teleport boundary. Duplicates are rendered 4× identically,
+    // so targeting the 2nd-set duplicate is visually indistinguishable from the clicked one.
+    const clickedIndexRaw = allProjectWrappers.indexOf(clickedProjectWrapper);
+    const clickedIndex = (clickedIndexRaw % uniqueProjectCount) + uniqueProjectCount;
+
     // Update state
     detailViewState = {
         isOpen: true,

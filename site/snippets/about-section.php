@@ -1,8 +1,6 @@
 <?php $about = page('about'); ?>
 <div class="about-container display-none">
     <div id="about-contact">
-        Fabian Schwarze<br>
-        <br>
         <?php if ($about && $about->instagram()->isNotEmpty()): ?>
             IG: <?= $about->instagram() ?><br>
         <?php endif; ?>
