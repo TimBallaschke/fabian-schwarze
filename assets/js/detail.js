@@ -778,6 +778,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.addEventListener('resize', function() {
         updateProjectWidthVariable();
+
+        // Keep the detail view aligned when the viewport changes.
+        // translateX is a pixel value based on window.innerWidth, so it goes stale on resize.
+        if (detailViewState.isOpen && detailViewState.detailDuplicatesContainer) {
+            const container = detailViewState.detailDuplicatesContainer;
+            const prevTransition = container.style.transition;
+            container.style.transition = 'none';
+            scrollDuplicatesToIndex(detailViewState.currentIndex);
+            // Force reflow, then restore the transition so future navigations animate
+            void container.offsetWidth;
+            container.style.transition = prevTransition;
+        }
     });
     
     // Get all project images in marquee
