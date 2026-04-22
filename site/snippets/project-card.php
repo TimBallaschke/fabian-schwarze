@@ -1,59 +1,55 @@
 <?php
 $projectImages = $project->projectimages()->toStructure();
-$imageCount = $projectImages->count();
 
-// Build array of all image URLs for this project (for marquee size)
+// Collect only structure entries that resolve to a real file
+$validImages = [];
 $allImageUrls = [];
 foreach ($projectImages as $imgItem) {
     $imgFile = $imgItem->projectimage()->toFile();
     if ($imgFile) {
+        $validImages[] = $imgFile;
         $allImageUrls[] = $imgFile->thumb(['width' => 600, 'format' => 'webp'])->url();
     }
 }
 
-if (empty($allImageUrls) || $project->projectTitle()->isEmpty()) {
+if (empty($validImages) || $project->projectTitle()->isEmpty()) {
     return;
 }
+
+$imageCount = count($validImages);
+$firstImage = $validImages[0];
+
+// Placeholder: same size as high-res, low quality (blur hides artifacts)
+$placeholder = $firstImage->thumb([
+    'width' => 600,
+    'quality' => 5,
+    'format' => 'webp'
+]);
+
+// Responsive srcset sizes for marquee cards
+$sizes = [
+    '400w' => $firstImage->thumb(['width' => 400, 'format' => 'webp']),
+    '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
+    '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
+];
+
+$srcset = implode(', ', array_map(
+    fn($size, $thumb) => $thumb->url() . ' ' . $size,
+    array_keys($sizes),
+    array_values($sizes)
+));
+
+$defaultSrc = $sizes['600w']->url();
 ?>
 <div class="single-project-wrapper" data-subcategory="<?= $project->subCategory()->value() ?>" data-image-index="0" data-image-count="<?= $imageCount ?>" data-images='<?= json_encode($allImageUrls) ?>'>
     <div class="single-project-container">
-        <?php 
-        if ($projectImages->isNotEmpty()): 
-            $firstImage = $projectImages->first()->projectimage()->toFile();
-            if ($firstImage): 
-                // Placeholder: same size as high-res, low quality (blur hides artifacts)
-                $placeholder = $firstImage->thumb([
-                    'width' => 600,
-                    'quality' => 5,
-                    'format' => 'webp'
-                ]);
-                
-                // Responsive srcset sizes for marquee cards
-                $sizes = [
-                    '400w' => $firstImage->thumb(['width' => 400, 'format' => 'webp']),
-                    '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
-                    '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
-                ];
-                
-                // Build srcset string
-                $srcset = implode(', ', array_map(
-                    fn($size, $thumb) => $thumb->url() . ' ' . $size,
-                    array_keys($sizes),
-                    array_values($sizes)
-                ));
-                
-                // Default src for high-res (medium size fallback)
-                $defaultSrc = $sizes['600w']->url();
-                ?>
-                <img 
-                    src="<?= $placeholder->url() ?>" 
-                    data-src="<?= $defaultSrc ?>"
-                    data-srcset="<?= $srcset ?>"
-                    alt="<?= $project->title() ?>" 
-                    class="project-image blur-placeholder"
-                >
-            <?php endif;
-        endif; ?>
+        <img
+            src="<?= $placeholder->url() ?>"
+            data-src="<?= $defaultSrc ?>"
+            data-srcset="<?= $srcset ?>"
+            alt="<?= $project->title() ?>"
+            class="project-image blur-placeholder"
+        >
         <div class="top-squares">
             <div class="square-top-left"></div>
             <div class="project-title"><?= $project->projectTitle() ?></div>

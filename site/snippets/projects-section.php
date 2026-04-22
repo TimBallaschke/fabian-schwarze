@@ -44,61 +44,55 @@
             for ($i = 0; $i < 4; $i++):
                 foreach ($projects as $project):
                     $projectImages = $project->projectimages()->toStructure();
-                    $imageCount = $projectImages->count();
 
-                    // Build array of all image URLs for this project
+                    // Collect only structure entries that resolve to a real file
+                    $validImages = [];
                     $allImageUrls = [];
                     foreach ($projectImages as $imgItem) {
                         $imgFile = $imgItem->projectimage()->toFile();
                         if ($imgFile) {
+                            $validImages[] = $imgFile;
                             $allImageUrls[] = $imgFile->thumb(['width' => 1200, 'format' => 'webp'])->url();
                         }
                     }
 
-                    if (empty($allImageUrls) || $project->projectTitle()->isEmpty()) {
+                    if (empty($validImages) || $project->projectTitle()->isEmpty()) {
                         continue;
                     }
+
+                    $imageCount = count($validImages);
+                    $firstImage = $validImages[0];
+
+                    $placeholder = $firstImage->thumb([
+                        'width' => 100,
+                        'quality' => 20,
+                        'format' => 'webp'
+                    ]);
+
+                    $sizes = [
+                        '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
+                        '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
+                        '1200w' => $firstImage->thumb(['width' => 1200, 'format' => 'webp']),
+                        '1600w' => $firstImage->thumb(['width' => 1600, 'format' => 'webp']),
+                    ];
+
+                    $srcset = implode(', ', array_map(
+                        fn($size, $thumb) => $thumb->url() . ' ' . $size,
+                        array_keys($sizes),
+                        array_values($sizes)
+                    ));
+
+                    $defaultSrc = $sizes['1200w']->url();
                     ?>
                     <div class="detail-duplicate" data-subcategory="<?= $project->subCategory()->value() ?>" data-image-index="0" data-image-count="<?= $imageCount ?>" data-images='<?= json_encode($allImageUrls) ?>'>
                         <div class="detail-duplicate-inner">
-                            <?php 
-                            if ($projectImages->isNotEmpty()): 
-                                $firstImage = $projectImages->first()->projectimage()->toFile();
-                                if ($firstImage): 
-                                    // Placeholder: tiny low-quality WebP (blur hides artifacts)
-                                    $placeholder = $firstImage->thumb([
-                                        'width' => 100,
-                                        'quality' => 20,
-                                        'format' => 'webp'
-                                    ]);
-                                    
-                                    // Responsive srcset sizes for detail view (full screen)
-                                    $sizes = [
-                                        '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
-                                        '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
-                                        '1200w' => $firstImage->thumb(['width' => 1200, 'format' => 'webp']),
-                                        '1600w' => $firstImage->thumb(['width' => 1600, 'format' => 'webp']),
-                                    ];
-                                    
-                                    // Build srcset string
-                                    $srcset = implode(', ', array_map(
-                                        fn($size, $thumb) => $thumb->url() . ' ' . $size,
-                                        array_keys($sizes),
-                                        array_values($sizes)
-                                    ));
-                                    
-                                    // Default src for high-res (large size fallback)
-                                    $defaultSrc = $sizes['1200w']->url();
-                                    ?>
-                                    <img 
-                                        src="<?= $placeholder->url() ?>" 
-                                        data-src="<?= $defaultSrc ?>"
-                                        data-srcset="<?= $srcset ?>"
-                                        alt="<?= $project->title() ?>" 
-                                        class="project-image blur-placeholder"
-                                    >
-                                <?php endif;
-                            endif; ?>
+                            <img
+                                src="<?= $placeholder->url() ?>"
+                                data-src="<?= $defaultSrc ?>"
+                                data-srcset="<?= $srcset ?>"
+                                alt="<?= $project->title() ?>"
+                                class="project-image blur-placeholder"
+                            >
                             <div class="top-squares">
                                 <div class="square-top-left"></div>
                                 <div class="project-title"><?= $project->projectTitle() ?></div>
@@ -113,12 +107,14 @@
                                             <polyline points="12 19 5 12 12 5"></polyline>
                                         </svg>
                                     </div>
+                                    <?php if ($project->projectText()->isNotEmpty()): ?>
                                     <div class="plus-button">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                             <line x1="12" y1="5" x2="12" y2="19"></line>
                                             <line x1="5" y1="12" x2="19" y2="12"></line>
                                         </svg>
                                     </div>
+                                    <?php endif; ?>
                                     <div class="arrow-right-button">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -129,11 +125,13 @@
                                 <div class="square-bottom-right"></div>
                             </div>
                         </div>
+                        <?php if ($project->projectText()->isNotEmpty()): ?>
                         <div class="detail-description">
                             <div class="detail-description-content">
                                 <?= $project->projectText() ?>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
                 <?php 
                 endforeach;
