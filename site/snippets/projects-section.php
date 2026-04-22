@@ -41,11 +41,11 @@
             <div class="detail-view-background"></div>
             <?php 
             // Render duplicates 4 times for infinite looping (matching marquee structure)
-            for ($i = 0; $i < 4; $i++): 
-                foreach ($projects as $project): 
+            for ($i = 0; $i < 4; $i++):
+                foreach ($projects as $project):
                     $projectImages = $project->projectimages()->toStructure();
                     $imageCount = $projectImages->count();
-                    
+
                     // Build array of all image URLs for this project
                     $allImageUrls = [];
                     foreach ($projectImages as $imgItem) {
@@ -53,6 +53,10 @@
                         if ($imgFile) {
                             $allImageUrls[] = $imgFile->thumb(['width' => 1200, 'format' => 'webp'])->url();
                         }
+                    }
+
+                    if (empty($allImageUrls) || $project->projectTitle()->isEmpty()) {
+                        continue;
                     }
                     ?>
                     <div class="detail-duplicate" data-subcategory="<?= $project->subCategory()->value() ?>" data-image-index="0" data-image-count="<?= $imageCount ?>" data-images='<?= json_encode($allImageUrls) ?>'>

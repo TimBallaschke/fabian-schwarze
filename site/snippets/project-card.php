@@ -1,4 +1,4 @@
-<?php 
+<?php
 $projectImages = $project->projectimages()->toStructure();
 $imageCount = $projectImages->count();
 
@@ -9,6 +9,10 @@ foreach ($projectImages as $imgItem) {
     if ($imgFile) {
         $allImageUrls[] = $imgFile->thumb(['width' => 600, 'format' => 'webp'])->url();
     }
+}
+
+if (empty($allImageUrls) || $project->projectTitle()->isEmpty()) {
+    return;
 }
 ?>
 <div class="single-project-wrapper" data-subcategory="<?= $project->subCategory()->value() ?>" data-image-index="0" data-image-count="<?= $imageCount ?>" data-images='<?= json_encode($allImageUrls) ?>'>
