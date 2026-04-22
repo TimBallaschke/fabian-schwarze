@@ -14,6 +14,12 @@
     transform: scale(0.9);
     transition: all 600ms ease-in-out;
 
+    @include tablet-down {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
     &.display-none {
         display: none;
     }
@@ -65,7 +71,9 @@
     height: auto;
 
     @include tablet-down {
-        padding-right: calc(var(--page-padding) * 3);
+        order: 1;
+        padding-right: var(--page-padding);
+        padding-left: var(--page-padding);
     }
 }
 
@@ -75,4 +83,11 @@
     padding-left: var(--page-padding);
     color: white;
     text-align: right;
+
+    @include tablet-down {
+        order: 2;
+        padding-right: var(--page-padding);
+        padding-left: var(--page-padding);
+        text-align: left;
+    }
 }
