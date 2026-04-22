@@ -1,0 +1,70 @@
+
+// Breakpoints
+$breakpoint-mobile:    48em;   // 768px
+$breakpoint-tablet:    64em;   // 1024px
+$breakpoint-desktop-s: 80em;   // 1280px
+$breakpoint-desktop:   96em;   // 1536px
+$breakpoint-desktop-l: 120em;  // 1920px
+
+// Min-width (mobile-first: styles apply from this breakpoint up)
+@mixin tablet-up {
+    @media (min-width: $breakpoint-mobile) { @content; }
+}
+
+@mixin desktop-s-up {
+    @media (min-width: $breakpoint-tablet) { @content; }
+}
+
+@mixin desktop-up {
+    @media (min-width: $breakpoint-desktop-s) { @content; }
+}
+
+@mixin desktop-l-up {
+    @media (min-width: $breakpoint-desktop) { @content; }
+}
+
+// Max-width (styles apply below this breakpoint)
+@mixin mobile {
+    @media (max-width: ($breakpoint-mobile - 0.01em)) { @content; }
+}
+
+@mixin tablet-down {
+    @media (max-width: ($breakpoint-tablet - 0.01em)) { @content; }
+}
+
+@mixin desktop-s-down {
+    @media (max-width: ($breakpoint-desktop-s - 0.01em)) { @content; }
+}
+
+@mixin desktop-down {
+    @media (max-width: ($breakpoint-desktop - 0.01em)) { @content; }
+}
+
+// Range (between two breakpoints)
+@mixin tablet-only {
+    @media (min-width: $breakpoint-mobile) and (max-width: ($breakpoint-tablet - 0.01em)) { @content; }
+}
+
+@mixin desktop-s-only {
+    @media (min-width: $breakpoint-tablet) and (max-width: ($breakpoint-desktop-s - 0.01em)) { @content; }
+}
+
+@mixin desktop-only {
+    @media (min-width: $breakpoint-desktop-s) and (max-width: ($breakpoint-desktop - 0.01em)) { @content; }
+}
+
+
+
+:root {
+    --single-project-width: 29rem;
+    --info-bar-height: 2rem;
+    --page-padding: 0.5rem;
+    --font-size: 0.9rem;
+    --line-height: 1.2;
+    --border-thickness: 1px;
+
+    @include tablet-down{
+        --font-size: 0.8rem;
+        --info-bar-height: 1.7rem;
+    }
+}

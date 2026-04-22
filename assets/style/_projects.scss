@@ -52,6 +52,7 @@ body {
     width: 100%;
     display: grid;
     grid-template-rows: auto 1fr  auto;
+    grid-template-columns: 100%;
     z-index: 100;
     will-change: transform, height;
 
@@ -123,12 +124,62 @@ body {
     text-transform: uppercase;
 }
 
+.detail-view .section-title-rest {
+    display: none;
+}
+
 .section-categories {
     width: 20rem;
     display: flex;
     justify-content: space-between;
 
     .detail-view & {
+        display: none;
+    }
+
+    @include tablet-down {
+        width: 25rem;
+    }
+
+    @include mobile {
+        width: 15rem;
+    }
+}
+
+.filter-toggle {
+    display: none;
+
+    .detail-view & {
+        display: none;
+    }
+}
+
+@media (max-width: 48em) {
+    .section-categories {
+        display: none;
+    }
+
+    .projects-container-info .filter-toggle {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .projects-container-info.filter-open {
+        .section-categories {
+            display: flex;
+        }
+
+        .filter-toggle {
+            display: none;
+        }
+
+        .section-title-rest {
+            display: none;
+        }
+    }
+
+    .detail-view .filter-toggle,
+    .projects-container-info.filter-open.detail-view .section-categories {
         display: none;
     }
 }
@@ -140,6 +191,14 @@ body {
 
     .detail-view & {
         display: flex;
+    }
+
+    @include tablet-down {
+        width: 25rem;
+    }
+
+    @include mobile {
+        width: 15rem;
     }
 }
 
@@ -466,7 +525,8 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
-    transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 300ms cubic-bezier(0.4, 
+    0.0, 0.2, 1);
     padding: 0 1.5rem;
 }    
 
@@ -699,7 +759,7 @@ body {
     }
 
     &.description-visible {
-        padding: 2rem 2rem 19rem 2rem;
+        padding: 2rem 2rem var(--desc-height, 19rem) 2rem;
 
         .project-image {
             max-height: 80% !important;
@@ -712,18 +772,19 @@ body {
             transform: translateX(1.5rem) scale(1);
         }
     }
-    
+
     .detail-description {
         position: absolute;
-        bottom: -19rem;
+        bottom: calc(-1 * var(--desc-height, 19rem));
         left: 0;
         width: 100%;
-        height: 19rem;
+        max-height: 19rem;
         box-sizing: border-box;
+        padding: 1.5rem 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: scroll;
+        overflow-y: auto;
         opacity: 0;
         filter: blur(20px);
         transition: all 600ms cubic-bezier(0.4, 0.0, 0.2, 1);

@@ -1,12 +1,23 @@
+<?php
+$titleRaw = trim((string) $sectionTitle);
+if (preg_match('/^(\([A-Z]\))\s*(.*)$/u', $titleRaw, $m)) {
+    $titlePrefix = $m[1];
+    $titleRest = $m[2];
+} else {
+    $titlePrefix = $titleRaw;
+    $titleRest = '';
+}
+?>
 <div class="projects-container" id="<?= $sectionId ?>-projects-container" data-section="<?= $sectionId ?>">
     <?php if ($position === 'top'): ?>
         <div class="projects-container-info projects-container-top" id="<?= $sectionId ?>-projects-top">
-            <div class="section-title"><?= $sectionTitle ?></div>
+            <div class="section-title"><span class="section-title-prefix"><?= $titlePrefix ?></span><?php if ($titleRest !== ''): ?><span class="section-title-rest"> <?= $titleRest ?></span><?php endif; ?></div>
             <div class="section-categories">
                 <div class="category circle-button active" data-category="all">All</div>
                 <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category1) ?>"><?= $category1 ?></div>
                 <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category2) ?>"><?= $category2 ?></div>
             </div>
+            <div class="filter-toggle circle-button">Filter</div>
             <div class="section-navigation">
                 <div class="circle-button" data-category="all">Previous</div>
                 <div class="circle-button" data-category="all">Next</div>
@@ -141,12 +152,13 @@
     
     <?php if ($position === 'bottom'): ?>
         <div class="projects-container-info projects-container-bottom" id="<?= $sectionId ?>-projects-bottom">
-            <div class="section-title"><?= $sectionTitle ?></div>
+            <div class="section-title"><span class="section-title-prefix"><?= $titlePrefix ?></span><?php if ($titleRest !== ''): ?><span class="section-title-rest"> <?= $titleRest ?></span><?php endif; ?></div>
             <div class="section-categories">
                 <div class="category circle-button active" data-category="all">All</div>
                 <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category1) ?>"><?= $category1 ?></div>
                 <div class="category circle-button" data-category="<?= \Kirby\Toolkit\Str::slug($category2) ?>"><?= $category2 ?></div>
             </div>
+            <div class="filter-toggle circle-button">Filter</div>
             <div class="section-navigation">
                 <div class="circle-button" data-category="all">Previous</div>
                 <div class="circle-button" data-category="all">Next</div>

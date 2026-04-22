@@ -1,14 +1,19 @@
+<?php $about = page('about'); ?>
 <div class="about-container display-none">
     <div id="about-contact">
         Fabian Schwarze<br>
-        Glashüttenstraße 88<br>
-        20357 Hamburg<br>
         <br>
-        IG: fabianschwarze<br>
-        E: fabianschwarze.com<br>
+        <?php if ($about && $about->instagram()->isNotEmpty()): ?>
+            IG: <?= $about->instagram() ?><br>
+        <?php endif; ?>
+        <?php if ($about && $about->e_mail()->isNotEmpty()): ?>
+            E: <?= $about->e_mail() ?><br>
+        <?php endif; ?>
     </div>
     <div id="about-text">
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+        <?php if ($about && $about->about_textarea()->isNotEmpty()): ?>
+            <?= $about->about_textarea()->kt() ?>
+        <?php endif; ?>
     </div>
 </div>
 <div id="about-container-white"></div>

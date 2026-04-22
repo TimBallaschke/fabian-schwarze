@@ -846,16 +846,41 @@ document.addEventListener('DOMContentLoaded', function() {
     // Plus button (toggle description visibility)
     const plusButtons = document.querySelectorAll('.detail-duplicate .plus-button');
     
+    function measureDescription(detailDuplicate) {
+        const desc = detailDuplicate.querySelector('.detail-description');
+        if (!desc) return;
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const maxPx = 19 * rootFontSize;
+        // scrollHeight includes padding and reflects true content height
+        const measured = Math.min(desc.scrollHeight, maxPx);
+        detailDuplicate.style.setProperty('--desc-height', measured + 'px');
+    }
+
     plusButtons.forEach(function(button) {
         button.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
             const detailDuplicate = button.closest('.detail-duplicate');
-            if (detailDuplicate) {
-                detailDuplicate.classList.toggle('description-visible');
+            if (!detailDuplicate) return;
+
+            if (!detailDuplicate.classList.contains('description-visible')) {
+                measureDescription(detailDuplicate);
             }
+            detailDuplicate.classList.toggle('description-visible');
         });
         button.style.cursor = 'pointer';
+    });
+
+    // Re-measure when fonts finish loading (initial measurement may be off)
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function() {
+            document.querySelectorAll('.detail-duplicate.description-visible').forEach(measureDescription);
+        });
+    }
+
+    // Re-measure on window resize
+    window.addEventListener('resize', function() {
+        document.querySelectorAll('.detail-duplicate.description-visible').forEach(measureDescription);
     });
     
     // Keyboard navigation for images in detail view

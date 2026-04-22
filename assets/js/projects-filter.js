@@ -127,10 +127,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 applyFilter(category);
                 // Update marquee continuously during the transition (300ms delay + 800ms transition + buffer)
                 startMarqueeUpdates(1200);
+                // Close mobile filter panel after selection
+                const info = button.closest('.projects-container-info');
+                if (info) info.classList.remove('filter-open');
             });
         });
 
         setActiveCategory('all');
         applyFilter('all', true);
+    });
+
+    // Mobile filter toggle
+    const toggles = document.querySelectorAll('.projects-container-info .filter-toggle');
+    toggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const info = toggle.closest('.projects-container-info');
+            if (!info) return;
+            // Close any other open panels
+            document.querySelectorAll('.projects-container-info.filter-open').forEach(function(other) {
+                if (other !== info) other.classList.remove('filter-open');
+            });
+            info.classList.toggle('filter-open');
+        });
+    });
+
+    // Close filter panel when tapping outside
+    document.addEventListener('click', function(e) {
+        document.querySelectorAll('.projects-container-info.filter-open').forEach(function(info) {
+            if (!info.contains(e.target)) {
+                info.classList.remove('filter-open');
+            }
+        });
     });
 });
