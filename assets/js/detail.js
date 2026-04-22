@@ -297,46 +297,63 @@ function openProject(projectElement) {
     });
 }
 
+// After a ±1 navigation animation finishes, silently shift back into the middle
+// sets [N, 3N) so there's always buffer on both sides. The shift is by ±2N, which
+// lands on the same project visually, so it's imperceptible.
+function scheduleSilentRecenter() {
+    const state = detailViewState;
+    const N = state.uniqueProjectCount;
+    if (state.currentIndex >= N && state.currentIndex < N * 3) return;
+
+    setTimeout(() => {
+        // Recheck: user may have navigated again during the wait
+        if (!state.isOpen) return;
+        if (state.currentIndex >= N && state.currentIndex < N * 3) return;
+
+        const target = state.currentIndex < N
+            ? state.currentIndex + N * 2
+            : state.currentIndex - N * 2;
+
+        state.currentIndex = target;
+
+        const container = state.detailDuplicatesContainer;
+        if (!container) return;
+        const prev = container.style.transition;
+        container.style.transition = 'none';
+        scrollDuplicatesToIndex(target);
+        void container.offsetWidth; // force reflow
+        container.style.transition = prev;
+    }, 720); // slightly after the 700ms transform transition
+}
+
 // Navigate to next project
 function navigateNext() {
     const state = detailViewState;
     if (!state.isOpen) return;
-    
+
     // Close description on all duplicates (no delay)
     state.allDuplicates.forEach(dup => {
         dup.classList.remove('description-visible');
     });
-    
-    let newIndex = state.currentIndex + 1;
-    
-    // Handle infinite looping - jump to middle sets when hitting edges
-    if (newIndex >= state.uniqueProjectCount * 3) {
-        newIndex -= state.uniqueProjectCount * 2;
-    }
-    
-    state.currentIndex = newIndex;
-    scrollDuplicatesToIndex(newIndex);
+
+    state.currentIndex += 1;
+    scrollDuplicatesToIndex(state.currentIndex);
+    scheduleSilentRecenter();
 }
 
 // Navigate to previous project
 function navigatePrev() {
     const state = detailViewState;
     if (!state.isOpen) return;
-    
+
     // Close description on all duplicates (no delay)
     state.allDuplicates.forEach(dup => {
         dup.classList.remove('description-visible');
     });
-    
-    let newIndex = state.currentIndex - 1;
-    
-    // Handle infinite looping - jump to middle sets when hitting edges
-    if (newIndex < state.uniqueProjectCount) {
-        newIndex += state.uniqueProjectCount * 2;
-    }
-    
-    state.currentIndex = newIndex;
-    scrollDuplicatesToIndex(newIndex);
+
+    state.currentIndex -= 1;
+    scrollDuplicatesToIndex(state.currentIndex);
+    scheduleSilentRecenter();
 }
 
 // Sync image index from detail duplicate to all corresponding marquee projects
