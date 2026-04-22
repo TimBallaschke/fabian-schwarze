@@ -13,8 +13,14 @@ Instagram: @fschwrze
 About-textarea:
 
 I studied Visual Journalism and Documentary Photography in Hannover and completed my Bachelor’s degree in 2025. Since 2022, I have been living in Hamburg, working as a freelance photographer, focusing primarily on portrait and event photography.
+
 In my personal projects, I tend to explore themes that are closely connected to my own life or to the experiences I encounter in the world around me. I enjoy working with a variety of media, experimenting with different ways to tell stories.
+
 I want to keep doing what I love without ever compromising it.
+
+----
+
+Imprint: 
 
 ----
 
@@ -34,6 +40,10 @@ We do not use cookies on this website and we do not track website usage in any w
 Under applicable data protection laws, in particular the General Data Protection Regulation, you have the right to request information about the personal data we process about you. You also have the right to request the correction or deletion of your personal data, the restriction of processing, to object to the processing, and the right to data portability.
 You also have the right to lodge a complaint with a data protection supervisory authority if you believe that the processing of your personal data violates applicable data protection laws.
 If you have given us consent to process your personal data, you may revoke this consent at any time with effect for the future.
+
+----
+
+Terms-and-conditions: 
 
 ----
 

@@ -340,8 +340,8 @@ body {
         }
     }
 
-    &:hover {
-        &::before {
+    @media (hover: hover) {
+        &:hover::before {
             background-color: var(--text-color);
         }
     }

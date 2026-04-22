@@ -18,9 +18,19 @@ columns:
             label: About Text
             buttons: false
             size: large
+          imprint:
+            type: textarea
+            label: Imprint
+            buttons: false
+            size: large
           privacy_policy:
             type: textarea
             label: Privacy Policy
+            buttons: false
+            size: large
+          terms_and_conditions:
+            type: textarea
+            label: Terms and Conditions
             buttons: false
             size: large
 
