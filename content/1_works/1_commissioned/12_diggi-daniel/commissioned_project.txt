@@ -1,0 +1,33 @@
+Title: Diggi Daniel
+
+----
+
+Projecttitle: Diggi Daniel
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://Y3Y2hNLc1RdLljNy
+
+----
+
+Projectmonth: October
+
+----
+
+Projectyear: 2022
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: 
+
+----
+
+Uuid: LhFfojOaaTOLsyva

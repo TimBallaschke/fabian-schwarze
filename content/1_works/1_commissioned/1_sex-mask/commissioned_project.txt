@@ -1,0 +1,36 @@
+Title: Sex Mask
+
+----
+
+Projecttitle: Sex Mask
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://LlSODPWkl20lF5Na
+- 
+  projectimage:
+    - file://1fuzEHH9gfMmidsR
+
+----
+
+Projectmonth: March
+
+----
+
+Projectyear: 2026
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: I met Sex Mask in New York after they played at the New Colossus Festival.
+
+----
+
+Uuid: DW3M6ZzDf4GUuplM

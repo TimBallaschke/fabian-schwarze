@@ -1,0 +1,144 @@
+Title: Schulte Muss Leben
+
+----
+
+Projecttitle: Schulte Muss Leben
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://wnhXuPblFSJ8GQEC
+- 
+  projectimage:
+    - file://sYb8dZBnNNNA5ZMg
+- 
+  projectimage:
+    - file://SN75QUIQpWTjrAkS
+- 
+  projectimage:
+    - file://a1n1ZTosfDPkA8C6
+- 
+  projectimage:
+    - file://05zLRwOi9KeWtFu0
+- 
+  projectimage:
+    - file://X6ZRwPKX913P3ciw
+- 
+  projectimage:
+    - file://pgE1LJsEy5D5Gkqb
+- 
+  projectimage:
+    - file://i71KBsXM6z6Z9fNE
+- 
+  projectimage:
+    - file://DnPg7abRhvtRW9Hj
+- 
+  projectimage:
+    - file://kyWWDJVKWQs6UKZY
+- 
+  projectimage:
+    - file://STlhHqfVf3WM2mKk
+- 
+  projectimage:
+    - file://81227n0P75RYbW73
+- 
+  projectimage:
+    - file://FLRRuAwMzimqOAJ4
+- 
+  projectimage:
+    - file://sikTZMasRLw5kkGI
+- 
+  projectimage:
+    - file://UgodClzlrJwVvnhD
+- 
+  projectimage:
+    - file://qLw9MzqUt38QHDlT
+- 
+  projectimage:
+    - file://De8588z4k6yxiyft
+- 
+  projectimage:
+    - file://B7oHUDfQVmlKQDR1
+- 
+  projectimage:
+    - file://ul2GdJBCHWJAoUiX
+- 
+  projectimage:
+    - file://fkxIEnh1fqSMj5OI
+- 
+  projectimage:
+    - file://fcavI94lHD5PTING
+- 
+  projectimage:
+    - file://pdxSuVm4phJzU1gp
+- 
+  projectimage:
+    - file://e8CqaPfd8aKlwo94
+- 
+  projectimage:
+    - file://M3caMu8BUKItP7JP
+- 
+  projectimage:
+    - file://DUGTHtulWnq3mVqb
+- 
+  projectimage:
+    - file://uSHWuSZ9V5XYdBVY
+- 
+  projectimage:
+    - file://RlAf1Z1CyZ5lw8hw
+- 
+  projectimage:
+    - file://NSwahzE69sGstg9u
+- 
+  projectimage:
+    - file://hF4eR7fYYBVlxQ6s
+- 
+  projectimage:
+    - file://4mHlu1VES7wgFRDo
+- 
+  projectimage:
+    - file://jWmSBCljKtqQ2MHC
+- 
+  projectimage:
+    - file://Fudv89TSVEkm3Y7Y
+- 
+  projectimage:
+    - file://HR6cfLdtCew2auLz
+- 
+  projectimage:
+    - file://8efYtthFEL0laNKD
+
+----
+
+Projectmonth: August
+
+----
+
+Projectyear: 2023
+
+----
+
+Subcategory: story
+
+----
+
+Projecttext:
+
+With the money we collected from selling beer, we rented a Miles and drove to the hardware 
+store to buy a few hundred euros worth of concrete. We got debris from everywhere;
+Chris mother still had some in her garden. The other half consists of beer cans and trash. 
+We build these places even though it is clear that they will be torn down again.
+
+This city is not for the people who live in it, but for profit and a polished image.
+So what is really left, if not taking back the city you live in?
+We do it with concrete, in places where rats live and there is enough trash to fill ramps.
+Places that have somehow been forgotten, creating space for something to emerge from the dirt.
+
+Since 2023, I have been photographing my friends building these ramps.
+
+----
+
+Uuid: zPDPy0HGH4t9PG3H

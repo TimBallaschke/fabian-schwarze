@@ -1,0 +1,33 @@
+Title: Sveamaus
+
+----
+
+Projecttitle: 
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://jV0liUF018OFY8Ed
+
+----
+
+Projectmonth: August
+
+----
+
+Projectyear: 2025
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: Svea Mausolf aka @sveamaus.
+
+----
+
+Uuid: hiAwYe5kp5i2HcMK

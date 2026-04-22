@@ -1,0 +1,66 @@
+Title: I Searched For Nothing But Found This
+
+----
+
+Projecttitle: I Searched For Nothing But Found This
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://nbychunSktGqrulB
+- 
+  projectimage:
+    - file://2t8g3swfy89VrSAu
+- 
+  projectimage:
+    - file://FaxqrfzLQ24VkY8Q
+- 
+  projectimage:
+    - file://DvTWhsbqXgTmxdna
+- 
+  projectimage:
+    - file://RZbWi9ljItZZaWjh
+- 
+  projectimage:
+    - file://qxeSYWdJaubR7yRW
+- 
+  projectimage:
+    - file://sh3LZhWP3kKvecVr
+- 
+  projectimage:
+    - file://VUiHdg5YNDJT6NfL
+- 
+  projectimage:
+    - file://7OaDOTd1maGSGacL
+- 
+  projectimage:
+    - file://pTYIfnpaTOVR9Wx9
+- 
+  projectimage:
+    - file://0tLtgI2BrRkGRmF7
+
+----
+
+Projectmonth: August
+
+----
+
+Projectyear: 2021
+
+----
+
+Subcategory: story
+
+----
+
+Projecttext:
+
+It was only a glimpse of light that remained during that time. I felt as if I were swimming in feelings and ideas, in fear of fear itself. 
+You were there for me, and it was never your fault, N. Thank you.
+
+----
+
+Uuid: vQyXqf5FehmJ82Av

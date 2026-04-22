@@ -1,0 +1,222 @@
+Title: Chaos Diary
+
+----
+
+Projecttitle: Chaos Diary
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://EzwxPRgSltLipW8I
+- 
+  projectimage:
+    - file://OTwDbJyI6oUmmJFh
+- 
+  projectimage:
+    - file://Nx4zwQ43uqrN18HX
+- 
+  projectimage:
+    - file://9D3gOj0egAP1YfHV
+- 
+  projectimage:
+    - file://kwZF978pwsndddjd
+- 
+  projectimage:
+    - file://nNTAPHwEnp94JHoo
+- 
+  projectimage:
+    - file://NMdg3u5pb2U0tYHi
+- 
+  projectimage:
+    - file://X0ewRAEddb8DEAtM
+- 
+  projectimage:
+    - file://2tHd4TJC40GZBbbP
+- 
+  projectimage:
+    - file://vBW31cOm411vTU3h
+- 
+  projectimage:
+    - file://BmGZXJNiOTOK0lTK
+- 
+  projectimage:
+    - file://xjNN5Ri8eoFrUnp9
+- 
+  projectimage:
+    - file://DMPwUwexv6zezCOO
+- 
+  projectimage:
+    - file://VLVB3zDsHTPte632
+- 
+  projectimage:
+    - file://d3zcOKxxMZ3QYR83
+- 
+  projectimage:
+    - file://SiMV9W9snLh2sjYo
+- 
+  projectimage:
+    - file://W2Bi3sNYGpFgaX81
+- 
+  projectimage:
+    - file://xM5tKZyRlewx73ql
+- 
+  projectimage:
+    - file://8qeOsEo7xYcoOTRV
+- 
+  projectimage:
+    - file://eucBq0EwSo2nuWeD
+- 
+  projectimage:
+    - file://6hi5b4nzZqmqlcWF
+- 
+  projectimage:
+    - file://SAdtI5xvRy8SEZnu
+- 
+  projectimage:
+    - file://9hNZxFaD6bnWuOhm
+- 
+  projectimage:
+    - file://be7dYQAQXKi8BwVy
+- 
+  projectimage:
+    - file://XzuoSjKlnLBF1zUq
+- 
+  projectimage:
+    - file://eERUnhlnTeESJjqN
+- 
+  projectimage:
+    - file://PSjg1X2IglLZXXMj
+- 
+  projectimage:
+    - file://ZZMbqrQ58DMan0it
+- 
+  projectimage:
+    - file://NlM62pWVGdcQl8l3
+- 
+  projectimage:
+    - file://VB7oEDkUNJSivvQp
+- 
+  projectimage:
+    - file://byLmE7apuwezUunN
+- 
+  projectimage:
+    - file://jmskhfqXEXTBl697
+- 
+  projectimage:
+    - file://MNeqqlCmyoU1MvO6
+- 
+  projectimage:
+    - file://MwbkSF7hn3GeDJKW
+- 
+  projectimage:
+    - file://WbA1LV8hkPvvCrsc
+- 
+  projectimage:
+    - file://Pck9ECddmBF6QT5a
+- 
+  projectimage:
+    - file://KB1Yf1kskotKzaOG
+- 
+  projectimage:
+    - file://gTX4dMUzkke8vc4o
+- 
+  projectimage:
+    - file://AK32x75YndhCmdom
+- 
+  projectimage:
+    - file://gNFrvuDEAZavojKU
+- 
+  projectimage:
+    - file://uX3aM1EdErqtwOOU
+- 
+  projectimage:
+    - file://bNzjs6jHfxHrjLXi
+- 
+  projectimage:
+    - file://hApdwcVGDth19Usp
+- 
+  projectimage:
+    - file://5UrR4Ya234pbPv3B
+- 
+  projectimage:
+    - file://YYBFhte2AY0g6mTf
+- 
+  projectimage:
+    - file://JcTNqf8TafhJb6fH
+- 
+  projectimage:
+    - file://yetQY9nW7ava8rK1
+- 
+  projectimage:
+    - file://AVanWz3zz6pAtzup
+- 
+  projectimage:
+    - file://FitNP5IhszdcLNra
+- 
+  projectimage:
+    - file://Pf7jxqHGHtq4LOrG
+- 
+  projectimage:
+    - file://Ukx9Y7yWgWMBLNwX
+- 
+  projectimage:
+    - file://bfG0La3lWawoacys
+- 
+  projectimage:
+    - file://OO5Xj3SVnAp9vKnJ
+- 
+  projectimage:
+    - file://QunURHBGqTjDIYDU
+- 
+  projectimage:
+    - file://CTr4XQqlFBEOl5rD
+- 
+  projectimage:
+    - file://79jRtYoFJhjy3lOk
+- 
+  projectimage:
+    - file://k02fYxecSzOYGn5K
+- 
+  projectimage:
+    - file://JsgkbcUrj4BnZLwp
+- 
+  projectimage:
+    - file://d7kGRO0IKLRiLiAc
+- 
+  projectimage:
+    - file://N3brY2TLSx7tnYUK
+- 
+  projectimage:
+    - file://D3LaN0FNUsQ7uY8V
+
+----
+
+Projectmonth: June
+
+----
+
+Projectyear: 2015
+
+----
+
+Subcategory: diary
+
+----
+
+Projecttext:
+
+I think I would have liked to become a painter, a writer, or a singer, but I can't paint, and my words never felt strong enough. So photography became the way to tell this. 
+It began with a fear of forgetting, of losing time, memories, or parts of myself.
+That feeling has not really gone away, and in many ways this work still grows from it.
+
+What remains is a collection shaped by fragments rather than order. There is no clear narrative and no chronology, just moments that felt important enough to hold on to.
+Over time, these images have also become a reflection of the chaos that has always been part of my life, something I both embrace and resist.
+
+All photographs shown here were taken between 2015 and today.
+
+----
+
+Uuid: QslDmu589vpaP0SZ

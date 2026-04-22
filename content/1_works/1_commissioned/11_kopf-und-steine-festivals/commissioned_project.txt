@@ -1,0 +1,72 @@
+Title: Kopf und Steine Festivals
+
+----
+
+Projecttitle: Kopf und Steine Festivals
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://u4h98pWMMJa9Jpyg
+- 
+  projectimage:
+    - file://vVEOYs0WTG2RHbkk
+- 
+  projectimage:
+    - file://7xVBgEvBLs4kF3EN
+- 
+  projectimage:
+    - file://JeTY7GrPpYz6HRgo
+- 
+  projectimage:
+    - file://BAk8sDB6NyoLC7Cr
+- 
+  projectimage:
+    - file://EIMsyyaUpfGi0GM4
+- 
+  projectimage:
+    - file://QnZ526x0tKhhAV7S
+- 
+  projectimage:
+    - file://0RrERnduVSiJBNzf
+- 
+  projectimage:
+    - file://dSYv1pSxQlcJxiuL
+- 
+  projectimage:
+    - file://O1On81JsSiQLTJm3
+- 
+  projectimage:
+    - file://nidvjvMiz9tRY5vm
+- 
+  projectimage:
+    - file://5J6CnzG2GVoAtcso
+- 
+  projectimage:
+    - file://q7pCt36nYWY2MLwB
+- 
+  projectimage:
+    - file://6nOXMLpidaNT5x5s
+
+----
+
+Projectmonth: Aug
+
+----
+
+Projectyear: 2023
+
+----
+
+Subcategory: event
+
+----
+
+Projecttext: Since 2023 I have been photographing various festivals for Kopf & Steine, including Dockville, Habitat, Vogelball, and Kunstgucken. These images were taken over the past three years at different festivals.
+
+----
+
+Uuid: Y3TPFKCKurEEeCLh

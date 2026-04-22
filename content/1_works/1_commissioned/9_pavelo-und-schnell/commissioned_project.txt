@@ -1,0 +1,39 @@
+Title: Pavelo und Schnell
+
+----
+
+Projecttitle: Pavelo und Schnell
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://MQWccs9JAWvjdQZ0
+- 
+  projectimage:
+    - file://WnIYiDbgLxsA11Ly
+- 
+  projectimage:
+    - file://hlnMHGx8MK67w7Vt
+
+----
+
+Projectmonth: March
+
+----
+
+Projectyear: 2025
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: 
+
+----
+
+Uuid: uvl5LJn3uALh4IMz

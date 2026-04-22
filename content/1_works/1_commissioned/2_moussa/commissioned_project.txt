@@ -1,0 +1,36 @@
+Title: Moussa
+
+----
+
+Projecttitle: Moussa
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://qZRJbUWOBYp9631Z
+- 
+  projectimage:
+    - file://xAcNXtkp77YPlffe
+
+----
+
+Projectmonth: November
+
+----
+
+Projectyear: 2025
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: 
+
+----
+
+Uuid: HP1pLxpRLCJzge6t

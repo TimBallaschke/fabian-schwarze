@@ -1,0 +1,36 @@
+Title: Bedroom June
+
+----
+
+Projecttitle: Bedroom June
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://O8fcSO6KQo2B9RLa
+- 
+  projectimage:
+    - file://OuvlxsOQWl3gUN6k
+
+----
+
+Projectmonth: November
+
+----
+
+Projectyear: 2025
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: 
+
+----
+
+Uuid: rcEgiyehy4wYNxgX

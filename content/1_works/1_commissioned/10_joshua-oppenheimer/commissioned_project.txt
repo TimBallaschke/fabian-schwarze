@@ -1,0 +1,33 @@
+Title: Joshua Oppenheimer
+
+----
+
+Projecttitle: Joshua Oppenheimer
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://Sti9QdaRTGR80I5J
+
+----
+
+Projectmonth: October
+
+----
+
+Projectyear: 2024
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: Portrait of Director Joshua Oppenheimer for MUBI Germany.
+
+----
+
+Uuid: ZBPgKssoOZSi8kke

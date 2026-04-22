@@ -1,0 +1,78 @@
+Title: NYC
+
+----
+
+Projecttitle: Sloe Noon in NYC
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://5xVm4BQkG5Wse4WC
+- 
+  projectimage:
+    - file://mtu2hv0nQWFbEXwT
+- 
+  projectimage:
+    - file://5oUpJWndyfiYKqWq
+- 
+  projectimage:
+    - file://CRAM6AolL3JBMauc
+- 
+  projectimage:
+    - file://YBsZ0thYx4CjwmF3
+- 
+  projectimage:
+    - file://05DtDIljeZHpiaQo
+- 
+  projectimage:
+    - file://zxpjKFQt0IjFb7rV
+- 
+  projectimage:
+    - file://QQGakkcyMv9zJYVx
+- 
+  projectimage:
+    - file://sSEnzxP9ArKFzCsj
+- 
+  projectimage:
+    - file://4oPr7yvMfJNfbk8l
+- 
+  projectimage:
+    - file://6rMUmMJIXvqONOk9
+- 
+  projectimage:
+    - file://XP84qG3o8iBXVY3p
+- 
+  projectimage:
+    - file://Jcy8JfzNjZcQX4Ef
+- 
+  projectimage:
+    - file://vWIVdK0UxnP1aMtm
+- 
+  projectimage:
+    - file://lTb2VtXPpHEZ3Nq1
+- 
+  projectimage:
+    - file://hT7sg0sh2y5ytNCx
+
+----
+
+Projectmonth: March
+
+----
+
+Projectyear: 2026
+
+----
+
+Subcategory: diary
+
+----
+
+Projecttext: I was in New York City with Sloe Noon. They played concerts, and we ate burgers.
+
+----
+
+Uuid: UBceSm32fJQYO3mD

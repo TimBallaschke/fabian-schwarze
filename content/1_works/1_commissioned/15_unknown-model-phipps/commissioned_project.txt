@@ -1,0 +1,33 @@
+Title: Unknown Model - Phipps
+
+----
+
+Projecttitle: Unknown Model
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://lq6b2dL0zgMEfWVp
+
+----
+
+Projectmonth: June
+
+----
+
+Projectyear: 2019
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: At Paris Fashion Show 2019.
+
+----
+
+Uuid: ieotlcChS2cg6w0k

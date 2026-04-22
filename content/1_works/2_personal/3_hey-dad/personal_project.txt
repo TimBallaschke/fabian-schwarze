@@ -1,0 +1,78 @@
+Title: Hey Dad,
+
+----
+
+Projecttitle: Hey Dad,
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://Qa1lC2mT99Cdebz7
+- 
+  projectimage:
+    - file://IPhDyCaVvVbA8J0o
+- 
+  projectimage:
+    - file://REZxZtt925IKPIzF
+- 
+  projectimage:
+    - file://heW7vrMsOATZQ6wz
+- 
+  projectimage:
+    - file://gocOp66AwLkMbs06
+- 
+  projectimage:
+    - file://jFpKjTq6zT4FtmBo
+- 
+  projectimage:
+    - file://kNr7iDei8b8wDAEH
+- 
+  projectimage:
+    - file://g5NPFwwhIwTA7QfI
+- 
+  projectimage:
+    - file://rDV2VN1sDHQPllAR
+- 
+  projectimage:
+    - file://AERqyjJJ3dNSHJeC
+- 
+  projectimage:
+    - file://lQUrOf3U4BfHw6eU
+- 
+  projectimage:
+    - file://ntqT3DUBJWZkaM1L
+- 
+  projectimage:
+    - file://YNhT0bZ7QEenS2ve
+- 
+  projectimage:
+    - file://6v9azPYzspmh6hb4
+- 
+  projectimage:
+    - file://wiyCOya9IXHI0ugB
+- 
+  projectimage:
+    - file://wXh3kN3kiB2vDmhB
+
+----
+
+Projectmonth: October
+
+----
+
+Projectyear: 2019
+
+----
+
+Subcategory: story
+
+----
+
+Projecttext: 
+
+----
+
+Uuid: Oa4jipfTtYDAymHd

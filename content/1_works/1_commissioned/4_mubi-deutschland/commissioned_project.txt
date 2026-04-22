@@ -1,0 +1,51 @@
+Title: Mubi Deutschland
+
+----
+
+Projecttitle: Mubi Jazz Night
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://ZN2AVoI2wCC0GenP
+- 
+  projectimage:
+    - file://eYn6oftaLh9ZKeGP
+- 
+  projectimage:
+    - file://jURf1jJL1LRC25zK
+- 
+  projectimage:
+    - file://IWP8l3wT1gVUGk88
+- 
+  projectimage:
+    - file://TeVxZ8pipl9MXv74
+- 
+  projectimage:
+    - file://BBY4ibqvPZQKjF9O
+- 
+  projectimage:
+    - file://dwSbDVphH00L9o5t
+
+----
+
+Projectmonth: October
+
+----
+
+Projectyear: 2025
+
+----
+
+Subcategory: event
+
+----
+
+Projecttext: A glimpse into the MUBI Jazz Night at the Hamburg Film Festival 2025 for MUBI Germany.
+
+----
+
+Uuid: l7tlfkh7DMsDEJdV

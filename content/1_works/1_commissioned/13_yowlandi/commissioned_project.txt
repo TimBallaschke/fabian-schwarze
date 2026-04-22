@@ -1,0 +1,36 @@
+Title: Yowlandi
+
+----
+
+Projecttitle: Yowlandi
+
+----
+
+Projectimages:
+
+- 
+  projectimage:
+    - file://2lBBKH8ejyFiy7Rf
+- 
+  projectimage:
+    - file://ECa5ohysMsJ1iPnz
+
+----
+
+Projectmonth: May
+
+----
+
+Projectyear: 2022
+
+----
+
+Subcategory: portrait
+
+----
+
+Projecttext: 
+
+----
+
+Uuid: KFggFr7aPjxSwJKQ
