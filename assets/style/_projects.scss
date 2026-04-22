@@ -807,6 +807,11 @@ body {
         transform: translateX(1.5rem) scale(0.5);
         pointer-events: auto;
 
+        &.is-scrollable {
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 1.5rem, black calc(100% - 1.5rem), transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, black 1.5rem, black calc(100% - 1.5rem), transparent 100%);
+        }
+
         @include tablet-down {
             transform: translateX(0rem) scale(0.5);
         }

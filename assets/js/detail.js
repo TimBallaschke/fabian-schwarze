@@ -854,6 +854,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // scrollHeight includes padding and reflects true content height
         const measured = Math.min(desc.scrollHeight, maxPx);
         detailDuplicate.style.setProperty('--desc-height', measured + 'px');
+        // Mark scrollable for the CSS fade mask
+        desc.classList.toggle('is-scrollable', desc.scrollHeight > maxPx + 1);
     }
 
     plusButtons.forEach(function(button) {

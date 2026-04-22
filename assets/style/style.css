@@ -763,6 +763,10 @@ body.about-open-2 .about-text {
   transform: translateX(1.5rem) scale(0.5);
   pointer-events: auto;
 }
+.detail-duplicate .detail-description.is-scrollable {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 1.5rem, black calc(100% - 1.5rem), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 1.5rem, black calc(100% - 1.5rem), transparent 100%);
+}
 @media (max-width: 63.99em) {
   .detail-duplicate .detail-description {
     transform: translateX(0rem) scale(0.5);
