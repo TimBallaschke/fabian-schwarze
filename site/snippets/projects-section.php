@@ -74,9 +74,14 @@ if (preg_match('/^(\([A-Z]\))\s*(.*)$/u', $titleRaw, $m)) {
                     $imageCount = count($validImages);
                     $firstImage = $validImages[0];
 
+                    // Placeholder width matches the largest srcset size so the intrinsic
+                    // dimensions are always ≥ the high-res image the browser picks. This
+                    // keeps the rendered size stable when the high-res swaps in, and it
+                    // stops the marquee→detail clone from animating to a tiny target when
+                    // the detail high-res hasn't loaded yet.
                     $placeholder = $firstImage->thumb([
-                        'width' => 100,
-                        'quality' => 20,
+                        'width' => 1600,
+                        'quality' => 5,
                         'format' => 'webp'
                     ]);
 
