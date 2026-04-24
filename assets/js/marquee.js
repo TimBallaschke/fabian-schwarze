@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const SCROLL_RESUME_DELAY = 1000; // ms to wait after last scroll before resuming animation
     const SMOOTHING_SPEED = 12; // how fast to catch up (higher = faster)
     const MAX_DELTA_TIME = 50; // cap frame time to prevent jumps (ms)
+    const FLICK_FRICTION = 2.2; // exponential decay per second for touch momentum (lower = glides longer)
+    const FLICK_MIN_VELOCITY = 8; // px/s threshold below which momentum stops
     
     function createMarquee(wrapperId, direction) {
         console.log('Initializing marquee:', wrapperId, direction);
@@ -44,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Touch tracking
         let touchLastX = 0;
+        let touchLastTime = 0;
+        let flickVelocity = 0; // px/s, signed in same direction as targetOffset
+        let isFlicking = false;
         
         // Mouse drag tracking
         let isDragging = false;
@@ -93,6 +98,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const deltaSeconds = deltaTime / 1000;
             
+            if (isFlicking) {
+                // Momentum: keep feeding velocity into targetOffset, decay it each frame
+                targetOffset += flickVelocity * deltaSeconds;
+                flickVelocity *= Math.exp(-FLICK_FRICTION * deltaSeconds);
+
+                if (Math.abs(flickVelocity) < FLICK_MIN_VELOCITY) {
+                    flickVelocity = 0;
+                    isFlicking = false;
+                    onScrollEnd();
+                }
+            }
+
             if (isUserScrolling) {
                 // During user scroll: smoothly interpolate toward target
                 // targetOffset is the accumulated user input (not normalized)
@@ -195,30 +212,50 @@ document.addEventListener('DOMContentLoaded', function() {
         // Handle touch start
         function handleTouchStart(e) {
             if (!contentWidth) return;
-            
+
+            // Cancel any in-flight momentum so a new touch grabs immediately
+            isFlicking = false;
+            flickVelocity = 0;
+
             onScrollStart();
             touchLastX = e.touches[0].clientX;
+            touchLastTime = performance.now();
         }
-        
+
         // Handle touch move
         function handleTouchMove(e) {
             if (!contentWidth) return;
-            
+
             const newTouchX = e.touches[0].clientX;
             const deltaX = touchLastX - newTouchX;
-            
+
             // Add to target offset
             targetOffset -= deltaX;
-            
+
+            // Track velocity for momentum (low-pass to smooth jittery samples)
+            const now = performance.now();
+            const dt = (now - touchLastTime) / 1000;
+            if (dt > 0) {
+                const instant = -deltaX / dt; // matches sign convention of targetOffset
+                flickVelocity = flickVelocity * 0.6 + instant * 0.4;
+            }
+            touchLastTime = now;
+
             touchLastX = newTouchX;
-            
+
             // Prevent default to stop native scrolling
             e.preventDefault();
         }
-        
+
         // Handle touch end
         function handleTouchEnd() {
-            onScrollEnd();
+            // If finger lifted with enough velocity, glide; otherwise resume immediately
+            if (Math.abs(flickVelocity) > FLICK_MIN_VELOCITY) {
+                isFlicking = true;
+            } else {
+                flickVelocity = 0;
+                onScrollEnd();
+            }
         }
         
         // Handle mouse down (start drag)
@@ -285,6 +322,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reset interaction state so resume doesn't stay in "user scroll" mode
                 isUserScrolling = false;
                 isDragging = false;
+                isFlicking = false;
+                flickVelocity = 0;
                 targetOffset = 0;
                 stopAnimation();
                 if (scrollResumeTimeout) {
@@ -298,6 +337,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Ensure we resume in auto-scroll mode
                 isUserScrolling = false;
                 isDragging = false;
+                isFlicking = false;
+                flickVelocity = 0;
                 targetOffset = 0;
                 startAnimation();
             },
