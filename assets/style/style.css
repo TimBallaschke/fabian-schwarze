@@ -264,7 +264,7 @@ body.about-open-2 .about-text {
   background-color: var(--background-color);
 }
 .projects-container-info.detail-view {
-  height: 100vh;
+  height: 100dvh;
 }
 
 #commissioned-projects-top {
@@ -904,6 +904,10 @@ body.about-open-2 .about-text {
   -o-object-fit: contain;
      object-fit: contain;
   transition: all 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.duplicates-active .detail-duplicate .detail-duplicate-inner .project-image {
+  pointer-events: auto;
+  cursor: pointer;
 }
 .detail-duplicate .detail-duplicate-inner .project-image.blur-placeholder {
   filter: blur(20px);

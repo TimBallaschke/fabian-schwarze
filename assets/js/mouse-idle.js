@@ -80,7 +80,11 @@ function startMouseIdleDetection() {
     document.addEventListener('mouseup', handleMouseActivity, true);
     document.addEventListener('click', handleMouseActivity, true);
     document.addEventListener('wheel', handleMouseActivity, true);
-    
+    // Touch events: swipes suppress the synthetic click, so tap-via-click alone isn't enough
+    document.addEventListener('touchstart', handleMouseActivity, true);
+    document.addEventListener('touchmove', handleMouseActivity, true);
+    document.addEventListener('touchend', handleMouseActivity, true);
+
     // Start the initial timer
     handleMouseActivity();
 }
@@ -92,6 +96,9 @@ function stopMouseIdleDetection() {
     document.removeEventListener('mouseup', handleMouseActivity, true);
     document.removeEventListener('click', handleMouseActivity, true);
     document.removeEventListener('wheel', handleMouseActivity, true);
+    document.removeEventListener('touchstart', handleMouseActivity, true);
+    document.removeEventListener('touchmove', handleMouseActivity, true);
+    document.removeEventListener('touchend', handleMouseActivity, true);
     
     // Clear timeout
     if (mouseIdleState.timeoutId) {

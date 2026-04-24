@@ -909,6 +909,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Click the detail image to advance to the next image of the same project.
+    // pointer-events / cursor are scoped to .duplicates-active in CSS so the
+    // (invisible) detail images don't intercept clicks meant for marquee thumbnails.
+    const detailImages = document.querySelectorAll('.detail-duplicate .project-image');
+    detailImages.forEach(function(image) {
+        const detailDuplicate = image.closest('.detail-duplicate');
+        if (!detailDuplicate) return;
+        if (parseInt(detailDuplicate.dataset.imageCount, 10) <= 1) return;
+
+        image.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            navigateNextImage(detailDuplicate);
+        });
+    });
+
     // Plus button (toggle description visibility)
     const plusButtons = document.querySelectorAll('.detail-duplicate .plus-button');
     

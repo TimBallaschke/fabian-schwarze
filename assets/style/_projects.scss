@@ -103,7 +103,7 @@ body {
     background-color: var(--background-color);
 
     &.detail-view {
-        height: 100vh;
+        height: 100dvh;
     }
 }
 
@@ -867,13 +867,20 @@ body {
             max-height: 90%;
             object-fit: contain;
             transition: all 600ms cubic-bezier(0.4, 0.0, 0.2, 1);
-            
+
+            // Only opt back into clicks once detail view is fully active —
+            // otherwise the invisible duplicates would intercept marquee clicks.
+            .duplicates-active & {
+                pointer-events: auto;
+                cursor: pointer;
+            }
+
             // Blur-up loading states
             &.blur-placeholder {
                 filter: blur(20px);
                 clip-path: inset(0); // Clip blur to image bounds for sharp edges
             }
-            
+
             &.loaded {
                 filter: blur(0px);
                 clip-path: none;
