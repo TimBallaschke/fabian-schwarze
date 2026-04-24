@@ -86,10 +86,34 @@
         init();
     }
 
+    /**
+     * Bump a specific image's high-res fetch to high priority.
+     * Called when the user clicks a marquee card so the detail-duplicate
+     * image for that project loads before the rest.
+     */
+    function prioritize(imgElement) {
+        if (!imgElement) return;
+        const highResSrc = imgElement.dataset.src;
+        const srcset = imgElement.dataset.srcset;
+
+        // Already swapped to high-res — nothing to do
+        if (!highResSrc && !srcset) return;
+
+        imgElement.fetchPriority = 'high';
+
+        // Fire a high-priority preload. Coalesces with the existing in-flight
+        // low-priority request at the network layer and bumps its priority.
+        const preloader = new Image();
+        preloader.fetchPriority = 'high';
+        if (srcset) preloader.srcset = srcset;
+        preloader.src = highResSrc;
+    }
+
     // Expose for dynamic content
     window.ImageLoader = {
         loadImage: loadHighResImage,
-        reInit: init
+        reInit: init,
+        prioritize: prioritize
     };
 })();
 
