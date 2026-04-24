@@ -388,7 +388,7 @@ function syncImageToMarquee(detailDuplicate, allMarqueeProjects, uniqueProjectCo
     const imageIndex = parseInt(detailDuplicate.dataset.imageIndex, 10) || 0;
     const images = JSON.parse(detailDuplicate.dataset.images || '[]');
     
-    if (imageIndex === 0 || images.length === 0) return; // No sync needed if still on first image
+    if (images.length === 0) return;
     
     // Find which unique project this is (0 to uniqueProjectCount-1)
     const allDuplicates = Array.from(detailDuplicate.closest('.detail-view-duplicates').querySelectorAll('.detail-duplicate'));
