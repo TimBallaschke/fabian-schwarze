@@ -958,6 +958,84 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.detail-duplicate.description-visible').forEach(measureDescription);
     });
     
+    // Touch swipe navigation between projects (mobile)
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeBaseTranslate = 0;
+    let swipeDirection = null; // null | 'horizontal' | 'vertical'
+    let swipeActive = false;
+
+    function isDetailReady() {
+        return detailViewState.isOpen
+            && detailViewState.projectsContainer
+            && detailViewState.projectsContainer.classList.contains('duplicates-active');
+    }
+
+    document.addEventListener('touchstart', function(event) {
+        if (!isDetailReady()) return;
+        if (event.touches.length !== 1) return;
+        swipeStartX = event.touches[0].clientX;
+        swipeStartY = event.touches[0].clientY;
+        swipeDirection = null;
+        swipeActive = false;
+        swipeBaseTranslate = -(detailViewState.currentIndex * window.innerWidth);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(event) {
+        if (!isDetailReady()) return;
+        if (event.touches.length !== 1) return;
+
+        const dx = event.touches[0].clientX - swipeStartX;
+        const dy = event.touches[0].clientY - swipeStartY;
+
+        // Lock direction once movement passes a small slop, so vertical scrolls
+        // (e.g. inside .detail-description) don't get hijacked.
+        if (!swipeDirection) {
+            if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+            swipeDirection = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+        }
+
+        if (swipeDirection !== 'horizontal') return;
+
+        swipeActive = true;
+        event.preventDefault();
+
+        const container = detailViewState.detailDuplicatesContainer;
+        if (container) {
+            container.style.transition = 'none';
+            container.style.transform = `translateX(${swipeBaseTranslate + dx}px)`;
+        }
+    }, { passive: false });
+
+    function endSwipe(event) {
+        if (!isDetailReady()) return;
+        if (!swipeActive) return;
+
+        swipeActive = false;
+
+        const touch = event.changedTouches && event.changedTouches[0];
+        const dx = touch ? touch.clientX - swipeStartX : 0;
+
+        const container = detailViewState.detailDuplicatesContainer;
+        if (container) {
+            // Drop the inline `transition: none` so CSS-defined 700ms transition takes over
+            container.style.transition = '';
+        }
+
+        const threshold = window.innerWidth * 0.15;
+        if (dx <= -threshold) {
+            navigateNext();
+        } else if (dx >= threshold) {
+            navigatePrev();
+        } else {
+            // Snap back to the current project
+            scrollDuplicatesToIndex(detailViewState.currentIndex);
+        }
+    }
+
+    document.addEventListener('touchend', endSwipe, { passive: true });
+    document.addEventListener('touchcancel', endSwipe, { passive: true });
+
     // Keyboard navigation for images in detail view
     document.addEventListener('keydown', function(event) {
         // Only handle when detail view is open
