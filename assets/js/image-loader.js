@@ -20,7 +20,13 @@
 
         // Create a new Image to preload
         const highResImage = new Image();
-        
+
+        // Inherit fetch priority from the target element so visible marquee
+        // cards can jump ahead of offscreen / detail-layer images.
+        if (imgElement.fetchPriority) {
+            highResImage.fetchPriority = imgElement.fetchPriority;
+        }
+
         // Set srcset for preloading if available
         if (srcset) highResImage.srcset = srcset;
         
@@ -86,8 +92,36 @@
         });
 
         Promise.all(placeholderReady).then(function() {
-            placeholderImages.forEach(loadHighResImage);
+            const imgs = Array.from(placeholderImages);
+            const inView = imgs.filter(isMarqueeCardInView);
+            const rest  = imgs.filter(function(img) { return inView.indexOf(img) === -1; });
+
+            inView.forEach(function(img) {
+                img.fetchPriority = 'high';
+                loadHighResImage(img);
+            });
+            rest.forEach(function(img) {
+                img.fetchPriority = 'low';
+                loadHighResImage(img);
+            });
         });
+    }
+
+    /**
+     * True if the image belongs to a marquee card whose bounding box
+     * currently intersects the viewport. Detail-duplicates are excluded
+     * because they're layered above the marquee with visibility:hidden
+     * and aren't what the user is looking at on first paint.
+     */
+    function isMarqueeCardInView(img) {
+        const card = img.closest('.single-project-wrapper');
+        if (!card) return false;
+
+        const rect = card.getBoundingClientRect();
+        return rect.bottom > 0 &&
+               rect.right > 0 &&
+               rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
+               rect.left < (window.innerWidth  || document.documentElement.clientWidth);
     }
 
     // Run when DOM is ready
