@@ -61,6 +61,10 @@
 
     /**
      * Initialize the image loader
+     *
+     * Waits for every placeholder in the batch to finish loading before
+     * starting any high-res fetches. Keeps the placeholder grid stable
+     * before network bandwidth is spent on full-resolution images.
      */
     function init() {
         const placeholderImages = document.querySelectorAll('img.blur-placeholder');
@@ -68,14 +72,21 @@
 
         if (totalImages === 0) return;
 
-        placeholderImages.forEach(function(img) {
-            if (img.complete) {
-                loadHighResImage(img);
-            } else {
-                img.addEventListener('load', function() {
-                    loadHighResImage(img);
-                }, { once: true });
-            }
+        loadedImages = 0;
+
+        const placeholderReady = Array.from(placeholderImages).map(function(img) {
+            return new Promise(function(resolve) {
+                if (img.complete) {
+                    resolve();
+                } else {
+                    img.addEventListener('load', resolve, { once: true });
+                    img.addEventListener('error', resolve, { once: true });
+                }
+            });
+        });
+
+        Promise.all(placeholderReady).then(function() {
+            placeholderImages.forEach(loadHighResImage);
         });
     }
 
