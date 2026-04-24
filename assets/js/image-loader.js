@@ -154,11 +154,29 @@
         preloader.src = highResSrc;
     }
 
+    /**
+     * Warm the browser cache for a list of image URLs at low priority.
+     * Used so navigating between project images in the detail view feels
+     * instant instead of waiting for a fresh fetch on each arrow press.
+     */
+    const preloadedUrls = new Set();
+    function preloadUrls(urls) {
+        if (!Array.isArray(urls)) return;
+        urls.forEach(function(url) {
+            if (!url || preloadedUrls.has(url)) return;
+            preloadedUrls.add(url);
+            const preloader = new Image();
+            preloader.fetchPriority = 'low';
+            preloader.src = url;
+        });
+    }
+
     // Expose for dynamic content
     window.ImageLoader = {
         loadImage: loadHighResImage,
         reInit: init,
-        prioritize: prioritize
+        prioritize: prioritize,
+        preloadUrls: preloadUrls
     };
 })();
 

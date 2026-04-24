@@ -75,12 +75,20 @@ function openProject(projectElement) {
     // Bump the clicked project's detail high-res fetch ahead of the other
     // detail images that are still loading. All 4 copies share the same URL,
     // so one prioritize call boosts the whole fetch.
-    if (window.ImageLoader && window.ImageLoader.prioritize) {
-        const clickedDuplicateForPriority = allDuplicates[clickedIndex];
-        if (clickedDuplicateForPriority) {
-            const dupImg = clickedDuplicateForPriority.querySelector('.project-image');
-            if (dupImg) window.ImageLoader.prioritize(dupImg);
-        }
+    const clickedDuplicateForPriority = allDuplicates[clickedIndex];
+    if (window.ImageLoader && window.ImageLoader.prioritize && clickedDuplicateForPriority) {
+        const dupImg = clickedDuplicateForPriority.querySelector('.project-image');
+        if (dupImg) window.ImageLoader.prioritize(dupImg);
+    }
+
+    // Warm the browser cache for the rest of this project's images so the
+    // arrow/key navigation doesn't pay a network round-trip per swap.
+    if (window.ImageLoader && window.ImageLoader.preloadUrls && clickedDuplicateForPriority) {
+        try {
+            const urls = JSON.parse(clickedDuplicateForPriority.dataset.images || '[]');
+            // Skip index 0 — already covered by the prioritize call above.
+            window.ImageLoader.preloadUrls(urls.slice(1));
+        } catch (e) { /* malformed data-images, ignore */ }
     }
 
     // Update state
