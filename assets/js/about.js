@@ -71,10 +71,16 @@ function openAbout() {
 
         isAboutAnimating = true;
 
+        // Fully disable detail-view idle detection while About is open so no
+        // race can sneak the no-mouse-move class on underneath the overlay.
+        if (window.stopMouseIdleDetection) {
+            window.stopMouseIdleDetection();
+        }
+
         document.body.classList.add('about-open-1');
         aboutButton.classList.add('active');
 
-    
+
         setTimeout(function() {
             document.body.classList.remove('about-open-1');
             document.body.classList.add('about-open-2');
@@ -86,15 +92,20 @@ function openAbout() {
     } else {
 
         isAboutAnimating = true;
-        
+
         document.body.classList.remove('about-open-2');
         document.body.classList.add('about-open-1');
 
         aboutButton.classList.remove('active');
         resetAboutPane();
-    
+
         setTimeout(function() {
             document.body.classList.remove('about-open-1');
+            // Restart idle detection if the user is still in detail view.
+            if (typeof detailViewState !== 'undefined' && detailViewState.isOpen
+                && window.startMouseIdleDetection) {
+                window.startMouseIdleDetection();
+            }
         }, 200);
 
         setTimeout(() => {
