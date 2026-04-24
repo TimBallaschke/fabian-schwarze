@@ -893,22 +893,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Tap/click on detail-view image advances to next image (same as right arrow).
-    // pointer-events are enabled via CSS only while the detail view is active,
-    // so clicks pass through to the marquee underneath when detail is closed.
-    const detailImages = document.querySelectorAll('.detail-duplicate .project-image');
-    detailImages.forEach(function(image) {
-        const parent = image.closest('.detail-duplicate');
-        if (!parent || parseInt(parent.dataset.imageCount, 10) <= 1) return;
-        image.addEventListener('click', function(event) {
-            if (!detailViewState.isOpen) return;
-            event.preventDefault();
-            event.stopPropagation();
-            navigateNextImage(parent);
-        });
-        image.style.cursor = 'pointer';
-    });
-
     // Plus button (toggle description visibility)
     const plusButtons = document.querySelectorAll('.detail-duplicate .plus-button');
     
