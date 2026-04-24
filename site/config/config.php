@@ -3,10 +3,6 @@
 return [
     'debug' => true,
 
-    'panel' => [
-        'install' => true
-    ],
-
     'api' => [
         'maxSize' => '2000M'
     ],
