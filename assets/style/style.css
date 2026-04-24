@@ -155,11 +155,15 @@ p {
   gap: 1rem;
   color: white;
   mix-blend-mode: difference;
+  filter: blur(0.5rem);
   opacity: 0;
-  transition: opacity 400ms ease-in-out;
+  transform: scale(0.9);
+  transition: all 600ms ease-in-out;
 }
 .about-open-2 .about-legal-links {
+  filter: blur(0);
   opacity: 1;
+  transform: scale(1);
 }
 @media (max-width: 55.99em) {
   .about-legal-links {
