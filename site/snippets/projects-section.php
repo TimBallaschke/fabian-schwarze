@@ -63,7 +63,7 @@ if (preg_match('/^(\([A-Z]\))\s*(.*)$/u', $titleRaw, $m)) {
                         $imgFile = $imgItem->projectimage()->toFile();
                         if ($imgFile) {
                             $validImages[] = $imgFile;
-                            $allImageUrls[] = $imgFile->thumb(['width' => 1200, 'format' => 'webp'])->url();
+                            $allImageUrls[] = $imgFile->thumb(['width' => 1200, 'quality' => 85, 'format' => 'webp'])->url();
                         }
                     }
 
@@ -86,10 +86,10 @@ if (preg_match('/^(\([A-Z]\))\s*(.*)$/u', $titleRaw, $m)) {
                     ]);
 
                     $sizes = [
-                        '600w' => $firstImage->thumb(['width' => 600, 'format' => 'webp']),
-                        '800w' => $firstImage->thumb(['width' => 800, 'format' => 'webp']),
-                        '1200w' => $firstImage->thumb(['width' => 1200, 'format' => 'webp']),
-                        '1600w' => $firstImage->thumb(['width' => 1600, 'format' => 'webp']),
+                        '600w' => $firstImage->thumb(['width' => 600, 'quality' => 85, 'format' => 'webp']),
+                        '800w' => $firstImage->thumb(['width' => 800, 'quality' => 85, 'format' => 'webp']),
+                        '1200w' => $firstImage->thumb(['width' => 1200, 'quality' => 85, 'format' => 'webp']),
+                        '1600w' => $firstImage->thumb(['width' => 1600, 'quality' => 85, 'format' => 'webp']),
                     ];
 
                     $srcset = implode(', ', array_map(
