@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'debug' => true,
+    'debug' => in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1'], true)
+        || str_ends_with($_SERVER['SERVER_NAME'] ?? '', '.test'),
 
     'api' => [
         'maxSize' => '2000M'
