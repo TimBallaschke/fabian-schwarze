@@ -861,9 +861,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigatePrevImage(detailDuplicate);
             }
         });
-        arrow.style.cursor = 'pointer';
+        const parent = arrow.closest('.detail-duplicate');
+        if (parent && parseInt(parent.dataset.imageCount, 10) > 1) {
+            arrow.style.cursor = 'pointer';
+        }
     });
-    
+
     rightArrows.forEach(function(arrow) {
         arrow.addEventListener('click', function(event) {
             event.preventDefault();
@@ -873,7 +876,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigateNextImage(detailDuplicate);
             }
         });
-        arrow.style.cursor = 'pointer';
+        const parent = arrow.closest('.detail-duplicate');
+        if (parent && parseInt(parent.dataset.imageCount, 10) > 1) {
+            arrow.style.cursor = 'pointer';
+        }
     });
     
     // Plus button (toggle description visibility)
@@ -889,6 +895,13 @@ document.addEventListener('DOMContentLoaded', function() {
         detailDuplicate.style.setProperty('--desc-height', measured + 'px');
         // Mark scrollable for the CSS fade mask
         desc.classList.toggle('is-scrollable', desc.scrollHeight > maxPx + 1);
+        // Mark single-line so CSS can center-align the text
+        const content = desc.querySelector('.detail-description-content');
+        if (content) {
+            const range = document.createRange();
+            range.selectNodeContents(content);
+            desc.classList.toggle('is-single-line', range.getClientRects().length === 1);
+        }
     }
 
     plusButtons.forEach(function(button) {

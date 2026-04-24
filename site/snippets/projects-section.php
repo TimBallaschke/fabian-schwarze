@@ -74,9 +74,11 @@ if (preg_match('/^(\([A-Z]\))\s*(.*)$/u', $titleRaw, $m)) {
                     $imageCount = count($validImages);
                     $firstImage = $validImages[0];
 
+                    // Same placeholder URL as the marquee card so the detail copy is
+                    // already cached by the time the marquee placeholder has loaded.
                     $placeholder = $firstImage->thumb([
-                        'width' => 100,
-                        'quality' => 20,
+                        'width' => 40,
+                        'quality' => 30,
                         'format' => 'webp'
                     ]);
 

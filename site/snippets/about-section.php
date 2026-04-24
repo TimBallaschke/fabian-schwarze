@@ -1,7 +1,7 @@
 <?php $about = page('about'); ?>
-<div id="about-container-white"></div>
-<div id="about-container-black"></div>
-<div class="about-container display-none">
+<div class="about-container">
+    <div id="about-container-white"></div>
+    <div id="about-container-black"></div>
     <div id="about-contact">
         <?php if ($about && $about->instagram()->isNotEmpty()): ?>
             IG: <?= $about->instagram() ?><br>

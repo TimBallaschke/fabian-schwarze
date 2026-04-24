@@ -19,10 +19,10 @@ if (empty($validImages) || $project->projectTitle()->isEmpty()) {
 $imageCount = count($validImages);
 $firstImage = $validImages[0];
 
-// Placeholder: same size as high-res, low quality (blur hides artifacts)
+// Placeholder: tiny low-res thumb, CSS blur(20px) hides the pixelation
 $placeholder = $firstImage->thumb([
-    'width' => 600,
-    'quality' => 5,
+    'width' => 40,
+    'quality' => 30,
     'format' => 'webp'
 ]);
 
