@@ -8,7 +8,7 @@ foreach ($projectImages as $imgItem) {
     $imgFile = $imgItem->projectimage()->toFile();
     if ($imgFile) {
         $validImages[] = $imgFile;
-        $allImageUrls[] = $imgFile->thumb(['width' => 600, 'quality' => 75, 'format' => 'webp'])->url();
+        $allImageUrls[] = $imgFile->thumb(['width' => 600, 'quality' => 65, 'format' => 'webp'])->url();
     }
 }
 
@@ -28,9 +28,9 @@ $placeholder = $firstImage->thumb([
 
 // Responsive srcset sizes for marquee cards
 $sizes = [
-    '400w' => $firstImage->thumb(['width' => 400, 'quality' => 75, 'format' => 'webp']),
-    '600w' => $firstImage->thumb(['width' => 600, 'quality' => 75, 'format' => 'webp']),
-    '800w' => $firstImage->thumb(['width' => 800, 'quality' => 75, 'format' => 'webp']),
+    '400w' => $firstImage->thumb(['width' => 400, 'quality' => 65, 'format' => 'webp']),
+    '600w' => $firstImage->thumb(['width' => 600, 'quality' => 65, 'format' => 'webp']),
+    '800w' => $firstImage->thumb(['width' => 800, 'quality' => 65, 'format' => 'webp']),
 ];
 
 $srcset = implode(', ', array_map(
