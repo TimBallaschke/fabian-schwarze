@@ -173,6 +173,7 @@ p {
   .about-legal-links {
     left: calc(var(--page-padding) * 2);
     right: calc(var(--page-padding) * 2);
+    bottom: calc(var(--info-bar-height) * 2 + 0.5rem);
     justify-content: space-between;
     gap: 0;
   }
