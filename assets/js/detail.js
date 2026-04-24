@@ -124,7 +124,16 @@ function openProject(projectElement) {
         
         // Get the position and dimensions of this project
         const rect = wrapper.getBoundingClientRect();
-        
+
+        // Measure the original image BEFORE cloning. A cloned <img> has to
+        // re-resolve intrinsic dimensions (naturalWidth/Height) from cache,
+        // which isn't always synchronous — DevTools "Disable cache" and
+        // Firefox both expose this race, causing the clone image to lay out
+        // tiny (no intrinsic size + max-width/height: 80% + object-fit: contain).
+        // The original is already laid out, so its rect is reliable.
+        const originalImage = wrapper.querySelector('.project-image');
+        const originalImageRect = originalImage ? originalImage.getBoundingClientRect() : null;
+
         // Calculate visual offset from clicked project (in terms of project widths)
         const wrapperCenterX = rect.left + rect.width / 2;
         const visualOffset = Math.round((wrapperCenterX - clickedCenterX) / rect.width);
@@ -190,17 +199,16 @@ function openProject(projectElement) {
                     }
                 });
                 
-                // Set initial image size (80% for marquee state)
+                // Set initial image size (80% for marquee state).
+                // Use the ORIGINAL image's rect, not the clone's — see note above.
                 const cloneImage = clone.querySelector('.project-image');
-                if (cloneImage) {
+                if (cloneImage && originalImageRect) {
                     // Clear any leftover inline styles from previous syncs
                     cloneImage.style.filter = '';
                     cloneImage.style.opacity = '';
                     cloneImage.style.transition = 'none';
-                    // Set initial size - use exact pixel values from current rendered size
-                    const imgRect = cloneImage.getBoundingClientRect();
-                    cloneImage.style.width = imgRect.width + 'px';
-                    cloneImage.style.height = imgRect.height + 'px';
+                    cloneImage.style.width = originalImageRect.width + 'px';
+                    cloneImage.style.height = originalImageRect.height + 'px';
                     cloneImage.style.maxWidth = 'none';
                     cloneImage.style.maxHeight = 'none';
                 }

@@ -7,6 +7,14 @@
         const full = el.dataset.fullTitle;
         el.textContent = full;
 
+        // Bail if the element hasn't been laid out yet. Mobile Safari and
+        // Firefox can report clientWidth as 0 (or absurdly small) for a flex
+        // child with min-width:0 before fonts/layout settle, and the binary
+        // search below would otherwise collapse the title to "..." or a few
+        // characters. ResizeObserver / fonts.ready will retry once layout is
+        // valid.
+        if (el.clientWidth < 1) return;
+
         if (el.scrollWidth <= el.clientWidth + 1) return;
 
         let lo = 0;
@@ -28,7 +36,8 @@
     }
 
     function init() {
-        updateAll();
+        // Defer initial pass to the next frame so first layout has run.
+        requestAnimationFrame(updateAll);
 
         if ('fonts' in document) {
             document.fonts.ready.then(updateAll);
